@@ -24,9 +24,17 @@ namespace TheMightyBoop
 
         public void Awake()
         {
-            string sectionName = "FireSonicBoom";
+            On.RoR2.Console.Awake += (orig, self) =>
+            {
+                CommandHelper.RegisterCommands(self);
+                orig(self);
+            };
+
 
             #region ConfigSetup
+
+            string sectionName = "FireSonicBoom";
+
             AirKnockBackDistance = Config.Wrap(
                                    sectionName,
                                    nameof(AirKnockBackDistance),
@@ -54,6 +62,9 @@ namespace TheMightyBoop
                                    $"Set the vertical lift of enemies affected by the boop. (Game default = {BoopConstants.LiftVelocityDefault}, Recommended = {BoopConstants.LiftVelocityRecommended})",
                                    BoopConstants.LiftVelocityRecommended
                                    );
+
+            
+
             #endregion
 
             On.EntityStates.Treebot.Weapon.FireSonicBoom.OnEnter += FireSonicBoom_OnEnter;
@@ -84,7 +95,7 @@ namespace TheMightyBoop
         /// Set default values to all configurations.
         /// </summary>
         [ConCommand(commandName = "boop_set_default", flags = ConVarFlags.ExecuteOnServer, helpText = "Set default values to all configurations.")]
-        private static void BoopSetDefault()
+        private static void BoopSetDefault(ConCommandArgs args)
         {
             AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceDefault;
             GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceDefault;
@@ -97,7 +108,7 @@ namespace TheMightyBoop
         /// Set recommended values to all configurations.
         /// </summary>
         [ConCommand(commandName = "boop_set_recommended", flags = ConVarFlags.ExecuteOnServer, helpText = "Set recommended values to all configurations.")]
-        private static void BoopSetRecommended()
+        private static void BoopSetRecommended(ConCommandArgs args)
         {
             AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceRecommended;
             GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceRecommended;
@@ -156,7 +167,7 @@ namespace TheMightyBoop
         /// Get current configuration values
         /// </summary>
         [ConCommand(commandName = "boop_get", flags = ConVarFlags.ExecuteOnServer, helpText = "Get current values to display in Chat.")]
-        private static void BoopGet()
+        private static void BoopGet(ConCommandArgs args)
         {
             Chat.AddMessage($"AirKnockback={AirKnockBackDistance.Value}\n\r" +
                 $"GroundKnockback={GroundKnockBackDistance.Value}\n\r" +
