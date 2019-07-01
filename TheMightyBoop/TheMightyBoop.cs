@@ -152,6 +152,9 @@ namespace TheMightyBoop
             }
         }
 
+        /// <summary>
+        /// Get current configuration values
+        /// </summary>
         [ConCommand(commandName = "boop_get", flags = ConVarFlags.ExecuteOnServer, helpText = "Get current values to display in Chat.")]
         private static void BoopGet()
         {
