@@ -1,7 +1,7 @@
-{  
+{
   "name": "RexMegaSonicBoop",
   "version_number": "1.0.1",
-  "website_url": "https://github.com/JackPendarvesRead/",
+  "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/RexMegaSonicBoop",
   "description": "Send everything flying with Rex's MegaSonicBoop.",
   "dependencies": [
     "tristanmcpherson-R2API-2.0.10",
