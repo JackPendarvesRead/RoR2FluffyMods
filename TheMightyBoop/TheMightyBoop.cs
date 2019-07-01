@@ -23,15 +23,14 @@ namespace TheMightyBoop
         private static ConfigWrapper<float> MaxDistance;
 
         public void Awake()
-        {
+        {            
             On.RoR2.Console.Awake += (orig, self) =>
             {
                 CommandHelper.RegisterCommands(self);
                 orig(self);
             };
 
-
-            #region ConfigSetup
+            #region ConfigWrapperSetup
 
             string sectionName = "FireSonicBoom";
 
