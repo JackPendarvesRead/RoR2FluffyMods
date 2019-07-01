@@ -1,0 +1,10 @@
+{
+  "name": "BackupEngiTurrets",
+  "version_number": "2.0.1",
+  "website_url": "https://github.com/JackPendarvesRead/BackupEngiTurrets",
+  "description": "Engineer can stock turrets with every Backup Magazine picked up (does NOT allow you to place down extra turrets). Also has configuration to affect other abilities if desired.",
+  "dependencies": [
+    "tristanmcpherson-R2API-2.0.10",
+    "bbepis-BepInExPack-2.0.0"
+  ]
+}
