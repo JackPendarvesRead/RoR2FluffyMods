@@ -23,32 +23,34 @@ namespace TheMightyBoop
 
         public void Awake()
         {
+            string sectionName = "FireSonicBoom";
+
             AirKnockBackDistance = Config.Wrap(
-                                   "FireSonicBoom",
-                                   "AirKnockBackDistance",
-                                   "Set how far you knock yourself back when you boop in mid-air. (Game default = 8,  Recommended = 16)",
-                                   16f
+                                   sectionName,
+                                   nameof(AirKnockBackDistance),
+                                   $"Set how far you knock yourself back when you boop in mid-air. (Game default = {BoopConstants.AirKnockBackDistanceDefault},  Recommended = {BoopConstants.AirKnockBackDistanceRecommended})",
+                                   BoopConstants.AirKnockBackDistanceRecommended
                                    );
 
             GroundKnockBackDistance = Config.Wrap(
-                                   "FireSonicBoom",
-                                   "GroundKnockBackDistance", 
-                                   "Set how far you knock yourself back when you boop whilst on the ground. (Game default = 0, Recommended = 0)",
-                                   0f
+                                   sectionName,
+                                   nameof(GroundKnockBackDistance), 
+                                   $"Set how far you knock yourself back when you boop whilst on the ground. (Game default = {BoopConstants.GroundKnockBackDistanceDefault}, Recommended = {BoopConstants.GroundKnockBackDistanceRecommended})",
+                                   BoopConstants.GroundKnockBackDistanceRecommended
                                    );
 
             MaxDistance = Config.Wrap(
-                                   "FireSonicBoom",
-                                   "MaxDistance",
-                                   "Set the horizontal distance which enemies should be knocked back by the boop. (Game default = 30, Recommended=100)",
-                                   100f
+                                   sectionName,
+                                   nameof(MaxDistance),
+                                   $"Set the horizontal distance which enemies should be knocked back by the boop. (Game default = {BoopConstants.MaxDistanceDefault}, Recommended = {BoopConstants.MaxDistanceRecommended})",
+                                   BoopConstants.MaxDistanceRecommended
                                    );
 
             LiftVelocity = Config.Wrap(
-                                   "FireSonicBoom",
-                                   "LiftVelocity",
-                                   "Set the vertical lift of enemies affected by the boop. (Game default = 3f, Recommended = 6)",
-                                   6f
+                                   sectionName,
+                                   nameof(LiftVelocity),
+                                   $"Set the vertical lift of enemies affected by the boop. (Game default = {BoopConstants.LiftVelocityDefault}, Recommended = {BoopConstants.LiftVelocityRecommended})",
+                                   BoopConstants.LiftVelocityRecommended
                                    );
 
             On.EntityStates.Treebot.Weapon.FireSonicBoom.OnEnter += FireSonicBoom_OnEnter;
@@ -56,11 +58,21 @@ namespace TheMightyBoop
 
         private void FireSonicBoom_OnEnter(On.EntityStates.Treebot.Weapon.FireSonicBoom.orig_OnEnter orig, EntityStates.Treebot.Weapon.FireSonicBoom self)
         {
-            self.airKnockbackDistance = AirKnockBackDistance.Value;
-            self.groundKnockbackDistance = GroundKnockBackDistance.Value;
-            self.maxDistance = MaxDistance.Value;
-            self.liftVelocity = LiftVelocity.Value;
-            orig(self);
+            try
+            {
+                self.airKnockbackDistance = AirKnockBackDistance.Value;
+                self.groundKnockbackDistance = GroundKnockBackDistance.Value;
+                self.maxDistance = MaxDistance.Value;
+                self.liftVelocity = LiftVelocity.Value;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+            finally
+            {
+                orig(self);
+            }
         }
     }
 }
