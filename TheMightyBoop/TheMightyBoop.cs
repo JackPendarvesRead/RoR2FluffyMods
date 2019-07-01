@@ -74,10 +74,10 @@ namespace TheMightyBoop
         {
             try
             {
-                self.airKnockbackDistance = AirKnockBackDistance.Value;
-                self.groundKnockbackDistance = GroundKnockBackDistance.Value;
-                self.maxDistance = MaxDistance.Value;
-                self.liftVelocity = LiftVelocity.Value;
+                self.airKnockbackDistance = (AirKnockBackDistance.Value < BoopConstants.MaximumBoop) ? AirKnockBackDistance.Value : BoopConstants.MaximumBoop;
+                self.groundKnockbackDistance = (GroundKnockBackDistance.Value < BoopConstants.MaximumBoop) ? GroundKnockBackDistance.Value : BoopConstants.MaximumBoop;
+                self.liftVelocity = (LiftVelocity.Value < BoopConstants.MaximumBoop) ? LiftVelocity.Value : BoopConstants.MaximumBoop;
+                self.maxDistance = (MaxDistance.Value < BoopConstants.MaximumBoop) ? MaxDistance.Value : BoopConstants.MaximumBoop;
             }
             catch (Exception ex)
             {
@@ -126,36 +126,51 @@ namespace TheMightyBoop
         {
             try
             {
-                ConfigWrapper<float> wrapper;
-                switch (args[0].ToLower())
+                if(args.Count != 2)
+                {
+                    throw new Exception("Arguements length must be equal to 2.");
+                }
+
+                var wrapperName = args[0];
+                var value = float.Parse(args[1]);
+                if(value > BoopConstants.MaximumBoop)
+                {
+                    value = BoopConstants.MaximumBoop;
+                }                
+
+                switch (wrapperName.ToLower())
                 {
                     default:
                         throw new Exception("Config wrapper not found.");
 
                     case "airknockbackdistance":
                     case "air":
-                        wrapper = AirKnockBackDistance;
-                        break;
+                    case "a":
+                        AirKnockBackDistance.Value = value;
+                        Debug.Log($"{nameof(AirKnockBackDistance)}={value}");
+                        return;
 
                     case "groundknockbackdistance":
                     case "ground":
-                        wrapper = GroundKnockBackDistance;
-                        break;
+                    case "g":
+                        GroundKnockBackDistance.Value = value;
+                        Debug.Log($"{nameof(GroundKnockBackDistance)}={value}");
+                        return;
 
                     case "liftvelocity":
                     case "lift":
-                        wrapper = LiftVelocity;
-                        break;
+                    case "l":
+                        LiftVelocity.Value = value;
+                        Debug.Log($"{nameof(LiftVelocity)}={value}");
+                        return;
 
                     case "maxdistance":
                     case "distance":
-                        wrapper = MaxDistance;
-                        break;
+                    case "d":
+                        MaxDistance.Value = value;
+                        Debug.Log($"{nameof(MaxDistance)}={value}");
+                        return;
                 }
-
-                float value = float.Parse(args[1]);
-                AirKnockBackDistance.Value = value;
-                Debug.Log($"Set {args[0]}={value}");
             }
             catch (Exception ex)
             {

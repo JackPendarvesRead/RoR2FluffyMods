@@ -19,5 +19,8 @@ namespace TheMightyBoop
         public static float GroundKnockBackDistanceRecommended => 0f;
         public static float MaxDistanceRecommended => 100f;
         public static float LiftVelocityRecommended => 6f;
+
+        //Maximum value set to avoid users inputting absolutely ridiculous numbers
+        public static float MaximumBoop => 1000f;
     }
 }
