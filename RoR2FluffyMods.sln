@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoR2FluffyMods", "RoR2Fluff
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackupEngiTurrets", "BackupEngiTurrets\BackupEngiTurrets.csproj", "{C55BCF67-59B9-40E6-A245-50266E257957}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RexMegaSonicBoop", "RexMegaSonicBoop\RexMegaSonicBoop.csproj", "{DCC58185-8212-4226-9E7D-F459E9FA461D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheMightyBoop", "RexMegaSonicBoop\TheMightyBoop.csproj", "{DCC58185-8212-4226-9E7D-F459E9FA461D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

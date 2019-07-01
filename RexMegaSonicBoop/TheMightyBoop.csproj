@@ -7,8 +7,8 @@
     <ProjectGuid>{DCC58185-8212-4226-9E7D-F459E9FA461D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RexMegaSonicBoop</RootNamespace>
-    <AssemblyName>RexMegaSonicBoop</AssemblyName>
+    <RootNamespace>TheMightyBoop</RootNamespace>
+    <AssemblyName>TheMightyBoop</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -96,7 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RexMegaSonicBoop.cs" />
+    <Compile Include="TheMightyBoop.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="manifest.json" />

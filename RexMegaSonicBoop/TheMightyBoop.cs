@@ -9,11 +9,11 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using BepInEx.Configuration;
 
-namespace TestILHook2
+namespace TheMightyBoop
 {
 
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.RexMegaSonicBoop", "RexMegaSonicBoop", "1.0.1")]
+    [BepInPlugin("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "1.0.1")]
     public class RexMegaSonicBoop : BaseUnityPlugin
     {
         private static ConfigWrapper<float> AirKnockBackDistance;
