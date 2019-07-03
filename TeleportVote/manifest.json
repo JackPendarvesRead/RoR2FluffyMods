@@ -1,0 +1,10 @@
+{
+  "name": "TeleportVote",
+  "version_number": "1.0.1",
+  "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/TheMightyBoop",
+  "description": "",
+  "dependencies": [
+    "tristanmcpherson-R2API-2.0.10",
+    "bbepis-BepInExPack-2.0.0"
+  ]
+}

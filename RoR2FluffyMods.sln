@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackupEngiTurrets", "Backup
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheMightyBoop", "TheMightyBoop\TheMightyBoop.csproj", "{DCC58185-8212-4226-9E7D-F459E9FA461D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeleportVote", "TeleportVote\TeleportVote.csproj", "{FEC07B71-957D-478A-83B3-C91BEC8F0757}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{DCC58185-8212-4226-9E7D-F459E9FA461D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCC58185-8212-4226-9E7D-F459E9FA461D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCC58185-8212-4226-9E7D-F459E9FA461D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEC07B71-957D-478A-83B3-C91BEC8F0757}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEC07B71-957D-478A-83B3-C91BEC8F0757}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEC07B71-957D-478A-83B3-C91BEC8F0757}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEC07B71-957D-478A-83B3-C91BEC8F0757}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
