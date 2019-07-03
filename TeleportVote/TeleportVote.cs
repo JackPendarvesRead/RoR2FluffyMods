@@ -1,18 +1,13 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
 using MonoMod.Cil;
 using RoR2;
 using UnityEngine;
-using System.Diagnostics;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Threading;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System.Linq;
 using System.Text.RegularExpressions;
-using UnityEngine.Networking;
+using System.Collections.Generic;
 
 namespace TeleportVote
 {
@@ -28,8 +23,8 @@ namespace TeleportVote
             int timeUntilUnlock = 60;
             this.Controller = new RestrictionController(notificationInterval, timeUntilUnlock);            
 
-            //TODO ping teleporter
             //TODO add config???
+            //TODO ping teleporter whilst restriction is active???
             
             //Main hooks - triggers restriction logics
             On.RoR2.TeleporterInteraction.OnInteractionBegin += TeleporterInteraction_OnInteractionBegin;
@@ -74,7 +69,6 @@ namespace TeleportVote
         private void TeleporterInteraction_OnInteractionBegin(On.RoR2.TeleporterInteraction.orig_OnInteractionBegin orig, TeleporterInteraction self, Interactor activator)
         {
             var userNetId = GetNetworkIdFromInteractor(activator);
-            Logger.LogInfo($"TPInt: userNetId={userNetId}, userNetId.Value={userNetId.value}");
             if (Controller.IsInteractionLegal(userNetId))
             {
                 orig(self, activator);
@@ -86,7 +80,6 @@ namespace TeleportVote
             if (IsRestictableInteractableObject(interactableObject.name))
             {
                 var userNetId = GetNetworkIdFromInteractor(self);
-                Logger.LogInfo($"IntPerform: userNetId={userNetId}");
                 if (Controller.IsInteractionLegal(userNetId))
                 {
                     orig(self, interactableObject);
@@ -105,14 +98,14 @@ namespace TeleportVote
         /// <returns>True if object should be run through TeleporterVote restriction logic</returns>
         private bool IsRestictableInteractableObject(string interactableObjectName)
         {
-            if (interactableObjectName == InteractableObjectNames.PortalShopClone || interactableObjectName == InteractableObjectNames.PortalShop)
+            foreach(var restrictedInteractable in InteractableObjectNames.GetAllRestrictedInteractableNames())
             {
-                return true;
+                if(interactableObjectName == restrictedInteractable)
+                {
+                    return true;
+                }
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         /// <summary>
@@ -123,7 +116,6 @@ namespace TeleportVote
         private NetworkUserId GetNetworkIdFromInteractor(Interactor interactor)
         {
             var netId = interactor.GetComponent<CharacterBody>().master.GetComponent<PlayerCharacterMasterController>().networkUser.Network_id;
-            Logger.LogInfo($"FromInteractor: netId={netId}");
             return netId;
         }
         #endregion
@@ -134,24 +126,13 @@ namespace TeleportVote
         {
             try
             {
-                var networkUsers = RoR2.NetworkUser.readOnlyInstancesList;
-                foreach (var user in networkUsers)
-                {
-                    Logger.LogInfo($"ALLNETUSERS: NetworkUserName={user.name}, NetworkUserUsername={user.userName}, NetworkUserNetId={user.netId.Value}, Network_id={user.Network_id.value}");
-                }
-
                 var chatLog = Chat.readOnlyLog;
-                var m = ParseChatLog.Match(chatLog.Last());
-                var name = m.Groups["name"].Value;
-                var message = m.Groups["message"].Value;
+                var match = ParseChatLog.Match(chatLog.Last());
+                var name = match.Groups["name"].Value.Trim();
+                var message = match.Groups["message"].Value.Trim();
 
                 if (!string.IsNullOrWhiteSpace(name))
-                {
-                    var netUser = (from u in networkUsers
-                                   where u.userName.Trim() == name.Trim()
-                                   select u.Network_id).FirstOrDefault();
-                    Logger.LogInfo($"LastChatLog: {chatLog.Last()}");
-                    Logger.LogInfo($"Regex: name={name}, message={message}.  netId={netUser}");
+                {  
                     switch (message.ToLower())
                     {
                         case "ready":
@@ -159,12 +140,13 @@ namespace TeleportVote
                         case "r":
                         case "y":
                         case "go":
+                            var netUser = (from u in RoR2.NetworkUser.readOnlyInstancesList
+                                           where u.userName.Trim() == name
+                                           select u.Network_id).FirstOrDefault();
                             Controller.AddChatReady(netUser);
                             break;
                     }
-                }
-
-                
+                }                
             }
             catch (Exception ex)
             {
