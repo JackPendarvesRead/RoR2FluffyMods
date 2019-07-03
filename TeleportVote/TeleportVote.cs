@@ -26,31 +26,22 @@ namespace TeleportVote
         {
             int notificationInterval = 15;
             int timeUntilUnlock = 60;
-            this.Controller = new RestrictionController(notificationInterval, timeUntilUnlock);
-
-            
+            this.Controller = new RestrictionController(notificationInterval, timeUntilUnlock);            
 
             //TODO ping teleporter
-
-            #region ConfigWrapperSetup
-
-            //TODO add ConfigWrapper for time to spend waiting for all players to be ready
-            //TODO add ConfigWrapper for maxplayers?
-            //TODO add ConfigWrapper for TimeLimit
-
-            #endregion
+            //TODO add config???
             
-            //Main hooks
+            //Main hooks - triggers restriction logics
             On.RoR2.TeleporterInteraction.OnInteractionBegin += TeleporterInteraction_OnInteractionBegin;
             On.RoR2.Interactor.PerformInteraction += Interactor_PerformInteraction;
 
-            //Chat Ready Command
+            //Chat Ready Command - type "r" to set yourself as ready
             Chat.onChatChanged += Chat_onChatChanged;
 
-            //Fire Fireworks exploitative interaction with teleporter
+            //Prevent an exploitative interaction with teleporter and fireworks
             IL.RoR2.GlobalEventManager.OnInteractionBegin += GlobalEventManager_OnInteractionBegin;
             
-            //Cleanup Hooks
+            //Cleanup Hooks - Needed to avoid bugs where list persists from one run to another
             On.RoR2.Run.BeginGameOver += Run_BeginGameOver;
             On.RoR2.Run.BeginStage += Run_BeginStage;
             On.RoR2.Run.EndStage += Run_EndStage;
@@ -107,9 +98,14 @@ namespace TeleportVote
             }
         }
 
+        /// <summary>
+        /// Checks if an interactable should be checked for vote restriction logics
+        /// </summary>
+        /// <param name="interactableObjectName">String name of the interactable object</param>
+        /// <returns>True if object should be run through TeleporterVote restriction logic</returns>
         private bool IsRestictableInteractableObject(string interactableObjectName)
         {
-            if (interactableObjectName == InteractableObjectNames.Shop || interactableObjectName == InteractableObjectNames.Shop2)
+            if (interactableObjectName == InteractableObjectNames.PortalShopClone || interactableObjectName == InteractableObjectNames.PortalShop)
             {
                 return true;
             }
@@ -119,11 +115,13 @@ namespace TeleportVote
             }
         }
 
+        /// <summary>
+        /// Get the unique NetworkUserId of player. Credit to Wildbook for help in getting this.
+        /// </summary>
+        /// <param name="interactor">Interactor object belonging to the player</param>
+        /// <returns>Unique NetworkUserId of player</returns>
         private NetworkUserId GetNetworkIdFromInteractor(Interactor interactor)
         {
-            //var netuser = Util.LookUpBodyNetworkUser(interactor.gameObject);
-            //return netuser.Network_id;
-
             var netId = interactor.GetComponent<CharacterBody>().master.GetComponent<PlayerCharacterMasterController>().networkUser.Network_id;
             Logger.LogInfo($"FromInteractor: netId={netId}");
             return netId;
@@ -176,6 +174,10 @@ namespace TeleportVote
         #endregion
 
         #region FireWorksILDisable
+        /// <summary>
+        /// Prevent fireworks from triggering when interacting with teleporter or portals
+        /// </summary>
+        /// <param name="il">il context</param>
         private void GlobalEventManager_OnInteractionBegin(ILContext il)
         {
             ILLabel myLabel = il.DefineLabel();
@@ -200,9 +202,9 @@ namespace TeleportVote
             //Go to return
             c.GotoNext(x => x.MatchRet());
             c.MarkLabel(myLabel);
-        }
-        #endregion
 
-       
+            //Credit to paddywan for guidance in formulating this IL hook
+        }
+        #endregion       
     }
 }

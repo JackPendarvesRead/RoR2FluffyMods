@@ -2,15 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Timers;
 
 namespace TeleportVote
 {
     internal class RestrictionController
     {
-        private int NumberLivingPlayers { get => RoR2.Run.instance.participatingPlayerCount; }
-        //private int NumberLivingPlayers { get => RoR2.Run.instance.livingPlayerCount; }
+        //using particpatingPlayCount with multitudes so I am able to kind of test it in single player...
+        //private int NumberLivingPlayers { get => RoR2.Run.instance.participatingPlayerCount; }
+        private int NumberLivingPlayers { get => RoR2.Run.instance.livingPlayerCount; }
         private List<NetworkUserId> PlayerIdList { get; set; }
         private Stopwatch sw { get; set; }
         private Timer Timer { get; set; }
@@ -47,6 +47,11 @@ namespace TeleportVote
             TimeoutTimer.Elapsed += TimeoutTimer_Elapsed;
         }
 
+        /// <summary>
+        /// Runs logic to check if all interaction is legal. Either all players need to be ready or activate it during unrestricted time window.
+        /// </summary>
+        /// <param name="userNetworkId">Unique user Id for player</param>
+        /// <returns>True if interactor is able to perform interaction</returns>
         public bool IsInteractionLegal(NetworkUserId userNetworkId)
         {
             bool sendMessage = false;
@@ -78,15 +83,16 @@ namespace TeleportVote
                 }
                 return false;
             }
-        }        
+        }
 
+        #region Timers
         private int timerElapsedCount;
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             var time = interval * (1 + timerElapsedCount);
-            if(time < timeLimit)
+            if (time < timeLimit)
             {
-                Message.SendToAll($"{timeLimit-time}s until restriction is lifted.", Colours.LightBlue);
+                Message.SendToAll($"{timeLimit - time}s until restriction is lifted.", Colours.LightBlue);
                 timerElapsedCount++;
             }
             else
@@ -103,7 +109,7 @@ namespace TeleportVote
         {
             int timeoutTime = 30;
             var time = 1 * (timeoutTimerElapsedCount + 1);
-            if(time >= timeoutTime)
+            if (time >= timeoutTime)
             {
                 Message.SendToAll("Restrictions have been reinstated. You must vote again.", Colours.Red);
                 Stop();
@@ -115,14 +121,19 @@ namespace TeleportVote
                 {
                     Message.SendToAll($"{timeRemaining}...", Colours.Orange);
                 }
-                else if(timeRemaining % 10 == 0)
+                else if (timeRemaining % 10 == 0)
                 {
                     Message.SendToAll($"{timeRemaining}s until restriction is reinstated", Colours.Yellow);
                 }
                 timeoutTimerElapsedCount++;
             }
-        }      
-        
+        }
+        #endregion
+
+        /// <summary>
+        /// Adds user Id to ready list if it is not already in the list
+        /// </summary>
+        /// <param name="userNetId">Unique player id</param>
         public void AddChatReady(NetworkUserId userNetId)
         {
             //var userNetId = (from u in RoR2.NetworkUser.readOnlyInstancesList
