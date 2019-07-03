@@ -12,6 +12,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UnityEngine.Networking;
 
 namespace TeleportVote
 {
@@ -23,12 +24,11 @@ namespace TeleportVote
 
         public void Awake()
         {
-            int notificationInterval = 30;
-            int timeUntilUnlock = 90;
+            int notificationInterval = 15;
+            int timeUntilUnlock = 60;
             this.Controller = new RestrictionController(notificationInterval, timeUntilUnlock);
 
-            //TODO chat command R for ready
-            Chat.onChatChanged += Chat_onChatChanged;
+            
 
             //TODO ping teleporter
 
@@ -44,51 +44,19 @@ namespace TeleportVote
             On.RoR2.TeleporterInteraction.OnInteractionBegin += TeleporterInteraction_OnInteractionBegin;
             On.RoR2.Interactor.PerformInteraction += Interactor_PerformInteraction;
 
+            //Chat Ready Command
+            Chat.onChatChanged += Chat_onChatChanged;
+
             //Fire Fireworks exploitative interaction with teleporter
             IL.RoR2.GlobalEventManager.OnInteractionBegin += GlobalEventManager_OnInteractionBegin;
-
+            
             //Cleanup Hooks
             On.RoR2.Run.BeginGameOver += Run_BeginGameOver;
             On.RoR2.Run.BeginStage += Run_BeginStage;
             On.RoR2.Run.EndStage += Run_EndStage;
         }
 
-        private static Regex ParseChatLog => new Regex("<color=#e5eefc><noparse>(?<name>.*?)</noparse>: <noparse>(?<message>.*?)</noparse></color>");
-        private void Chat_onChatChanged()
-        {
-            try
-            {
-                foreach (var user in RoR2.NetworkUser.readOnlyInstancesList)
-                {
-                    Logger.LogInfo($"NetworkUserName={user.name}, NetworkUserUsername={user.userName}, NetworkUserNetId={user.netId}");
-                }
-            }
-            catch
-            {
-                Logger.LogInfo("UnableToGetNetworkUsers!");
-            }
-            
-
-            var chatLog = Chat.readOnlyLog;
-            var m = ParseChatLog.Match(chatLog.Last());
-            var name = m.Groups["name"].Value;
-            var message = m.Groups["message"].Value;
-            Logger.LogInfo($"Regex: name={name}, message={message}");
-
-            switch (message.ToLower())
-            {
-                case "ready":
-                case "rdy":
-                case "r":
-                case "y":
-                case "go":
-                    Controller.AddChatReady(name);
-                    break;
-            }
-        }
-
         #region ControllerTidyUp   
-
         private void Run_EndStage(On.RoR2.Run.orig_EndStage orig, Run self)
         {
             Controller.Stop();
@@ -109,27 +77,26 @@ namespace TeleportVote
             }
             orig(self, gameResultType);
         }
-
         #endregion
 
-
+        #region MainHookMethods
         private void TeleporterInteraction_OnInteractionBegin(On.RoR2.TeleporterInteraction.orig_OnInteractionBegin orig, TeleporterInteraction self, Interactor activator)
         {
-            var playerId = activator.netId.ToString();
-            Logger.LogInfo($"TeleInt: playernetId={playerId}");
-            if (Controller.IsInteractionLegal(playerId))
+            var userNetId = GetNetworkIdFromInteractor(activator);
+            Logger.LogInfo($"TPInt: userNetId={userNetId}, userNetId.Value={userNetId.value}");
+            if (Controller.IsInteractionLegal(userNetId))
             {
                 orig(self, activator);
             }
         }
 
         private void Interactor_PerformInteraction(On.RoR2.Interactor.orig_PerformInteraction orig, Interactor self, GameObject interactableObject)
-        {
+        {            
             if (IsRestictableInteractableObject(interactableObject.name))
             {
-                var playerId = self.netId.ToString();
-                Logger.LogInfo($"InterPerf: playernetId={playerId}");
-                if (Controller.IsInteractionLegal(playerId))
+                var userNetId = GetNetworkIdFromInteractor(self);
+                Logger.LogInfo($"IntPerform: userNetId={userNetId}");
+                if (Controller.IsInteractionLegal(userNetId))
                 {
                     orig(self, interactableObject);
                 }
@@ -140,6 +107,75 @@ namespace TeleportVote
             }
         }
 
+        private bool IsRestictableInteractableObject(string interactableObjectName)
+        {
+            if (interactableObjectName == InteractableObjectNames.Shop || interactableObjectName == InteractableObjectNames.Shop2)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private NetworkUserId GetNetworkIdFromInteractor(Interactor interactor)
+        {
+            //var netuser = Util.LookUpBodyNetworkUser(interactor.gameObject);
+            //return netuser.Network_id;
+
+            var netId = interactor.GetComponent<CharacterBody>().master.GetComponent<PlayerCharacterMasterController>().networkUser.Network_id;
+            Logger.LogInfo($"FromInteractor: netId={netId}");
+            return netId;
+        }
+        #endregion
+
+        #region ChatReadyCommand
+        private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
+        private void Chat_onChatChanged()
+        {
+            try
+            {
+                var networkUsers = RoR2.NetworkUser.readOnlyInstancesList;
+                foreach (var user in networkUsers)
+                {
+                    Logger.LogInfo($"ALLNETUSERS: NetworkUserName={user.name}, NetworkUserUsername={user.userName}, NetworkUserNetId={user.netId.Value}, Network_id={user.Network_id.value}");
+                }
+
+                var chatLog = Chat.readOnlyLog;
+                var m = ParseChatLog.Match(chatLog.Last());
+                var name = m.Groups["name"].Value;
+                var message = m.Groups["message"].Value;
+
+                if (!string.IsNullOrWhiteSpace(name))
+                {
+                    var netUser = (from u in networkUsers
+                                   where u.userName.Trim() == name.Trim()
+                                   select u.Network_id).FirstOrDefault();
+                    Logger.LogInfo($"LastChatLog: {chatLog.Last()}");
+                    Logger.LogInfo($"Regex: name={name}, message={message}.  netId={netUser}");
+                    switch (message.ToLower())
+                    {
+                        case "ready":
+                        case "rdy":
+                        case "r":
+                        case "y":
+                        case "go":
+                            Controller.AddChatReady(netUser);
+                            break;
+                    }
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+            }
+        }
+        #endregion
+
+        #region FireWorksILDisable
         private void GlobalEventManager_OnInteractionBegin(ILContext il)
         {
             ILLabel myLabel = il.DefineLabel();
@@ -164,18 +200,9 @@ namespace TeleportVote
             //Go to return
             c.GotoNext(x => x.MatchRet());
             c.MarkLabel(myLabel);
-        }              
-
-        private bool IsRestictableInteractableObject(string interactableObjectName)
-        {
-            if (interactableObjectName == InteractableObjectNames.Shop || interactableObjectName == InteractableObjectNames.Shop2)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
+        #endregion
+
+       
     }
 }

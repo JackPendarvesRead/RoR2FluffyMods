@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoR2;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,9 +9,9 @@ namespace TeleportVote
 {
     internal class RestrictionController
     {
-        //private int NumberLivingPlayers { get => RoR2.Run.instance.participatingPlayerCount; }
-        private int NumberLivingPlayers { get => RoR2.Run.instance.livingPlayerCount; }
-        private List<string> PlayerIdList { get; set; }
+        private int NumberLivingPlayers { get => RoR2.Run.instance.participatingPlayerCount; }
+        //private int NumberLivingPlayers { get => RoR2.Run.instance.livingPlayerCount; }
+        private List<NetworkUserId> PlayerIdList { get; set; }
         private Stopwatch sw { get; set; }
         private Timer Timer { get; set; }
         private Timer TimeoutTimer { get; set; }
@@ -20,7 +21,7 @@ namespace TeleportVote
 
         public RestrictionController(int interval, int timeLimit)
         {
-            PlayerIdList = new List<string>();
+            PlayerIdList = new List<NetworkUserId>();
             this.interval = interval;
             this.timeLimit = timeLimit;
             timerElapsedCount = 0;
@@ -46,16 +47,16 @@ namespace TeleportVote
             TimeoutTimer.Elapsed += TimeoutTimer_Elapsed;
         }
 
-        public bool IsInteractionLegal(string id)
+        public bool IsInteractionLegal(NetworkUserId userNetworkId)
         {
             bool sendMessage = false;
             if (!sw.IsRunning)
             {
                 sw.Start();
             }
-            if (!PlayerIdList.Contains(id))
+            if (!PlayerIdList.Contains(userNetworkId))
             {
-                PlayerIdList.Add(id);
+                PlayerIdList.Add(userNetworkId);
                 sendMessage = true;
             }
             if (PlayerIdList.Count >= NumberLivingPlayers || !IsTimeRestrictionApplied)
@@ -73,7 +74,7 @@ namespace TeleportVote
                 if(sendMessage)
                 {
                     var timeRemaining = Math.Round(this.timeLimit - sw.ElapsedMilliseconds / 1000.0, 1);
-                    Message.SendToAll($"{PlayerIdList.Count}/{NumberLivingPlayers} players are ready. {timeRemaining}s until restriction is lifted.", Colours.BluePurple);
+                    Message.SendToAll($"{PlayerIdList.Count}/{NumberLivingPlayers} players are ready. {timeRemaining}s until restriction is lifted.", Colours.LightBlue);
                 }
                 return false;
             }
@@ -85,7 +86,7 @@ namespace TeleportVote
             var time = interval * (1 + timerElapsedCount);
             if(time < timeLimit)
             {
-                Message.SendToAll($"{timeLimit-time}s until restriction is lifted.", Colours.BluePurple);
+                Message.SendToAll($"{timeLimit-time}s until restriction is lifted.", Colours.LightBlue);
                 timerElapsedCount++;
             }
             else
@@ -122,17 +123,17 @@ namespace TeleportVote
             }
         }      
         
-        public void AddChatReady(string name)
-        {      
-           var userNetId = (from u in RoR2.NetworkUser.readOnlyInstancesList
-                             where u.userName == name
-                             select u.netId).FirstOrDefault();            
+        public void AddChatReady(NetworkUserId userNetId)
+        {
+            //var userNetId = (from u in RoR2.NetworkUser.readOnlyInstancesList
+            //                  where u.userName == name
+            //                  select u.netId).FirstOrDefault();            
 
-            if (userNetId != null && !PlayerIdList.Contains(userNetId.ToString()))
-            {
-                PlayerIdList.Add(userNetId.ToString());
+            if (!PlayerIdList.Contains(userNetId))
+            { 
+                PlayerIdList.Add(userNetId);
                 var timeRemaining = Math.Round(this.timeLimit - sw.ElapsedMilliseconds / 1000.0, 1);
-                Message.SendToAll($"{PlayerIdList.Count}/{NumberLivingPlayers} players are ready. {timeRemaining}s until restriction is lifted.", Colours.BluePurple);
+                Message.SendToAll($"{PlayerIdList.Count}/{NumberLivingPlayers} players are ready. {timeRemaining}s until restriction is lifted.", Colours.LightBlue);
             }  
         }
 
