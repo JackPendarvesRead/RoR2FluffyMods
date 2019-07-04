@@ -6,7 +6,7 @@ using System.Timers;
 
 namespace TeleportVote
 {
-    internal class RestrictionController
+    public class RestrictionController
     {
         //using particpatingPlayCount with multitudes so I am able to kind of test it in single player...
         //private int NumberLivingPlayers { get => RoR2.Run.instance.participatingPlayerCount; }
@@ -17,16 +17,18 @@ namespace TeleportVote
         private Timer TimeoutTimer { get; set; }
         private readonly int interval;
         private readonly int timeLimit;
-        private bool IsTimeRestrictionApplied { get; set; }
+        private bool TimeRestrictionIsApplied { get; set; }
+        public bool TeleporterIsCharging { get; set; }
 
         public RestrictionController(int interval, int timeLimit)
-        {
+        {            
             PlayerIdList = new List<NetworkUserId>();
             this.interval = interval;
             this.timeLimit = timeLimit;
             timerElapsedCount = 0;
             timeoutTimerElapsedCount = 0;
-            IsTimeRestrictionApplied = true;
+            TimeRestrictionIsApplied = true;
+            TeleporterIsCharging = false;
 
             sw = new Stopwatch();
 
@@ -47,42 +49,51 @@ namespace TeleportVote
             TimeoutTimer.Elapsed += TimeoutTimer_Elapsed;
         }
 
-        /// <summary>
-        /// Runs logic to check if all interaction is legal. Either all players need to be ready or activate it during unrestricted time window.
-        /// </summary>
-        /// <param name="userNetworkId">Unique user Id for player</param>
-        /// <returns>True if interactor is able to perform interaction</returns>
-        public bool IsInteractionLegal(NetworkUserId userNetworkId)
+        private void CheckTimerStarts()
         {
-            bool sendMessage = false;
-            if (!sw.IsRunning)
+            //Only check if timer is started if time restriction is applied
+            if (TimeRestrictionIsApplied)
             {
-                sw.Start();
-            }
-            if (!PlayerIdList.Contains(userNetworkId))
-            {
-                PlayerIdList.Add(userNetworkId);
-                sendMessage = true;
-            }
-            if (PlayerIdList.Count >= NumberLivingPlayers || !IsTimeRestrictionApplied)
-            {
-                Stop();
-                Message.SendToAll("Activated! Go go go!", Colours.Green);
-                return true;
-            }
-            else
-            {
+                if (!sw.IsRunning)
+                {
+                    sw.Start();
+                }
                 if (!Timer.Enabled)
                 {
                     Timer.Start();
                 }
-                if(sendMessage)
+            }            
+        }
+
+        /// <summary>
+        /// Runs logic to check if all interaction is legal. Either all players need to be ready or activate it during unrestricted time window.
+        /// </summary>
+        /// <param name="netUser">Unique user Id for player</param>
+        /// <returns>True if interactor is able to perform interaction</returns>
+        public bool IsInteractionLegal(NetworkUser netUser)
+        {            
+            if (!TeleporterIsCharging)
+            {
+                CheckTimerStarts();
+                bool sendMessage = false;
+                if (!PlayerIdList.Contains(netUser.Network_id))
+                {
+                    PlayerIdList.Add(netUser.Network_id);
+                    sendMessage = true;
+                }
+                if (PlayerIdList.Count >= NumberLivingPlayers || !TimeRestrictionIsApplied)
+                {
+                    Stop();
+                    Message.SendToAll("Activated! Go go go!", Colours.Green);
+                    return true;
+                }
+                if (sendMessage)
                 {
                     var timeRemaining = Math.Round(this.timeLimit - sw.ElapsedMilliseconds / 1000.0, 1);
                     Message.SendToAll($"{PlayerIdList.Count}/{NumberLivingPlayers} players are ready. {timeRemaining}s until restriction is lifted.", Colours.LightBlue);
                 }
-                return false;
             }
+            return false;
         }
 
         #region Timers
@@ -99,7 +110,7 @@ namespace TeleportVote
             {
                 Message.SendToAll("Restrictions lifted.", Colours.Green);
                 Timer.Stop();
-                IsTimeRestrictionApplied = false;
+                TimeRestrictionIsApplied = false;
                 TimeoutTimer.Start();
             }
         }
@@ -128,25 +139,7 @@ namespace TeleportVote
                 timeoutTimerElapsedCount++;
             }
         }
-        #endregion
-
-        /// <summary>
-        /// Adds user Id to ready list if it is not already in the list
-        /// </summary>
-        /// <param name="userNetId">Unique player id</param>
-        public void AddChatReady(NetworkUserId userNetId)
-        {
-            //var userNetId = (from u in RoR2.NetworkUser.readOnlyInstancesList
-            //                  where u.userName == name
-            //                  select u.netId).FirstOrDefault();            
-
-            if (!PlayerIdList.Contains(userNetId))
-            { 
-                PlayerIdList.Add(userNetId);
-                var timeRemaining = Math.Round(this.timeLimit - sw.ElapsedMilliseconds / 1000.0, 1);
-                Message.SendToAll($"{PlayerIdList.Count}/{NumberLivingPlayers} players are ready. {timeRemaining}s until restriction is lifted.", Colours.LightBlue);
-            }  
-        }
+        #endregion        
 
         /// <summary>
         /// Sets time restriction to true and clears and resets all lists, timers and stopwatches. 
@@ -168,7 +161,7 @@ namespace TeleportVote
             }
             timeoutTimerElapsedCount = 0;
 
-            IsTimeRestrictionApplied = true;
+            TimeRestrictionIsApplied = true;
         }
     }
 }

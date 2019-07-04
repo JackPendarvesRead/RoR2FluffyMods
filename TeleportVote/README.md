@@ -53,3 +53,5 @@ v1.0.1
 
 Credit to [paddywan](https://thunderstore.io/package/paddywan/) who guided me through making the IL hook for fireworks.
 Credit to [wildbook](https://github.com/wildbook/R2Mods) who helped me sort out an issue where I had not worked out how to properly get the NetworkUserId from Interactor
+
+Thanks for testing help from everyone at the Queetle Been discord and also Elysium.

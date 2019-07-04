@@ -19,16 +19,18 @@ namespace TeleportVote
 
         public void Awake()
         {
-            int notificationInterval = 15;
-            int timeUntilUnlock = 60;
-            this.Controller = new RestrictionController(notificationInterval, timeUntilUnlock);            
-
             //TODO add config???
             //TODO ping teleporter whilst restriction is active???
+
+            int notificationInterval = 15;
+            int timeUntilUnlock = 60;
+            this.Controller = new RestrictionController(notificationInterval, timeUntilUnlock);   
             
             //Main hooks - triggers restriction logics
             On.RoR2.TeleporterInteraction.OnInteractionBegin += TeleporterInteraction_OnInteractionBegin;
+            On.RoR2.TeleporterInteraction.OnStateChanged += TeleporterInteraction_OnStateChanged;
             On.RoR2.Interactor.PerformInteraction += Interactor_PerformInteraction;
+            On.RoR2.PlayerCharacterMasterController.OnBodyDeath += PlayerCharacterMasterController_OnBodyDeath;
 
             //Chat Ready Command - type "r" to set yourself as ready
             Chat.onChatChanged += Chat_onChatChanged;
@@ -41,6 +43,8 @@ namespace TeleportVote
             On.RoR2.Run.BeginStage += Run_BeginStage;
             On.RoR2.Run.EndStage += Run_EndStage;
         }
+
+        
 
         #region ControllerTidyUp   
         private void Run_EndStage(On.RoR2.Run.orig_EndStage orig, Run self)
@@ -68,7 +72,7 @@ namespace TeleportVote
         #region MainHookMethods
         private void TeleporterInteraction_OnInteractionBegin(On.RoR2.TeleporterInteraction.orig_OnInteractionBegin orig, TeleporterInteraction self, Interactor activator)
         {
-            var userNetId = GetNetworkIdFromInteractor(activator);
+            var userNetId = GetNetworkUserFromInteractor(activator);
             if (Controller.IsInteractionLegal(userNetId))
             {
                 orig(self, activator);
@@ -79,7 +83,7 @@ namespace TeleportVote
         {            
             if (IsRestictableInteractableObject(interactableObject.name))
             {
-                var userNetId = GetNetworkIdFromInteractor(self);
+                var userNetId = GetNetworkUserFromInteractor(self);
                 if (Controller.IsInteractionLegal(userNetId))
                 {
                     orig(self, interactableObject);
@@ -89,6 +93,33 @@ namespace TeleportVote
             {
                 orig(self, interactableObject);
             }
+        }
+
+        private void PlayerCharacterMasterController_OnBodyDeath(On.RoR2.PlayerCharacterMasterController.orig_OnBodyDeath orig, PlayerCharacterMasterController self)
+        {
+            Controller.Stop();
+            Message.SendToAll("Player died. Reinstating restriction.", Colours.Red);
+            orig(self);
+        }
+
+        private void TeleporterInteraction_OnStateChanged(On.RoR2.TeleporterInteraction.orig_OnStateChanged orig, TeleporterInteraction self, int oldActivationState, int newActivationState)
+        {
+            //enum ActivationState           
+            //Idle, 0            
+            //IdleToCharging, 1                
+            //Charging, 2        
+            //Charged, 3            
+            //Finished, 4
+
+            if (newActivationState == 2)
+            {
+                Controller.TeleporterIsCharging = true;
+            }
+            if (newActivationState == 3)
+            {
+                Controller.TeleporterIsCharging = false;
+            }
+            orig(self, oldActivationState, newActivationState);
         }
 
         /// <summary>
@@ -113,10 +144,10 @@ namespace TeleportVote
         /// </summary>
         /// <param name="interactor">Interactor object belonging to the player</param>
         /// <returns>Unique NetworkUserId of player</returns>
-        private NetworkUserId GetNetworkIdFromInteractor(Interactor interactor)
+        private NetworkUser GetNetworkUserFromInteractor(Interactor interactor)
         {
-            var netId = interactor.GetComponent<CharacterBody>().master.GetComponent<PlayerCharacterMasterController>().networkUser.Network_id;
-            return netId;
+            var netUser = interactor.GetComponent<CharacterBody>().master.GetComponent<PlayerCharacterMasterController>().networkUser;
+            return netUser;
         }
         #endregion
 
@@ -130,9 +161,9 @@ namespace TeleportVote
                 var match = ParseChatLog.Match(chatLog.Last());
                 var name = match.Groups["name"].Value.Trim();
                 var message = match.Groups["message"].Value.Trim();
-
+                Logger.LogDebug($"Chatlog={chatLog.Last()}, RMName={name}, RMMessage={message}");
                 if (!string.IsNullOrWhiteSpace(name))
-                {  
+                {
                     switch (message.ToLower())
                     {
                         case "ready":
@@ -142,14 +173,17 @@ namespace TeleportVote
                         case "go":
                             var netUser = (from u in RoR2.NetworkUser.readOnlyInstancesList
                                            where u.userName.Trim() == name
-                                           select u.Network_id).FirstOrDefault();
-                            Controller.AddChatReady(netUser);
+                                           select u).FirstOrDefault();
+                            if (netUser.masterObject.GetComponent<CharacterBody>().enabled)
+                            {
+                                Controller.IsInteractionLegal(netUser);
+                            }
                             break;
                     }
                 }                
             }
             catch (Exception ex)
-            {
+            {                
                 Logger.LogError(ex);
             }
         }
