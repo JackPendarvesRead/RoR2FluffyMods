@@ -6,7 +6,7 @@ using System.Timers;
 
 namespace TeleportVote
 {
-    public class RestrictionController
+    internal class RestrictionController
     {
         //using particpatingPlayCount with multitudes so I am able to kind of test it in single player...
         //private int NumberLivingPlayers { get => RoR2.Run.instance.participatingPlayerCount; }
