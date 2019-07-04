@@ -42,7 +42,7 @@ Slightly dull stuff (backend)
 ## Issues:
 
 - Exploitative use of fireworks on teleporter. This has been prevented by disabled fireworks trigger on this type of interactable.
-- There may be some issues with chat commands if you have an unsual Steam username. I have not been able test this too much yet but I expect there might be some changes to make for the more exotic steam Usernames.
+- In one test game whilst using no_enemies from RoR2 cheats we found that the teleporter got stuck at 99%. I have no idea why and have not been able to reproduce this since. I do not beleive this has anything to do with this mod but noting here incase it is observed again. If you see it please let me know, including steps to reproduce.
 
 ## Changelog:
 

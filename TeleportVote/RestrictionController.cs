@@ -83,7 +83,7 @@ namespace TeleportVote
                 }
                 if (PlayerIdList.Count >= NumberLivingPlayers || !TimeRestrictionIsApplied)
                 {
-                    Stop();
+                    Stop();                    
                     Message.SendToAll("Activated! Go go go!", Colours.Green);
                     return true;
                 }
@@ -94,6 +94,25 @@ namespace TeleportVote
                 }
             }
             return false;
+        }
+
+        public void ChatCommandReady(NetworkUser netUser)
+        {
+            if (!TeleporterIsCharging)
+            {
+                CheckTimerStarts();
+                bool sendMessage = false;
+                if (!PlayerIdList.Contains(netUser.Network_id))
+                {
+                    PlayerIdList.Add(netUser.Network_id);
+                    sendMessage = true;
+                }               
+                if (sendMessage)
+                {
+                    var timeRemaining = Math.Round(this.timeLimit - sw.ElapsedMilliseconds / 1000.0, 1);
+                    Message.SendToAll($"{PlayerIdList.Count}/{NumberLivingPlayers} players are ready. {timeRemaining}s until restriction is lifted.", Colours.LightBlue);
+                }
+            }
         }
 
         #region Timers

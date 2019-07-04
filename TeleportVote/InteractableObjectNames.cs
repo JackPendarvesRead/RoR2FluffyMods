@@ -7,7 +7,10 @@ namespace TeleportVote
         public static string Teleporter => "Teleporter1(Clone)";
         public static string PortalShop => "PortalShop";
         public static string PortalShopClone => "PortalShop(Clone)";
-        public static string GoldPortal => "GoldShores(Clone)";  // ???
+        public static string GoldPortal => "portalgoldshores";
+        public static string GoldPortalClone => "portalgoldshores(Clone)"; 
+        public static string MsPortal => "portalms"; 
+        public static string MsPortalClone => "portalms(Clone)";
 
 
         public static List<string> GetAllRestrictedInteractableNames()
@@ -18,7 +21,10 @@ namespace TeleportVote
             {
                 PortalShop,
                 PortalShopClone,
-                GoldPortal
+                GoldPortal,
+                GoldPortalClone,
+                MsPortal,
+                MsPortalClone
             };
         }
     }

@@ -42,9 +42,7 @@ namespace TeleportVote
             On.RoR2.Run.BeginGameOver += Run_BeginGameOver;
             On.RoR2.Run.BeginStage += Run_BeginStage;
             On.RoR2.Run.EndStage += Run_EndStage;
-        }
-
-        
+        }        
 
         #region ControllerTidyUp   
         private void Run_EndStage(On.RoR2.Run.orig_EndStage orig, Run self)
@@ -54,8 +52,9 @@ namespace TeleportVote
         }
 
         private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
-        {
+        {            
             Controller.Stop();
+            Controller.TeleporterIsCharging = false;
             orig(self);
         }
 
@@ -63,7 +62,7 @@ namespace TeleportVote
         {
             if (self.isGameOverServer)
             {
-                Controller.Stop();
+                Controller.Stop();                
             }
             orig(self, gameResultType);
         }
@@ -111,13 +110,18 @@ namespace TeleportVote
             //Charged, 3            
             //Finished, 4
 
-            if (newActivationState == 2)
+            switch (newActivationState)
             {
-                Controller.TeleporterIsCharging = true;
-            }
-            if (newActivationState == 3)
-            {
-                Controller.TeleporterIsCharging = false;
+                case 1:
+                case 2:
+                case 4:
+                    Controller.TeleporterIsCharging = true;
+                    break;
+
+                case 0:
+                case 3:
+                    Controller.TeleporterIsCharging = false;
+                    break;
             }
             orig(self, oldActivationState, newActivationState);
         }
@@ -131,7 +135,7 @@ namespace TeleportVote
         {
             foreach(var restrictedInteractable in InteractableObjectNames.GetAllRestrictedInteractableNames())
             {
-                if(interactableObjectName == restrictedInteractable)
+                if(interactableObjectName.Trim().ToLower() == restrictedInteractable.ToLower())
                 {
                     return true;
                 }
@@ -174,9 +178,9 @@ namespace TeleportVote
                             var netUser = (from u in RoR2.NetworkUser.readOnlyInstancesList
                                            where u.userName.Trim() == name
                                            select u).FirstOrDefault();
-                            if (netUser.masterObject.GetComponent<CharacterBody>().enabled)
+                            if (netUser.GetCurrentBody().healthComponent.alive)
                             {
-                                Controller.IsInteractionLegal(netUser);
+                                Controller.ChatCommandReady(netUser);
                             }
                             break;
                     }
