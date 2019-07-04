@@ -1,10 +1,12 @@
 ﻿using BepInEx;
 
+[BepInDependency("com.bepis.r2api")]
+[BepInPlugin("com.FluffyMods.NAMEOFTHEMOD", "NAMEOFTHEMOD", "1.0.1")]
 public class CustomFloatConfigWrapper : BaseUnityPlugin
 {
     private static BepInEx.Configuration.ConfigWrapper<float> ConfigWrapper;
-    private float minValue;
-    private float maxValue;
+    private readonly float minValue;
+    private readonly float maxValue;
 
     public float Value
     {
@@ -29,9 +31,12 @@ public class CustomFloatConfigWrapper : BaseUnityPlugin
         }
     }
 
-
     public CustomFloatConfigWrapper(string sectionName, string key, string description, float defaultValue, float minValue, float maxValue)
     {
         ConfigWrapper = Config.Wrap(sectionName, key, description, defaultValue);
+        this.minValue = minValue;
+        this.maxValue = maxValue;
     }
 }
+
+
