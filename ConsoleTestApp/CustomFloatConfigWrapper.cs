@@ -20,14 +20,17 @@ public class CustomFloatConfigWrapper : BaseUnityPlugin
             }
             return ConfigWrapper.Value;
         }
+        set
+        {
+            if (ConfigWrapper.Value != value)
+            {
+                ConfigWrapper.Value = value;
+            }
+        }
     }
 
 
-    public CustomFloatConfigWrapper()
-    {
-
-    }
-    public void Wrap(string sectionName, string key, string description, float defaultValue, float minValue, float maxValue)
+    public CustomFloatConfigWrapper(string sectionName, string key, string description, float defaultValue, float minValue, float maxValue)
     {
         ConfigWrapper = Config.Wrap(sectionName, key, description, defaultValue);
     }
