@@ -17,8 +17,6 @@ namespace HasAnyoneHitTheNewt
 
         public void Awake()
         {
-           
-
             On.RoR2.PortalStatueBehavior.GrantPortalEntry += PortalStatueBehavior_GrantPortalEntry;
         }
 
