@@ -97,6 +97,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHelper.cs" />
     <Compile Include="MeteorPunishment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
