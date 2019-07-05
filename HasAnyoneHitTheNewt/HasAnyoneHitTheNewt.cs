@@ -22,7 +22,12 @@ namespace HasAnyoneHitTheNewt
 
         private void PortalStatueBehavior_GrantPortalEntry(On.RoR2.PortalStatueBehavior.orig_GrantPortalEntry orig, PortalStatueBehavior self)
         {
-            throw new NotImplementedException();
+            var netUsers = RoR2.NetworkUser.readOnlyInstancesList;
+            foreach(var netUser in netUsers)
+            {                
+                netUser.GetCurrentBody().AddTimedBuff(BuffIndex.BeetleJuice, 60f);
+            }
+            orig(self);
         }
     }
 }
