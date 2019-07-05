@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeleportVote", "TeleportVot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleTestApp", "ConsoleTestApp\ConsoleTestApp.csproj", "{44A0D307-7AFE-40DE-B96B-C9A37760B403}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeteorPunishment", "MeteorPunishment\MeteorPunishment.csproj", "{C5E879B6-434F-435E-85A0-488DF77FC695}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HasAnyoneHitTheNewt", "HasAnyoneHitTheNewt\HasAnyoneHitTheNewt.csproj", "{E216981A-1AF0-4F4C-BE29-D54FDB484AF7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{44A0D307-7AFE-40DE-B96B-C9A37760B403}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44A0D307-7AFE-40DE-B96B-C9A37760B403}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44A0D307-7AFE-40DE-B96B-C9A37760B403}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5E879B6-434F-435E-85A0-488DF77FC695}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5E879B6-434F-435E-85A0-488DF77FC695}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5E879B6-434F-435E-85A0-488DF77FC695}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5E879B6-434F-435E-85A0-488DF77FC695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E216981A-1AF0-4F4C-BE29-D54FDB484AF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E216981A-1AF0-4F4C-BE29-D54FDB484AF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E216981A-1AF0-4F4C-BE29-D54FDB484AF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E216981A-1AF0-4F4C-BE29-D54FDB484AF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

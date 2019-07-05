@@ -217,8 +217,7 @@ namespace TeleportVote
                 if (interactableThing.name == InteractableObjectNames.Teleporter) { return true; }
                 else { return false; }
             });
-            c.Emit(OpCodes.Brtrue, myLabel);
-
+            c.Emit(OpCodes.Brtrue, myLabel);            
             //Go to return
             c.GotoNext(x => x.MatchRet());
             c.MarkLabel(myLabel);

@@ -1,0 +1,69 @@
+﻿//Logger.LogInfo("Getting next meteor!");
+            //var body = GetBodyToPunish();
+            //Logger.LogInfo($"bodyname={body.name}");
+            //if (body != null)
+            //{
+                
+            //    var myLabel = il.DefineLabel();
+            //    var c = new ILCursor(il);
+            //    Logger.LogInfo(c.ToString());
+
+            //    //Debug.Log(c.ToString());
+            //    //c.GotoNext(
+            //    //    x => x.MatchLdarg(0),
+            //    //    x => x.MatchLdfld(out FieldReference fr1),
+            //    //    x => x.MatchLdarg(0),
+            //    //    x => x.MatchLdfld(out FieldReference fr2),
+            //    //    x => x.MatchLdlen(),
+            //    //    x => x.MatchConvI4(),
+            //    //    x => x.MatchBlt(out ILLabel label1),
+            //    //    x => x.MatchLdnull(),
+            //    //    x => x.MatchRet()
+            //    //    );
+            //    //Debug.Log(c.ToString());
+            //    //c.RemoveRange(6);
+            //    //Debug.Log(c.ToString());
+            //    //c.EmitDelegate<System.Func<CharacterBody>>(() => { return body; });
+            //    //Debug.Log(c.ToString());
+            //    //c.Emit(OpCodes.Stloc_0, myLabel);
+            //    //Debug.Log(c.ToString());
+
+            //    //c.GotoNext(x => x.MatchLdarg(0));
+            //    //c.MarkLabel(myLabel);
+            //    ////c.RemoveRange(6);
+            //    ////c.Emit(OpCodes.Stloc_0, l1);
+
+            //    //c.GotoNext(
+            //    //    x => x.MatchLdarg(0),                               //this
+            //    //    x => x.MatchLdfld(out FieldReference fr1),          // class RoR2.CharacterBody[] RoR2.MeteorStormController/MeteorWave::targets
+            //    //    x => x.MatchLdarg(0),                               //this
+            //    //    x => x.MatchLdfld(out FieldReference fr2),          //int32 RoR2.MeteorStormController/MeteorWave::currentStep
+            //    //    x => x.MatchLdelemRef()                            //
+            //    //    //x => x.MatchStloc(0)                                //target
+            //    //    );
+            //    //c.EmitDelegate<Func<CharacterBody, CharacterBody>>((charBody) => { return body; });              
+
+
+            //}
+        }
+
+
+        //private CharacterBody GetBodyToPunish()
+        //{
+        //    var netUsers = RoR2.NetworkUser.readOnlyInstancesList;
+        //    Logger.LogInfo($"NetuserCount={netUsers.Count}");
+
+        //    if(netUsers.Count > 0)
+        //    {
+        //        var playerToPunish = (from n in netUsers
+        //                                  //where n.userName.Trim().ToLower() == PlayerToPunish.Value.Trim().ToLower()
+        //                              select n).FirstOrDefault();
+        //        Logger.LogInfo($"NETUSER={playerToPunish.userName}");
+        //        if (playerToPunish != null)
+        //        {
+        //            var body = playerToPunish.masterController.GetComponent<CharacterBody>();
+        //            Logger.LogInfo($"body={body.name}");
+        //        }
+        //    }           
+        //    return null;
+        //}
