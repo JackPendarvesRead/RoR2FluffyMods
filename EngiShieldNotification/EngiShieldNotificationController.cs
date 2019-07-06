@@ -16,8 +16,10 @@ namespace EngiShieldNotification
         private static string SoundString => "Play_engi_R_place";
         private readonly GameObject gameObject;
 
-        public EngiShieldNotificationController(GameObject gameObject)
+        public EngiShieldNotificationController(GameObject gameObject, EngiShieldNotification parent)
         {
+            parent.OnExitGameObjectExit += Parent_OnExitGameObjectExit;
+
             ShieldTimer = new Timer(11 * 1000)
             {
                 AutoReset = false,
@@ -33,7 +35,7 @@ namespace EngiShieldNotification
             };
             CountdownTimer.Elapsed += CountdownTimer_Elapsed;
             this.gameObject = gameObject;
-        }
+        }        
 
         public void Start()
         {
@@ -63,6 +65,13 @@ namespace EngiShieldNotification
             }
         }
 
-        
+        private void Parent_OnExitGameObjectExit(object sender, EventArgs e)
+        {
+            var args = e as EngiShieldNotification.OnExitGameObjectExitEventArgs;
+            if (args.ExitGameObject == this.gameObject)
+            {
+                Stop();
+            }
+        }
     }
 }
