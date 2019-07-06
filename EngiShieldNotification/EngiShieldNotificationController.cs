@@ -27,7 +27,7 @@ namespace EngiShieldNotification
                 AutoReset = false,
                 Enabled = false
             };
-            InitialTimer.Elapsed += ShieldTimer_Elapsed;
+            InitialTimer.Elapsed += InitialTimer_Elapsed;
 
             countdownTimerLoopValue = noticeTime;
             CountdownTimer = new Timer(1 * 1000)
@@ -51,7 +51,7 @@ namespace EngiShieldNotification
             InitialTimer.Stop();
         }
 
-        private void ShieldTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void InitialTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             CountdownTimer.Start();
         }
