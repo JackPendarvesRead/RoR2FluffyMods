@@ -2,11 +2,11 @@
 
 A mod that makes an attempt at notifying the player that the Engineer's bubble shield is about to go down. This gives you a three second warning when shield is about to go down and lets you plan accordingly.
 
-The bubble shield makes a sound when it is destroyed. With this mod you will hear this sound in the last 3 seconds of the shield's lifetime.
+By default the bubble shield makes a sound when it is destroyed. With this mod you will hear this sound in the last 3 seconds of the shield's lifetime.
 
 i.e. The shield lifetime is 15s. You will hear a sound on 12s, 13s, 14s and finally the shield goes down on 15s.
 
-Note: this is a client-side mod. Only you will hear the sounds. You will be able to hear the sounds of all Engineer bubble shields in your game but only clients with the mod installed will hear the sounds.
+Note: this is a client-side mod. Only players who have the mod installed will hear the additional sounds. You will be able to hear the sounds of all Engineer bubble shields in your game regardless of whether they have the mod installed.
 
 As usual, do please let me know if you have any feedback or suggestions for improvements, bug fixes and features.
 
