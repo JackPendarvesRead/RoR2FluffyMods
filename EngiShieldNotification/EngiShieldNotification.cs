@@ -29,16 +29,9 @@ namespace EngiShieldNotification
 
             public GameObject ExitGameObject { get; }
         }
-        public event EventHandler OnDestroyExitGameObject;
 
-        private int ShieldLifeTime
-        {
-            get
-            {
-                var lifeTime = EntityStates.Engi.EngiBubbleShield.Deployed.lifetime;
-                return (int)(Math.Round(lifeTime, 0));
-            }
-        }
+        public event EventHandler OnDestroyExitGameObject;
+       
         private static GameObject EnterGameObject { get; set; }
         private static GameObject ExitGameObject { get; set; }  
         
@@ -52,7 +45,7 @@ namespace EngiShieldNotification
 
         private void On_Deployed_OnEnter(On.EntityStates.Engi.EngiBubbleShield.Deployed.orig_OnEnter orig, EntityStates.Engi.EngiBubbleShield.Deployed self)
         {
-            Task.Run(() => new EngiShieldNotificationController(this, EnterGameObject, ShieldLifeTime, 3).Start());
+            Task.Run(() => new EngiShieldNotificationController(this, EnterGameObject, (double)EntityStates.Engi.EngiBubbleShield.Deployed.lifetime, 3).Start());
             orig(self);
         }
 

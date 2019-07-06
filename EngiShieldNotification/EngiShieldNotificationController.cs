@@ -18,7 +18,7 @@ namespace EngiShieldNotification
         private static string SoundString => "Play_engi_R_place";
         private readonly GameObject gameObject;
 
-        public EngiShieldNotificationController(EngiShieldNotification parent, GameObject gameObject, int engiShieldLifetime, int noticeTime)
+        public EngiShieldNotificationController(EngiShieldNotification parent, GameObject gameObject, double engiShieldLifetime, int noticeTime)
         {
             parent.OnDestroyExitGameObject += Parent_OnExitGameObjectExit;
 
