@@ -29,13 +29,21 @@ namespace EngiShieldNotification
 
             public GameObject ExitGameObject { get; }
         }
-        public event EventHandler OnExitGameObjectExit;
+        public event EventHandler OnExitGameObjectDestroy;
 
+        private int ShieldLifeTime
+        {
+            get
+            {
+                var lifeTime = EntityStates.Engi.EngiBubbleShield.Deployed.lifetime;
+                return (int)(Math.Round(lifeTime, 0));
+            }
+        }
         private static GameObject OnEnterGameObject { get; set; }
         private static GameObject OnExitGameObject { get; set; }  
         
         public void Awake()
-        {    
+        {
             On.EntityStates.Engi.EngiBubbleShield.Deployed.OnEnter += On_Deployed_OnEnter;
             IL.EntityStates.Engi.EngiBubbleShield.Deployed.OnEnter += IL_Deployed_OnEnter;
             On.EntityStates.Engi.EngiBubbleShield.Deployed.OnExit += On_Deployed_OnExit;
@@ -44,13 +52,13 @@ namespace EngiShieldNotification
 
         private void On_Deployed_OnEnter(On.EntityStates.Engi.EngiBubbleShield.Deployed.orig_OnEnter orig, EntityStates.Engi.EngiBubbleShield.Deployed self)
         {
-            Task.Run(() => new EngiShieldNotificationController(OnEnterGameObject, this).Start());
+            Task.Run(() => new EngiShieldNotificationController(this, OnEnterGameObject, ShieldLifeTime, 3).Start());
             orig(self);
         }
 
         private void On_Deployed_OnExit(On.EntityStates.Engi.EngiBubbleShield.Deployed.orig_OnExit orig, EntityStates.Engi.EngiBubbleShield.Deployed self)
         {
-            OnExitGameObjectExit.Invoke(this, new OnExitGameObjectExitEventArgs(OnExitGameObject));
+            OnExitGameObjectDestroy.Invoke(this, new OnExitGameObjectExitEventArgs(OnExitGameObject));
             orig(self);
         }
 
@@ -83,6 +91,5 @@ namespace EngiShieldNotification
             });
         }
         #endregion
-
     }
 }

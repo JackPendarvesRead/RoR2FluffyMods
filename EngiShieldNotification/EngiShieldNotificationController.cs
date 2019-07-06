@@ -11,23 +11,25 @@ namespace EngiShieldNotification
 {
     internal class EngiShieldNotificationController
     {
-        private Timer ShieldTimer { get; set; }
+        
+        private Timer InitialTimer { get; set; }
         private Timer CountdownTimer { get; set; }
+        
         private static string SoundString => "Play_engi_R_place";
         private readonly GameObject gameObject;
 
-        public EngiShieldNotificationController(GameObject gameObject, EngiShieldNotification parent)
+        public EngiShieldNotificationController(EngiShieldNotification parent, GameObject gameObject, int engiShieldLifetime, int noticeTime)
         {
-            parent.OnExitGameObjectExit += Parent_OnExitGameObjectExit;
+            parent.OnExitGameObjectDestroy += Parent_OnExitGameObjectExit;
 
-            ShieldTimer = new Timer(11 * 1000)
+            InitialTimer = new Timer((engiShieldLifetime - noticeTime - 1) * 1000)
             {
                 AutoReset = false,
                 Enabled = false
             };
-            ShieldTimer.Elapsed += ShieldTimer_Elapsed;
+            InitialTimer.Elapsed += ShieldTimer_Elapsed;
 
-            countdownValue = 3;
+            countdownTimerLoopValue = noticeTime;
             CountdownTimer = new Timer(1 * 1000)
             {
                 AutoReset = true,
@@ -39,14 +41,14 @@ namespace EngiShieldNotification
 
         public void Start()
         {
-            ShieldTimer.Start();
+            InitialTimer.Start();
         }
 
         private void Stop()
         {
             CountdownTimer.Stop();
-            countdownValue = 5;
-            ShieldTimer.Stop();
+            countdownTimerLoopValue = 5;
+            InitialTimer.Stop();
         }
 
         private void ShieldTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -54,12 +56,12 @@ namespace EngiShieldNotification
             CountdownTimer.Start();
         }
 
-        private int countdownValue;
+        private int countdownTimerLoopValue;
         private void CountdownTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
+        {            
             var num = Util.PlaySound(SoundString, gameObject);
-            --countdownValue;
-            if (countdownValue <= 0)
+            --countdownTimerLoopValue;
+            if (countdownTimerLoopValue <= 0)
             {
                 Stop();
             }
