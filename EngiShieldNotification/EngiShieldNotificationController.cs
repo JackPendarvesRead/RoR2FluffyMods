@@ -69,7 +69,7 @@ namespace EngiShieldNotification
 
         private void Parent_OnExitGameObjectExit(object sender, EventArgs e)
         {
-            var args = e as EngiShieldNotification.OnExitGameObjectExitEventArgs;
+            var args = e as EngiShieldNotification.OnExitGameObjectDestroyEventArgs;
             if (args.ExitGameObject == this.gameObject)
             {
                 Stop();

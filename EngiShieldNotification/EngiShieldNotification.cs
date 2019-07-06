@@ -20,9 +20,9 @@ namespace EngiShieldNotification
     [BepInPlugin("com.FluffyMods.EngiShieldNotification", "EngiShieldNotification", "1.0.1")]
     public class EngiShieldNotification : BaseUnityPlugin
     {
-        internal class OnExitGameObjectExitEventArgs : EventArgs
+        internal class OnExitGameObjectDestroyEventArgs : EventArgs
         {
-            public OnExitGameObjectExitEventArgs(GameObject exitGameObject)
+            public OnExitGameObjectDestroyEventArgs(GameObject exitGameObject)
             {
                 ExitGameObject = exitGameObject;
             }
@@ -58,7 +58,7 @@ namespace EngiShieldNotification
 
         private void On_Deployed_OnExit(On.EntityStates.Engi.EngiBubbleShield.Deployed.orig_OnExit orig, EntityStates.Engi.EngiBubbleShield.Deployed self)
         {
-            OnExitGameObjectDestroy.Invoke(this, new OnExitGameObjectExitEventArgs(OnExitGameObject));
+            OnExitGameObjectDestroy.Invoke(this, new OnExitGameObjectDestroyEventArgs(OnExitGameObject));
             orig(self);
         }
 
