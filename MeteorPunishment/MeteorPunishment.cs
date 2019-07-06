@@ -18,12 +18,6 @@ namespace MeteorPunishment
 
         public void Awake()
         {
-            On.RoR2.Console.Awake += (orig, self) =>
-            {
-                CommandHelper.RegisterCommands(self);
-                orig(self);
-            };
-
             On.RoR2.EquipmentSlot.Execute += EquipmentSlot_Execute;
             IL.RoR2.MeteorStormController.MeteorWave.GetNextMeteor += MeteorWave_GetNextMeteor;
         }

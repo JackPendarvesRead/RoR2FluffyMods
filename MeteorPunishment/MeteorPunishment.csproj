@@ -97,11 +97,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandHelper.cs" />
     <Compile Include="MeteorPunishment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="manifest.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
