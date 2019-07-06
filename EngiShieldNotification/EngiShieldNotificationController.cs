@@ -20,7 +20,7 @@ namespace EngiShieldNotification
 
         public EngiShieldNotificationController(EngiShieldNotification parent, GameObject gameObject, int engiShieldLifetime, int noticeTime)
         {
-            parent.OnExitGameObjectDestroy += Parent_OnExitGameObjectExit;
+            parent.OnDestroyExitGameObject += Parent_OnExitGameObjectExit;
 
             InitialTimer = new Timer((engiShieldLifetime - noticeTime - 1) * 1000)
             {
@@ -69,7 +69,7 @@ namespace EngiShieldNotification
 
         private void Parent_OnExitGameObjectExit(object sender, EventArgs e)
         {
-            var args = e as EngiShieldNotification.OnExitGameObjectDestroyEventArgs;
+            var args = e as EngiShieldNotification.OnDestroyExitGameObjectEventArgs;
             if (args.ExitGameObject == this.gameObject)
             {
                 Stop();

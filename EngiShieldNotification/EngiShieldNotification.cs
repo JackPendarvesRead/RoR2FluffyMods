@@ -20,16 +20,16 @@ namespace EngiShieldNotification
     [BepInPlugin("com.FluffyMods.EngiShieldNotification", "EngiShieldNotification", "1.0.1")]
     public class EngiShieldNotification : BaseUnityPlugin
     {
-        internal class OnExitGameObjectDestroyEventArgs : EventArgs
+        internal class OnDestroyExitGameObjectEventArgs : EventArgs
         {
-            public OnExitGameObjectDestroyEventArgs(GameObject exitGameObject)
+            public OnDestroyExitGameObjectEventArgs(GameObject exitGameObject)
             {
                 ExitGameObject = exitGameObject;
             }
 
             public GameObject ExitGameObject { get; }
         }
-        public event EventHandler OnExitGameObjectDestroy;
+        public event EventHandler OnDestroyExitGameObject;
 
         private int ShieldLifeTime
         {
@@ -39,8 +39,8 @@ namespace EngiShieldNotification
                 return (int)(Math.Round(lifeTime, 0));
             }
         }
-        private static GameObject OnEnterGameObject { get; set; }
-        private static GameObject OnExitGameObject { get; set; }  
+        private static GameObject EnterGameObject { get; set; }
+        private static GameObject ExitGameObject { get; set; }  
         
         public void Awake()
         {
@@ -52,13 +52,13 @@ namespace EngiShieldNotification
 
         private void On_Deployed_OnEnter(On.EntityStates.Engi.EngiBubbleShield.Deployed.orig_OnEnter orig, EntityStates.Engi.EngiBubbleShield.Deployed self)
         {
-            Task.Run(() => new EngiShieldNotificationController(this, OnEnterGameObject, ShieldLifeTime, 3).Start());
+            Task.Run(() => new EngiShieldNotificationController(this, EnterGameObject, ShieldLifeTime, 3).Start());
             orig(self);
         }
 
         private void On_Deployed_OnExit(On.EntityStates.Engi.EngiBubbleShield.Deployed.orig_OnExit orig, EntityStates.Engi.EngiBubbleShield.Deployed self)
         {
-            OnExitGameObjectDestroy.Invoke(this, new OnExitGameObjectDestroyEventArgs(OnExitGameObject));
+            OnDestroyExitGameObject.Invoke(this, new OnDestroyExitGameObjectEventArgs(ExitGameObject));
             orig(self);
         }
 
@@ -72,7 +72,7 @@ namespace EngiShieldNotification
             c.Index -= 1;
             c.EmitDelegate<Func<GameObject, GameObject>>((gameObject) =>
             {
-                OnEnterGameObject = gameObject;
+                EnterGameObject = gameObject;
                 return gameObject;
             });
         }
@@ -86,7 +86,7 @@ namespace EngiShieldNotification
             c.Index -= 1;
             c.EmitDelegate<Func<GameObject, GameObject>>((gameObject) =>
             {
-                OnExitGameObject = gameObject;
+                ExitGameObject = gameObject;
                 return gameObject;
             });
         }
