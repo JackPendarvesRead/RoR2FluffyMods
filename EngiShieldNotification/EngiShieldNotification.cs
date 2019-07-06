@@ -23,8 +23,9 @@ namespace EngiShieldNotification
 
         public Timer ShieldTimer { get; set; }
         public Timer CountdownTimer { get; set; }
-        private static string DestroySoundString;
-        private static GameObject ShieldGameObject;
+        private static string DestroySoundString => "Play_engi_R_place";
+        private static GameObject OnEnterGameObject;
+        private static GameObject OnExitGameObject;
 
         public void Awake()
         {            
@@ -43,15 +44,22 @@ namespace EngiShieldNotification
             };
             CountdownTimer.Elapsed += CountdownTimer_Elapsed;
 
-            On.EntityStates.Engi.EngiBubbleShield.Deployed.OnEnter += Deployed_OnEnter;
-            IL.EntityStates.Engi.EngiBubbleShield.Deployed.OnEnter += Deployed_OnEnter1;
-            IL.EntityStates.Engi.EngiBubbleShield.Deployed.OnExit += Deployed_OnExit;            
-        }        
+            On.EntityStates.Engi.EngiBubbleShield.Deployed.OnEnter += On_Deployed_OnEnter;
+            IL.EntityStates.Engi.EngiBubbleShield.Deployed.OnEnter += IL_Deployed_OnEnter;
+            On.EntityStates.Engi.EngiBubbleShield.Deployed.OnExit += On_Deployed_OnExit;
+            IL.EntityStates.Engi.EngiBubbleShield.Deployed.OnExit += IL_Deployed_OnExit;            
+        }
+       
 
-        private void Deployed_OnEnter(On.EntityStates.Engi.EngiBubbleShield.Deployed.orig_OnEnter orig, EntityStates.Engi.EngiBubbleShield.Deployed self)
+        private void On_Deployed_OnEnter(On.EntityStates.Engi.EngiBubbleShield.Deployed.orig_OnEnter orig, EntityStates.Engi.EngiBubbleShield.Deployed self)
         {
             ResetTimers();
             ShieldTimer.Start();
+            orig(self);
+        }
+
+        private void On_Deployed_OnExit(On.EntityStates.Engi.EngiBubbleShield.Deployed.orig_OnExit orig, EntityStates.Engi.EngiBubbleShield.Deployed self)
+        {
             orig(self);
         }
 
@@ -64,7 +72,8 @@ namespace EngiShieldNotification
         private int countdownValue;
         private void CountdownTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            var num = Util.PlaySound(DestroySoundString, ShieldGameObject);
+            var num = Util.PlaySound(DestroySoundString, OnEnterGameObject);
+            Logger.LogInfo(DestroySoundString);
             --countdownValue;
             if (countdownValue <= 0)
             {
@@ -81,7 +90,7 @@ namespace EngiShieldNotification
         #endregion
 
         #region ILCode
-        private void Deployed_OnEnter1(ILContext il)
+        private void IL_Deployed_OnEnter(ILContext il)
         {
             var c = new ILCursor(il);
             c.GotoNext(
@@ -90,23 +99,22 @@ namespace EngiShieldNotification
             c.Index -= 1;
             c.EmitDelegate<Func<GameObject, GameObject>>((gameObject) =>
             {
-                ShieldGameObject = gameObject;
+                OnEnterGameObject = gameObject;
                 return gameObject;
             });
         }
 
-        private void Deployed_OnExit(ILContext il)
+        private void IL_Deployed_OnExit(ILContext il)
         {
             var c = new ILCursor(il);
             c.GotoNext(
-                x => x.MatchLdsfld(out FieldReference soundString),
-                x => x.MatchLdarg(0)
+                x => x.MatchPop()
                 );
-            c.Index += 1;
-            c.EmitDelegate<Func<string, string>>((destroySoundString) =>
+            c.Index -= 1;
+            c.EmitDelegate<Func<GameObject, GameObject>>((gameObject) =>
             {
-                DestroySoundString = destroySoundString;
-                return destroySoundString;
+                OnExitGameObject = gameObject;
+                return gameObject;
             });
         }
         #endregion
