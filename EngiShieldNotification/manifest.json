@@ -1,0 +1,10 @@
+{
+  "name": "EngiShieldNotification",
+  "version_number": "1.0.1",
+  "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/EngiShieldNotification",
+  "description": "Adds a sound to the Engineer's bubble shield as it is about to time out.",
+  "dependencies": [
+    "tristanmcpherson-R2API-2.0.10",
+    "bbepis-BepInExPack-2.0.0"
+  ]
+}
