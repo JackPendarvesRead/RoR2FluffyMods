@@ -4,7 +4,7 @@
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/MeteorPunishment",
   "description": "There is always one. You know, \"that guy\". With this mod all meteors will be aimed directly at whoever triggered the meteor item.",
   "dependencies": [
-    "tristanmcpherson-R2API-2.0.10",
+    "tristanmcpherson-R2API-2.1.0",
     "bbepis-BepInExPack-2.0.0"
   ]
 }
