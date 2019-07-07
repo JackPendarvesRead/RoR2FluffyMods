@@ -1,6 +1,6 @@
 {
   "name": "EngiShieldNotification",
-  "version_number": "1.0.1",
+  "version_number": "1.0.2",
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/EngiShieldNotification",
   "description": "Plays a sound when the Engineer's bubble shield is about to time out. Be notified that your shield is about to go down.",
   "dependencies": [

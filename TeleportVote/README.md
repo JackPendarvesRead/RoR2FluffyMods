@@ -28,8 +28,7 @@ Note also: this does not activate the teleporter. You still have to hit the tele
 
 ## Installation:
 
-Requires Bepinex, R2API. 
-(NOTE: this requires latest version of R2API which is not released on thunderstore yet. You can get the .dll files from modding discord or wait for the official release.)
+Requires intallation of Bepinex and R2API. 
 
 Place `TeleportVote.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
@@ -45,6 +44,9 @@ Slightly exciting stuff
 - In one test game whilst using no_enemies from RoR2 cheats we found that the teleporter got stuck at 99%. I have no idea why and have not been able to reproduce this since. I do not beleive this has anything to do with this mod but noting this issue here incase it is observed again. If you see it please let me know, including steps to reproduce.
 
 ## Changelog:
+
+v1.0.2 
+- Updated R2API dependency string
 
 v1.0.1 
 - Released

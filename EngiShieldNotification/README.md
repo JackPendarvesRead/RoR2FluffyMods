@@ -15,8 +15,7 @@ Thanks
 
 ## Installation:
 
-Requires Bepinex, R2API. 
-(NOTE: this requires latest version of R2API which is not released on thunderstore yet. You can get the .dll files from modding discord or wait for the official release.)
+Requires intallation of Bepinex and R2API. 
 
 Place `EngiShieldNotification.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/FluffyMods"
 
@@ -30,6 +29,9 @@ Place `EngiShieldNotification.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/Fl
 - Bug in singleplayer where if you pause the game this will not stop the sound events from triggering. So you get the sounds going on pause. Not really an issue though, not one I care enough about to actually do anything with anyway.
 
 ## Changelog:
+
+v1.0.2 
+- Updated R2API dependency string
 
 v1.0.1 
 - Released

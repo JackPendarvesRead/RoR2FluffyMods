@@ -37,8 +37,7 @@ E.g. To set MaxDistance to 100 you can type into the console `boop_set d 100`
 
 ## Installation:
 
-Requires Bepinex, R2API. 
-(NOTE: this requires latest version of R2API which is not released on thunderstore yet. You can get the .dll files from modding discord or wait for the official release.)
+Requires intallation of Bepinex and R2API. 
 
 Place `TheMightyBoop.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
@@ -56,6 +55,9 @@ It is difficult to play when laughing too much.
 (no known issues)
 
 ## Changelog:
+
+v1.0.2 
+- Updated R2API dependency string
 
 v1.0.1 
 - Released

@@ -7,14 +7,16 @@ using UnityEngine;
 namespace BackupEngiTurrets
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.BackupEngiTurrets", "BackupEngiTurrets", "2.0.1")]
+    [BepInPlugin("com.FluffyMods."+ModName, ModName, "2.0.2")]
     public class BackupEngiTurrets : BaseUnityPlugin
     {
+        internal const string ModName = "BackupEngiTurrets";
+
         private static ConfigWrapper<bool> isTurretIncreased;
         private static ConfigWrapper<bool> isFlameBlastIncreased;
 
         public void Awake()
-        {
+        {            
             isTurretIncreased = Config.Wrap(
                                    "Engineer",
                                    "IsTurretIncreased",
