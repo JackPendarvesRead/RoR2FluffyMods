@@ -13,7 +13,7 @@ namespace MeteorPunishment
     [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.MeteorPunishment", "MeteorPunishment", "1.0.1")]
     public class MeteorPunishment : BaseUnityPlugin
-    {
+    {        
         private CharacterBody PlayerToBePunished { get; set; }
 
         public void Awake()
@@ -50,7 +50,7 @@ namespace MeteorPunishment
                 }
                 else
                 {
-                    return charBody;
+                    return null;
                 }
             });
         }        
