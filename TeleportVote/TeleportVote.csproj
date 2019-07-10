@@ -95,9 +95,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Colours.cs" />
-    <Compile Include="InteractableObjectNames.cs" />
-    <Compile Include="Message.cs" />
+    <Compile Include="StaticStuff\Colours.cs" />
+    <Compile Include="StaticStuff\InteractableObjectNames.cs" />
+    <Compile Include="StaticStuff\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RestrictionController.cs" />
     <Compile Include="TeleportVote.cs" />

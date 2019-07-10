@@ -96,8 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Colours.cs" />
-    <Compile Include="ConfigWrappers\ComparableConfigWrapper.cs" />
-    <Compile Include="ConfigWrappers\CustomFloatConfigWrapper.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="TestingStuff.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

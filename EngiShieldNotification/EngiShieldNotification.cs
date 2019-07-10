@@ -17,7 +17,7 @@ using UnityEngine;
 namespace EngiShieldNotification
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.EngiShieldNotification", "EngiShieldNotification", "1.0.1")]
+    [BepInPlugin("com.FluffyMods.EngiShieldNotification", "EngiShieldNotification", "1.0.2")]
     public class EngiShieldNotification : BaseUnityPlugin
     {
         internal class OnDestroyExitGameObjectEventArgs : EventArgs
