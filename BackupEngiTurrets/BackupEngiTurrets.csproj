@@ -98,7 +98,6 @@
     <Compile Include="BackupEngiTurrets.cs" />
     <Compile Include="CharBodyStrings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VersionInformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="manifest.json" />
