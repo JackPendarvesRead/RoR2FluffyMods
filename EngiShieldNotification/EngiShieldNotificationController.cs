@@ -11,16 +11,16 @@ namespace EngiShieldNotification
 {
     internal class EngiShieldNotificationController
     {
-        
+        private readonly GameObject gameObject;
+        private readonly int volume;
         private Timer InitialTimer { get; set; }
         private Timer CountdownTimer { get; set; }
-        
-        private static string SoundString => "Play_engi_R_place";
-        private readonly GameObject gameObject;
 
-        public EngiShieldNotificationController(EngiShieldNotification parent, GameObject gameObject, double engiShieldLifetime, int noticeTime)
+        public EngiShieldNotificationController(EngiShieldNotification parent, GameObject gameObject, double engiShieldLifetime, int noticeTime, int volume)
         {
             parent.OnDestroyExitGameObject += Parent_OnExitGameObjectExit;
+            this.gameObject = gameObject;
+            this.volume = volume;
 
             InitialTimer = new Timer((engiShieldLifetime - noticeTime - 1) * 1000)
             {
@@ -36,7 +36,6 @@ namespace EngiShieldNotification
                 Enabled = false
             };
             CountdownTimer.Elapsed += CountdownTimer_Elapsed;
-            this.gameObject = gameObject;
         }        
 
         public void Start()
@@ -57,9 +56,17 @@ namespace EngiShieldNotification
         }
 
         private int countdownTimerLoopValue;
+
         private void CountdownTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {            
-            var num = Util.PlaySound(SoundString, gameObject);
+        {
+            if (volume > 0)
+            {
+                for(var i =0; i < volume; i++)
+                {
+                    Util.PlaySound(SoundStrings.Default, gameObject);
+                }             
+            }            
+            
             --countdownTimerLoopValue;
             if (countdownTimerLoopValue <= 0)
             {

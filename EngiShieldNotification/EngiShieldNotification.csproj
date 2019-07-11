@@ -95,9 +95,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHelper.cs" />
     <Compile Include="EngiShieldNotification.cs" />
     <Compile Include="EngiShieldNotificationController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SoundStrings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="manifest.json" />
