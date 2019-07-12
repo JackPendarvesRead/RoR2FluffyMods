@@ -37,6 +37,9 @@ Place `EngiShieldNotification.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 - Bug in singleplayer where if you pause the game this will not stop the sound events from triggering. So you get the sounds going on pause. Not really an issue though, not one I care enough about to actually do anything with anyway.
 
 ## Changelog:
+v1.1.1
+- Changed maximum volume to be 4
+
 v1.1.0
 - Added volume configuration for sound
 - Added console command to set volume configuration value
