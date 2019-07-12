@@ -1,17 +1,9 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using R2API.Utils;
 using RoR2;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using System.Timers;
 using UnityEngine;
 
 namespace EngiShieldNotification
@@ -31,20 +23,22 @@ namespace EngiShieldNotification
             public GameObject ExitGameObject { get; }
         }
 
+        public event EventHandler OnDestroyExitGameObject;
+        private static GameObject EnterGameObject { get; set; }
+        private static GameObject ExitGameObject { get; set; }
+
+        private int NoticeTime => 3;
         internal static ConfigWrapper<int> VolumeConfig { get; set; }
+        private int MaxVolume => 4;
         private int Volume
         {
             get
             {
                 if (VolumeConfig.Value < 0) { return 0; }
-                if (VolumeConfig.Value > 8) { return 8; }
+                if (VolumeConfig.Value > MaxVolume) { return MaxVolume; }
                 return VolumeConfig.Value;
             }
         }
-        public event EventHandler OnDestroyExitGameObject;
-        private static GameObject EnterGameObject { get; set; }
-        private static GameObject ExitGameObject { get; set; }
-        private int NoticeTime => 3;
         #endregion
 
         public void Awake()
@@ -64,8 +58,8 @@ namespace EngiShieldNotification
             On.EntityStates.Engi.EngiBubbleShield.Deployed.OnEnter += On_Deployed_OnEnter;
             IL.EntityStates.Engi.EngiBubbleShield.Deployed.OnEnter += IL_Deployed_OnEnter;
             On.EntityStates.Engi.EngiBubbleShield.Deployed.OnExit += On_Deployed_OnExit;
-            IL.EntityStates.Engi.EngiBubbleShield.Deployed.OnExit += IL_Deployed_OnExit;            
-        }       
+            IL.EntityStates.Engi.EngiBubbleShield.Deployed.OnExit += IL_Deployed_OnExit;
+        }
 
         private void On_Deployed_OnEnter(On.EntityStates.Engi.EngiBubbleShield.Deployed.orig_OnEnter orig, EntityStates.Engi.EngiBubbleShield.Deployed self)
         {
@@ -118,7 +112,7 @@ namespace EngiShieldNotification
         {
             try
             {
-                if(args.Count != 1)
+                if (args.Count != 1)
                 {
                     throw new Exception("Command must take exactly one arguement.");
                 }
@@ -127,7 +121,7 @@ namespace EngiShieldNotification
             }
             catch (Exception e)
             {
-                Debug.LogError(e);                
+                Debug.LogError(e);
             }
         }
     }
