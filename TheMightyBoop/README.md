@@ -9,8 +9,6 @@ See the [introductory video](https://streamable.com/s9bxp) showing how silly thi
 
 Let me know how it goes, if you want anything changed or improved or whatever else.
 
-Credit goes to [paddywan](https://thunderstore.io/package/paddywan/) for supplying me with the idea to do this in the first place!
-
 Note: this is a server-side mod. This means that if you are host then the same sonic boom configuration will be applied to all players in your lobby. There is no need for anyone else to install the mod.
 
 Enjoy,
@@ -63,7 +61,5 @@ v1.0.1
 - Released
 
 ## Credits:
-
-The initial idea belonged to [paddywan](https://thunderstore.io/package/paddywan/) who also helped in the development and testing.
 
 Also shout out to all at the Queetle Been who helped out.

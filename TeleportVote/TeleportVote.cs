@@ -221,8 +221,6 @@ namespace TeleportVote
             //Go to return
             c.GotoNext(x => x.MatchRet());
             c.MarkLabel(myLabel);
-
-            //Credit to paddywan for guidance in formulating this IL hook
         }
         #endregion       
     }
