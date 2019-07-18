@@ -14,7 +14,7 @@ namespace TheMightyBoop
 {
 
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "1.0.2")]
+    [BepInPlugin("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "1.0.3")]
     public class RexMegaSonicBoop : BaseUnityPlugin
     {
         private static ConfigWrapper<float> AirKnockBackDistance;

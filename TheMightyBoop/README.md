@@ -1,4 +1,5 @@
 # TheMightyBoop
+
 Have you ever wanted to launch your enemies into space? Well now you can! Look no further than TheMightyBoop.
 
 Did you think that Rex's sonic boom was too weedy for your liking? Never again! Set the configuration to your taste and boop your enemies away at supersonic speeds.
@@ -25,10 +26,10 @@ Thanks
 `boop_set`: sets the configuration value of a govem configuration. Takes two arguements. args\[0\]=WrapperName, args\[1\]=Value(float)
 
 Wrapper arguements: 
-"airknockbackdistance / air / a"
-"groundknockbackdistance / ground / g"
-"liftvelocity / lift / l"
-"maxdistance / distance / d"
+`airknockbackdistance` / `air` / `a`
+`groundknockbackdistance` / `ground` / `g`
+`liftvelocity` / `lift` / `l`
+`maxdistance` / `distance` / `d`
 
 E.g. To set MaxDistance to 100 you can type into the console `boop_set d 100`
 
@@ -39,12 +40,10 @@ Requires intallation of Bepinex and R2API.
 
 Place `TheMightyBoop.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
-## Issues:
-
-It is difficult to play when laughing too much. 
-(no known issues)
-
 ## Changelog:
+
+v1.0.3 
+- Updated some information about mod
 
 v1.0.2 
 - Updated R2API dependency string
