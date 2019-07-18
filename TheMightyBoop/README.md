@@ -39,14 +39,6 @@ Requires intallation of Bepinex and R2API.
 
 Place `TheMightyBoop.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
-## Upcoming Features:
-
-Short term: 
-- Nothing planned. Perhaps some extra console commands or configurable default values.
-
-Long term:
-- Thinking about making some sort of Rex minigame. Wait and see.
-
 ## Issues:
 
 It is difficult to play when laughing too much. 
