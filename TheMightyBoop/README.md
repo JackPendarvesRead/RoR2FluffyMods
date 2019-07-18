@@ -59,7 +59,3 @@ v1.0.2
 
 v1.0.1 
 - Released
-
-## Credits:
-
-Also shout out to all at the Queetle Been who helped out.
