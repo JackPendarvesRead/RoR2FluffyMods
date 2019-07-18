@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace TeleportVote
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.TeleportVote", "TeleportVote", "1.0.2")]
+    [BepInPlugin("com.FluffyMods.TeleportVote", "TeleportVote", "1.0.3")]
     public class TeleportVote : BaseUnityPlugin
     {
         private RestrictionController Controller { get; set; }

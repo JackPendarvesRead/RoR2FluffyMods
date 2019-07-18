@@ -1,6 +1,6 @@
 {
   "name": "TeleportVote",
-  "version_number": "1.0.2",
+  "version_number": "1.0.3",
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/TeleportVote",
   "description": "Adds logic so that all players can vote when ready to start teleport and/or go to next stage. Logic activates on interaction or with chat commands.",
   "dependencies": [

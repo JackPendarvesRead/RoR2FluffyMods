@@ -8,29 +8,23 @@ namespace TeleportVote
 {
     internal class RestrictionController
     {
-        //using particpatingPlayCount with multitudes so I am able to kind of test it in single player...
-        //private int NumberLivingPlayers { get => RoR2.Run.instance.participatingPlayerCount; }
         private int NumberLivingPlayers { get => RoR2.Run.instance.livingPlayerCount; }
-        private List<NetworkUserId> PlayerIdList { get; set; }
-        private Stopwatch sw { get; set; }
-        private Timer Timer { get; set; }
-        private Timer TimeoutTimer { get; set; }
+        private List<NetworkUserId> PlayerIdList = new List<NetworkUserId>();
+        private Stopwatch sw = new Stopwatch();
+        private Timer Timer;
+        private Timer TimeoutTimer;
         private readonly int interval;
         private readonly int timeLimit;
-        private bool TimeRestrictionIsApplied { get; set; }
+        private bool TimeRestrictionIsApplied;
+
         public bool TeleporterIsCharging { get; set; }
 
         public RestrictionController(int interval, int timeLimit)
         {            
-            PlayerIdList = new List<NetworkUserId>();
             this.interval = interval;
             this.timeLimit = timeLimit;
-            timerElapsedCount = 0;
-            timeoutTimerElapsedCount = 0;
             TimeRestrictionIsApplied = true;
             TeleporterIsCharging = false;
-
-            sw = new Stopwatch();
 
             Timer = new Timer
             {
@@ -38,6 +32,7 @@ namespace TeleportVote
                 Interval = interval * 1000,
                 Enabled = false
             };
+            timerElapsedCount = 0;
             Timer.Elapsed += Timer_Elapsed;
 
             TimeoutTimer = new Timer
@@ -46,12 +41,12 @@ namespace TeleportVote
                 Interval = 1 * 1000,
                 Enabled = false
             };
+            timeoutTimerElapsedCount = 0;
             TimeoutTimer.Elapsed += TimeoutTimer_Elapsed;
         }
 
         private void CheckTimerStarts()
         {
-            //Only check if timer is started if time restriction is applied
             if (TimeRestrictionIsApplied)
             {
                 if (!sw.IsRunning)
@@ -101,17 +96,12 @@ namespace TeleportVote
             if (!TeleporterIsCharging)
             {
                 CheckTimerStarts();
-                bool sendMessage = false;
                 if (!PlayerIdList.Contains(netUser.Network_id))
                 {
                     PlayerIdList.Add(netUser.Network_id);
-                    sendMessage = true;
-                }               
-                if (sendMessage)
-                {
                     var timeRemaining = Math.Round(this.timeLimit - sw.ElapsedMilliseconds / 1000.0, 1);
                     Message.SendToAll($"{PlayerIdList.Count}/{NumberLivingPlayers} players are ready. {timeRemaining}s until restriction is lifted.", Colours.LightBlue);
-                }
+                }   
             }
         }
 
