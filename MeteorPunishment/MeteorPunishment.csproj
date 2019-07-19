@@ -114,4 +114,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets'))" />
   </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties manifest_1json__JSONSchema="" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
