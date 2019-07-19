@@ -1,8 +1,8 @@
 {
   "name": "MeteorPunishment",
-  "version_number": "1.0.1",
+  "version_number": "1.0.0",
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/MeteorPunishment",
-  "description": "There is always one. You know, \"that guy\". With this mod all meteors will be aimed directly at whoever triggered the meteor item.",
+  "description": "There is always one. You know, \"that guy\". With this mod all meteors will be aimed directly at whoever triggered the meteor item. Or if you prefer you can be \"that guy\" yourself with custom aiming.",
   "dependencies": [
     "tristanmcpherson-R2API-2.1.0",
     "bbepis-BepInExPack-2.0.0"

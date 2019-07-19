@@ -13,18 +13,25 @@ namespace MeteorPunishment
     [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.MeteorPunishment", "MeteorPunishment", "1.0.1")]
     public class MeteorPunishment : BaseUnityPlugin
-    {        
-        private CharacterBody PlayerToBePunished { get; set; }
+    {
+        private static CharacterBody PlayerToBePunished;
+        private static bool CustomTarget = false;
 
         public void Awake()
         {
+            On.RoR2.Console.Awake += (orig, self) =>
+            {
+                CommandHelper.RegisterCommands(self);
+                orig(self);
+            };
+
             On.RoR2.EquipmentSlot.Execute += EquipmentSlot_Execute;
             IL.RoR2.MeteorStormController.MeteorWave.GetNextMeteor += MeteorWave_GetNextMeteor;
         }
 
         private void EquipmentSlot_Execute(On.RoR2.EquipmentSlot.orig_Execute orig, EquipmentSlot self)
         {
-            if(self.equipmentIndex == EquipmentIndex.Meteor)
+            if(self.equipmentIndex == EquipmentIndex.Meteor && !CustomTarget)
             {
                 PlayerToBePunished = self.characterBody;
             }
@@ -42,7 +49,7 @@ namespace MeteorPunishment
                 x => x.MatchLdelemRef()
                 );
             c.GotoNext(x => x.MatchStloc(0));
-            c.EmitDelegate<Func<CharacterBody, CharacterBody>>((charBody) =>
+            c.EmitDelegate<Func<CharacterBody, CharacterBody>>((cb) =>
             {
                 if(PlayerToBePunished != null && PlayerToBePunished.healthComponent.alive)
                 {
@@ -52,7 +59,48 @@ namespace MeteorPunishment
                 {
                     return null;
                 }
-            });
-        }        
+            });        
+        }
+
+
+        /// <summary>
+        /// Lists the targets for meteor punishment
+        /// </summary>
+        [ConCommand(commandName = "meteor_list", flags = ConVarFlags.ExecuteOnServer, helpText = "Lists the targets for meteor punishment")]
+        private static void MeteorList(ConCommandArgs args)
+        {
+            var users = NetworkUser.readOnlyInstancesList;
+            for(var i=0; i< users.Count; i++)
+            {
+                Debug.Log($"[{i}]: {users[i].userName}, Network_id={users[i].Network_id}");
+            }
+        }
+
+        /// <summary>
+        /// Set the target of meteor to a custom target
+        /// </summary>
+        [ConCommand(commandName = "meteor_set", flags = ConVarFlags.ExecuteOnServer, helpText = "args[0] = index of player to be punished")]
+        private static void MeteorSet(ConCommandArgs args)
+        {
+            try
+            {
+                var playerIndex = Int32.Parse(args[0]);
+                PlayerToBePunished = NetworkUser.readOnlyInstancesList[playerIndex].GetCurrentBody();
+                CustomTarget = true;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+        }
+
+        /// <summary>
+        /// Sets meteor to hit whoever triggered it.
+        /// </summary>
+        [ConCommand(commandName = "meteor_default", flags = ConVarFlags.ExecuteOnServer, helpText = "Sets meteor to hit whoever triggered it.")]
+        private static void MeteorDefault(ConCommandArgs args)
+        {
+            CustomTarget = false;
+        }
     }
 }
