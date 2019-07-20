@@ -24,7 +24,7 @@ namespace ItsAMotherfuckingFungus
         }
 
         private void Stage_Start(On.RoR2.Stage.orig_Start orig, Stage self)
-        {
+        {            
             orig(self);            
             if (NetworkUser.readOnlyInstancesList
                 .Where(u => u.GetCurrentBody().name == CharBodyStrings.Engineer)
