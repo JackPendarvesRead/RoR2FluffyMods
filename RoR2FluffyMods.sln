@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HasAnyoneHitTheNewt", "HasA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EngiShieldNotification", "EngiShieldNotification\EngiShieldNotification.csproj", "{D0C22787-041E-46F3-A257-DB9776581C64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItsAMotherfuckingFungus", "ItsAMotherfuckingFungus\ItsAMotherfuckingFungus.csproj", "{95E57BAC-729D-4BB9-8E3A-648A614729A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{D0C22787-041E-46F3-A257-DB9776581C64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0C22787-041E-46F3-A257-DB9776581C64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0C22787-041E-46F3-A257-DB9776581C64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95E57BAC-729D-4BB9-8E3A-648A614729A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E57BAC-729D-4BB9-8E3A-648A614729A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95E57BAC-729D-4BB9-8E3A-648A614729A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95E57BAC-729D-4BB9-8E3A-648A614729A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
