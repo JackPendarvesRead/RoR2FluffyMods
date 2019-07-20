@@ -9,7 +9,7 @@ Thanks
 
 Requires intallation of Bepinex and R2API. 
 
-Place `ItsAMotherfuckingFungus.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
+Place `MotherfuckingFungus.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
 ## Changelog:
 
