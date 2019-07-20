@@ -8,11 +8,11 @@ using Mono.Cecil.Cil;
 using System;
 using System.Linq;
 
-namespace ItsAMotherfuckingFungus
+namespace MotherfuckingFungus
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.ItsAMotherfuckingFungus", "ItsAMotherfuckingFungus", "1.0.0")]
-    public class ItsAMotherfuckingFungus : BaseUnityPlugin
+    [BepInPlugin("com.FluffyMods.MotherfuckingFungus", "MotherfuckingFungus", "1.0.0")]
+    public class MotherfuckingFungus : BaseUnityPlugin
     {
         private static bool IsEngineerInGame = false;
 

@@ -1,6 +1,6 @@
 ﻿using RoR2;
 
-namespace ItsAMotherfuckingFungus
+namespace MotherfuckingFungus
 {
     public static class Message
     {

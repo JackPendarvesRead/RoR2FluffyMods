@@ -1,4 +1,4 @@
-# ItsAMotherfuckingFungus
+# MotherfuckingFungus
 
 Get a message saying that a fungus has dropped every time a fungus drops. Give the motherfucking fungus to the motherfucking engineer motherfuckers.
 

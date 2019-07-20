@@ -1,4 +1,4 @@
-﻿namespace ItsAMotherfuckingFungus
+﻿namespace MotherfuckingFungus
 {
     public static class Colours
     {
