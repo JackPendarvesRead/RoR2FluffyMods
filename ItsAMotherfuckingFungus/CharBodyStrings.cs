@@ -2,6 +2,6 @@
 {
     public static class CharBodyStrings
     {
-        public static string Engineer { get => "EngiBody(Clone)"; }
+        public static string Engineer { get => "EngiBody"; }
     }
 }

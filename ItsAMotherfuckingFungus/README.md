@@ -13,5 +13,8 @@ Place `MotherfuckingFungus.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
 ## Changelog:
 
+v1.0.1
+- Fixed bug where it is not always working properly in multiplayer
+
 v1.0.0
 - Released

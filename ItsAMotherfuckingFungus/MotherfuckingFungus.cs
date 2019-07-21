@@ -25,10 +25,10 @@ namespace MotherfuckingFungus
 
         private void Stage_Start(On.RoR2.Stage.orig_Start orig, Stage self)
         {            
-            orig(self);            
-            if (NetworkUser.readOnlyInstancesList
-                .Where(u => u.GetCurrentBody().name == CharBodyStrings.Engineer)
-                .FirstOrDefault() 
+            orig(self); 
+            if(NetworkUser.readOnlyInstancesList
+                .Where(u=> u.GetCurrentBody().name.StartsWith(CharBodyStrings.Engineer))
+                .FirstOrDefault()
                 != null)
             {
                 IsEngineerInGame = true;
@@ -49,7 +49,7 @@ namespace MotherfuckingFungus
         {
             if (IsEngineerInGame && pickupIndex.itemIndex == ItemIndex.Mushroom)
             {
-                if (master.GetBody().name == CharBodyStrings.Engineer)
+                if (master.GetBody().name.StartsWith(CharBodyStrings.Engineer))
                 {
                     Message.SendToAll("Mmmm! That is a tasty fungus!", Colours.Green);
                 }
