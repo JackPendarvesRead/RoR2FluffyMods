@@ -6,42 +6,25 @@ using UnityEngine;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
+using System.Linq;
 
 namespace RoR2FluffyMods
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.TestingStuff", "TestingStuff", "0.0.0")]
+    [BepInPlugin("com.FluffyMods.RoR2FluffyMods", "RoR2FluffyMods", "0.0.0")]
     public class TestingStuff : BaseUnityPlugin
     {
         public void Awake()
         {
-            IL.RoR2.ChestBehavior.ItemDrop += ChestBehavior_ItemDrop;            
+            On.RoR2.Run.Start += Run_Start;
         }
 
-        private void ChestBehavior_ItemDrop(ILContext il)
+        private void Run_Start(On.RoR2.Run.orig_Start orig, Run self)
         {
-            var c = new ILCursor(il);
-            //c.GotoNext(
-            //    x => x.MatchLdarg(0),
-            //    x => x.MatchLdsfld(out FieldReference fr1),
-            //    x => x.MatchLdsfld(out FieldReference fr2),
-            //    x => x.MatchCall(out MethodReference mr1));
-            //c.Index += 2;
+            orig(self);
+            var s = "prefabs/projectiles/engibubbleshield";
+            var x = Resources.Load(s);
 
-            c.GotoNext(x => x.MatchRet());
-            Debug.Log(c);
-            c.Index += 3;
-            Debug.Log(c);
-
-            c.EmitDelegate<Func<PickupIndex, PickupIndex>>((dropPickup) =>
-            {
-                if (dropPickup.itemIndex != ItemIndex.None)
-                {
-                    var item = dropPickup.itemIndex.ToString();
-                    Message.SendToAll($"Motherfucker it's a {item}!!", Colours.LightBlue);
-                }
-                return dropPickup;
-            });
         }
     }
 }
