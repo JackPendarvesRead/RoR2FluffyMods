@@ -16,7 +16,6 @@ namespace InfusionStackFix
     {
         private static ConfigWrapper<int> InfusionMaximum;
 
-
         public void Awake()
         {
             InfusionMaximum = Config.Wrap(

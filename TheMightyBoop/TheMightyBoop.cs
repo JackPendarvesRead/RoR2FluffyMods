@@ -17,6 +17,8 @@ namespace TheMightyBoop
     [BepInPlugin("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "1.0.3")]
     public class RexMegaSonicBoop : BaseUnityPlugin
     {
+        private static ConfigWrapper<bool> MightyClayBruiser;
+
         private static ConfigWrapper<float> AirKnockBackDistance;
         private static ConfigWrapper<float> GroundKnockBackDistance;
         private static ConfigWrapper<float> LiftVelocity;
@@ -33,6 +35,13 @@ namespace TheMightyBoop
             #region ConfigWrapperSetup
 
             string sectionName = "FireSonicBoom";
+
+            MightyClayBruiser = Config.Wrap(                               
+                "Clay Bruiser",                               
+                "ClayBruiserIsMighty",                                
+                $"Set whether the boop of the Clay Templar is mighty like Rex",
+                false                                
+                );
 
             AirKnockBackDistance = Config.Wrap(
                                    sectionName,
@@ -62,21 +71,44 @@ namespace TheMightyBoop
                                    BoopConstants.LiftVelocityRecommended
                                    );
 
-            
+
 
             #endregion
 
+            On.EntityStates.ClayBruiser.Weapon.FireSonicBoom.OnEnter += FireSonicBoom_OnEnter1;
             On.EntityStates.Treebot.Weapon.FireSonicBoom.OnEnter += FireSonicBoom_OnEnter;
         }
+
+        private void FireSonicBoom_OnEnter1(On.EntityStates.ClayBruiser.Weapon.FireSonicBoom.orig_OnEnter orig, EntityStates.ClayBruiser.Weapon.FireSonicBoom self)
+        {
+            if (MightyClayBruiser.Value == false)
+            {
+                isTemplarBoop = true;
+            }
+            orig(self);
+        }
+        private bool isTemplarBoop = false;
 
         private void FireSonicBoom_OnEnter(On.EntityStates.Treebot.Weapon.FireSonicBoom.orig_OnEnter orig, EntityStates.Treebot.Weapon.FireSonicBoom self)
         {
             try
             {
-                self.airKnockbackDistance = (AirKnockBackDistance.Value < BoopConstants.MaximumBoop) ? AirKnockBackDistance.Value : BoopConstants.MaximumBoop;
-                self.groundKnockbackDistance = (GroundKnockBackDistance.Value < BoopConstants.MaximumBoop) ? GroundKnockBackDistance.Value : BoopConstants.MaximumBoop;
-                self.liftVelocity = (LiftVelocity.Value < BoopConstants.MaximumBoop) ? LiftVelocity.Value : BoopConstants.MaximumBoop;
-                self.maxDistance = (MaxDistance.Value < BoopConstants.MaximumBoop) ? MaxDistance.Value : BoopConstants.MaximumBoop;
+                if (isTemplarBoop)
+                {
+                    isTemplarBoop = false;
+                    self.airKnockbackDistance = BoopConstants.AirKnockBackDistanceDefault;
+                    self.groundKnockbackDistance = BoopConstants.GroundKnockBackDistanceDefault;
+                    self.liftVelocity = BoopConstants.LiftVelocityDefault;
+                    self.maxDistance = BoopConstants.MaxDistanceDefault;
+                }    
+                else 
+                {
+                    self.airKnockbackDistance = (AirKnockBackDistance.Value < BoopConstants.MaximumBoop) ? AirKnockBackDistance.Value : BoopConstants.MaximumBoop;
+                    self.groundKnockbackDistance = (GroundKnockBackDistance.Value < BoopConstants.MaximumBoop) ? GroundKnockBackDistance.Value : BoopConstants.MaximumBoop;
+                    self.liftVelocity = (LiftVelocity.Value < BoopConstants.MaximumBoop) ? LiftVelocity.Value : BoopConstants.MaximumBoop;
+                    self.maxDistance = (MaxDistance.Value < BoopConstants.MaximumBoop) ? MaxDistance.Value : BoopConstants.MaximumBoop;
+                }
+                
             }
             catch (Exception ex)
             {
@@ -192,6 +224,39 @@ namespace TheMightyBoop
                 $"GroundKnockback={GroundKnockBackDistance.Value}, " +
                 $"LiftVelocity={LiftVelocity.Value}, " +
                 $"MaxDistance={MaxDistance.Value}");
+        }
+
+        /// <summary>
+        /// Set clay templar to be mighty or not
+        /// </summary>
+        [ConCommand(commandName = "boop_mightyclay", flags = ConVarFlags.ExecuteOnServer, helpText = "Set clay templar to be mighty (true/false)")]
+        private static void BoopSetMightyClay(ConCommandArgs args)
+        {
+            try
+            {
+                bool mighty;
+                switch (args[0])
+                {
+                    case "true":
+                    case "t":
+                        mighty = true;
+                        break;
+
+                    case "false":
+                    case "f":
+                        mighty = false;
+                        break;
+
+                    default:
+                        throw new Exception("Arguement string is incorrect format. Type true or false.");
+                }
+                MightyClayBruiser.Value = mighty;
+                Debug.Log($"Setting clay bruiser is mighty to {mighty}");
+            }
+            catch(Exception ex)
+            {
+                Debug.LogError(ex);
+            }
         }
         #endregion
     }
