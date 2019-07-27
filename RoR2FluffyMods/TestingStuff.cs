@@ -16,15 +16,29 @@ namespace RoR2FluffyMods
     {
         public void Awake()
         {
-            On.RoR2.Run.Start += Run_Start;
+            On.RoR2.CharacterMaster.SpawnBody += CharacterMaster_SpawnBody;            
         }
 
-        private void Run_Start(On.RoR2.Run.orig_Start orig, Run self)
+        private CharacterBody CharacterMaster_SpawnBody(On.RoR2.CharacterMaster.orig_SpawnBody orig, 
+            CharacterMaster self, 
+            GameObject bodyPrefab, 
+            Vector3 position, 
+            Quaternion rotation)
         {
-            orig(self);
-            var s = "prefabs/projectiles/engibubbleshield";
-            var x = Resources.Load(s);
-
+            var player = PlayerCharacterMasterController.instances
+                .Where(p => p.master == self)
+                .FirstOrDefault();
+            //var birdShark = BodyCatalog.FindBodyPrefab("birdsharkbody");
+            var birdShark = Resources.Load<GameObject>("birdsharkbody");
+            Debug.Log($"name = {birdShark.name}");
+            if (player != null && birdShark != null)
+            {
+                return orig(self, birdShark, position, rotation);
+            }
+            else
+            {
+                return orig(self, bodyPrefab, position, rotation);
+            }
         }
     }
 }
