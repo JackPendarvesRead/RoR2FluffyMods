@@ -16,28 +16,14 @@ namespace RoR2FluffyMods
     {
         public void Awake()
         {
-            On.RoR2.CharacterMaster.SpawnBody += CharacterMaster_SpawnBody;            
+            On.RoR2.Run.BeginStage += Run_BeginStage;            
         }
-
-        private CharacterBody CharacterMaster_SpawnBody(On.RoR2.CharacterMaster.orig_SpawnBody orig, 
-            CharacterMaster self, 
-            GameObject bodyPrefab, 
-            Vector3 position, 
-            Quaternion rotation)
+        private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
         {
-            var player = PlayerCharacterMasterController.instances
-                .Where(p => p.master == self)
-                .FirstOrDefault();
-            //var birdShark = BodyCatalog.FindBodyPrefab("birdsharkbody");
-            var birdShark = Resources.Load<GameObject>("birdsharkbody");
-            Debug.Log($"name = {birdShark.name}");
-            if (player != null && birdShark != null)
+            orig(self);
+            foreach(var cm in RoR2.PlayerCharacterMasterController.instances)
             {
-                return orig(self, birdShark, position, rotation);
-            }
-            else
-            {
-                return orig(self, bodyPrefab, position, rotation);
+                cm.master.GiveMoney(100);
             }
         }
     }

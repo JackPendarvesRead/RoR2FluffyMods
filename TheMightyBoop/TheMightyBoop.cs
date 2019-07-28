@@ -14,7 +14,7 @@ namespace TheMightyBoop
 {
 
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "1.0.3")]
+    [BepInPlugin("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "1.1.0")]
     public class RexMegaSonicBoop : BaseUnityPlugin
     {
         private static ConfigWrapper<bool> MightyClayBruiser;
@@ -239,11 +239,13 @@ namespace TheMightyBoop
                 {
                     case "true":
                     case "t":
+                    case "1":
                         mighty = true;
                         break;
 
                     case "false":
                     case "f":
+                    case "0":
                         mighty = false;
                         break;
 

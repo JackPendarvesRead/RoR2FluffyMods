@@ -4,6 +4,8 @@ Changes the way infusion stacks are given. This mod will give you +1 max hp per 
 
 Infusion will by default give you a maximum of +100 hp per stack. If you want to you can configure this value in the configuration file associated with this mod (set it to an int from 1-500)
 
+E.g. if you are holding 5 infusions in your inventory you will receive +5hp per kill until a maximum of +500 health (by default).
+
 This mod also fixed a minor "exploit" where you can get more health stacks from an infusion than you are permitted by killing a group of enemies when you are near maximum stacks.
 
 Enjoy,
