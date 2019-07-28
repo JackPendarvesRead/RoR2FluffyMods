@@ -21,7 +21,7 @@ namespace PocketMoney
             StartMoney = Config.Wrap<uint>(
                 "Money",
                 "RoundExtraMoney",
-                "The amount of money the player should receive at beginning of each stage.",
+                "The amount of money the player should receive at beginning of each stage (uint)",
                 50);
 
             On.RoR2.Console.Awake += (orig, self) =>
@@ -43,10 +43,10 @@ namespace PocketMoney
         }
 
         /// <summary>
-        /// Sets the extra money given at start of each round. args\[0\]=Value(int)
+        /// Sets the extra money given at start of each stage. args\[0\]=Value(int)
         /// </summary>
         /// <param name="args">args\[0\]=Value(int)</param>
-        [ConCommand(commandName = "pocket_set", flags = ConVarFlags.ExecuteOnServer, helpText = "Sets the extra money given at start of each round. args\[0\]=Value(int).")]
+        [ConCommand(commandName = "pocket_set", flags = ConVarFlags.ExecuteOnServer, helpText = "Sets the extra money given at start of each stage. args[0]=Value(int).")]
         private static void PocketSet(ConCommandArgs args)
         {
             try
