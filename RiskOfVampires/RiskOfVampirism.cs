@@ -23,7 +23,7 @@ namespace RiskOfVampirism
 
         public void Awake()
         {
-            #region ConfigWrappers
+            #region ConfigWrappers            
             DecayTime = Config.Wrap<int>(
                 "DecayTime",
                 "DecayTime",
@@ -47,55 +47,17 @@ namespace RiskOfVampirism
                 orig(self);
             };
 
+            On.RoR2.Run.Start += Run_Start;
             On.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
-            IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;            
-
-            IL.RoR2.ItemCatalog.DefineItems += ItemCatalog_DefineItems;
-            IL.RoR2.Run.BuildDropTable += Run_BuildDropTable;
         }
 
-        private void Run_BuildDropTable(ILContext il)
+        private void Run_Start(On.RoR2.Run.orig_Start orig, Run self)
         {
-            var c = new ILCursor(il);
-            c.GotoNext(
-                x => x.MatchLdloc(0),
-                x => x.MatchLdcI4(85),
-                x => x.MatchBlt(out ILLabel l1)
-                );
-            c.Index += 2;
-            c.EmitDelegate<Func<int, int>>((oldCount) =>
-             {
-                 return 86;
-             });
-        }
-
-        private static int newItemIndex = 85;
-        private void ItemCatalog_DefineItems(ILContext il)
-        {
-            var c = new ILCursor(il);
-            c.Index += 1;
-            c.EmitDelegate<Func<int, int>>((index) =>
+            orig(self);
+            foreach(var pm in RoR2.PlayerCharacterMasterController.instances)
             {
-                return 86;
-                //newItemIndex = index;
-                //return index + 1;
-            });
-            c.Index += 2;
-            c.Emit(OpCodes.Ldc_I4, 85);
-            c.EmitDelegate<Func<ItemDef>>(() =>
-            {
-                var itemDef = new ItemDef
-                {
-                    tier = ItemTier.Lunar
-                    //nameToken = "Vampirism",
-                    //pickupToken = "VampirismPickupToken",
-                    //descriptionToken = "This is vampirism blabla",
-                    //pickupModelPath = "Prefabs/PickupModels/PickupBandolier",
-                    //pickupIconPath = "Textures/ItemIcons/texBandolierIcon"
-                };
-                return itemDef;
-            });
-            c.Emit(OpCodes.Call, typeof(ItemCatalog).GetMethodCached("RegisterItem"));
+                pm.master.inventory.GiveItem(ItemIndex.HealthDecay, DecayTime.Value);
+            }
         }
 
         private void GlobalEventManager_OnHitEnemy(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
@@ -103,7 +65,7 @@ namespace RiskOfVampirism
             if (!damageInfo.procChainMask.HasProc(ProcType.HealOnHit))
             {
                 var attacker = damageInfo.attacker.GetComponent<CharacterBody>();  HealthComponent hc = attacker.GetComponent<HealthComponent>();
-                if (attacker.inventory.GetItemCount((ItemIndex)newItemIndex) > 0)
+                if (attacker.inventory.GetItemCount(ItemIndex.HealthDecay) > 0)
                 {
                     if ((bool)((UnityEngine.Object)hc))
                     {
@@ -135,7 +97,7 @@ namespace RiskOfVampirism
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Func<float, CharacterBody, float>>((a, body) =>
             {
-                if(body.inventory.GetItemCount((ItemIndex)newItemIndex) > 0)
+                if(body.inventory.GetItemCount(ItemIndex.HealthDecay) > 0)
                 {
                     var levelBoost = 2 * (body.level - 1);
                     var maxHealth = body.maxHealth;
@@ -149,28 +111,6 @@ namespace RiskOfVampirism
         }
 
         #region ConsoleCommands
-        /// <summary>
-        /// Sets the number of leech items given at start of run.
-        /// </summary>
-        /// <param name="args">args\[0\]=Value(int)</param>
-        [ConCommand(commandName = "vampire_list", flags = ConVarFlags.ExecuteOnServer, helpText = "Sets the number of leech items given at start of run. args[0]=Value(int).")]
-        private static void ItemLister(ConCommandArgs args)
-        {
-            try
-            {
-                var items = ItemCatalog.lunarItemList;
-                foreach(var item in items)
-                {
-                    Debug.Log(item.ToString());
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.LogError(ex);
-            }
-        }
-
-
         /// <summary>
         /// Sets the number of leech items given at start of run.
         /// </summary>

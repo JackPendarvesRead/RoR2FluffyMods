@@ -7,6 +7,8 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Linq;
+using R2API;
+using R2API.Utils;
 
 namespace RoR2FluffyMods
 {
@@ -15,7 +17,12 @@ namespace RoR2FluffyMods
     public class TestingStuff : BaseUnityPlugin
     {
         public void Awake()
-        {                     
+        {
+            On.RoR2.Console.Awake += (orig, self) =>
+            {
+                CommandHelper.RegisterCommands(self);
+                orig(self);
+            };
         }
     }
 }

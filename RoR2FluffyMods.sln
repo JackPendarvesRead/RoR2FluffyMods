@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocketMoney", "PocketMoney\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiskOfVampirism", "RiskOfVampires\RiskOfVampirism.csproj", "{3CBC7D64-F558-420E-AD70-881103BD8DAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UsefulConsoleCommands", "UsefulConsoleCommands\UsefulConsoleCommands.csproj", "{DADAB382-8D10-449A-A9FF-154AA1377A84}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{3CBC7D64-F558-420E-AD70-881103BD8DAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CBC7D64-F558-420E-AD70-881103BD8DAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CBC7D64-F558-420E-AD70-881103BD8DAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DADAB382-8D10-449A-A9FF-154AA1377A84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DADAB382-8D10-449A-A9FF-154AA1377A84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DADAB382-8D10-449A-A9FF-154AA1377A84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DADAB382-8D10-449A-A9FF-154AA1377A84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
