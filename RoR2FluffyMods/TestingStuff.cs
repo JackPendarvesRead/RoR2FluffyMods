@@ -1,14 +1,5 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
-using MonoMod.Cil;
 using RoR2;
-using UnityEngine;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using System;
-using System.Linq;
-using R2API;
-using R2API.Utils;
 
 namespace RoR2FluffyMods
 {
@@ -23,6 +14,13 @@ namespace RoR2FluffyMods
                 CommandHelper.RegisterCommands(self);
                 orig(self);
             };
+
+            On.RoR2.Run.Start += Run_Start;
+        }
+
+        private void Run_Start(On.RoR2.Run.orig_Start orig, Run self)
+        {
+            orig(self);
         }
     }
 }
