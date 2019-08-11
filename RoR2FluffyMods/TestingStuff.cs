@@ -1,5 +1,8 @@
 ﻿using BepInEx;
+using MonoMod.Cil;
 using RoR2;
+using System;
+using UnityEngine;
 
 namespace RoR2FluffyMods
 {
@@ -15,12 +18,13 @@ namespace RoR2FluffyMods
                 orig(self);
             };
 
-            On.RoR2.Run.Start += Run_Start;
-        }
+            
 
-        private void Run_Start(On.RoR2.Run.orig_Start orig, Run self)
-        {
-            orig(self);
+            foreach(var plugin in BepInEx.Bootstrap.Chainloader.Plugins)
+            {
+                var x = MetadataHelper.GetMetadata(plugin);
+                Debug.Log($"PLUGINNAME: {x.Name}");
+            }
         }
     }
 }

@@ -17,18 +17,31 @@ namespace RiskOfVampirism
     [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.RiskOfVampirism", "RiskOfVampirism", "1.0.0")]
     public class RiskOfVampirism : BaseUnityPlugin
-    {
-        private List<NetworkUserId> Vampires = new List<NetworkUserId>();        
+    {      
         private static ConfigWrapper<float> Leech { get; set; }
+        private static ConfigWrapper<int> DecayTime { get; set; }
+        private static ConfigWrapper<bool> Vampire { get; set; }
 
         public void Awake()
         {
             #region ConfigWrappers
             Leech = Config.Wrap<float>(
+                "Stats",
                 "Leech",
-                "LeechCount",
-                "The amount of leech given to vampires",
-                0.2f);
+                "<float> The amount leech given to vampires (% damage)",
+                0.15f);
+
+            DecayTime = Config.Wrap<int>(
+                "Stats",
+                "DecayTime",
+                "<int> The time(s) for player to degenerate health to zero",
+                60);
+
+            Vampire = Config.Wrap<bool>(
+               "Vampire",
+               "IsAVampire",
+               "<bool> Set to true to be a vampire",
+               true);
             #endregion
 
             On.RoR2.Console.Awake += (orig, self) =>
@@ -37,29 +50,16 @@ namespace RiskOfVampirism
                 orig(self);
             };
 
-            On.RoR2.Run.Start += Run_Start;
             On.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
             On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
         }
 
-        private void Run_Start(On.RoR2.Run.orig_Start orig, Run self)
-        {
-            Vampires.Clear();
-            orig(self);
-            foreach (var nu in NetworkUser.readOnlyInstancesList)
-            {
-                if (!Vampires.Contains(nu.Network_id))
-                {
-                    Vampires.Add(nu.Network_id);
-                }
-            }
-        }
-
         private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
         {
             var attacker = damageReport.damageInfo.attacker.GetComponent<CharacterBody>();
-            if(CheckIsPlayer(attacker))
+            var player = GetPlayer(attacker);
+            if (player != null && Vampire.Value == true)
             {
                 attacker.baseMaxHealth += 1;
             }
@@ -72,10 +72,9 @@ namespace RiskOfVampirism
             {
                 var attacker = damageInfo.attacker.GetComponent<CharacterBody>();
                 var healthComponent = attacker.GetComponent<HealthComponent>();
-                var player = NetworkUser.readOnlyInstancesList.Where(nu => nu.GetCurrentBody() == attacker).FirstOrDefault();
-
+                var player = GetPlayer(attacker);
                 if (player != null 
-                    && Vampires.Contains(player.Network_id) 
+                    && Vampire.Value == true
                     && (bool)((UnityEngine.Object)healthComponent))
                 {                    
                     var procChainMask = damageInfo.procChainMask;
@@ -107,33 +106,17 @@ namespace RiskOfVampirism
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Func<float, CharacterBody, float>>((a, body) =>
             {
-                var player = NetworkUser.readOnlyInstancesList.Where(nu => nu.GetCurrentBody() == body).FirstOrDefault();
-                if(CheckIsPlayer(body) 
-                && Vampires.Contains(player.Network_id))
+                var player = GetPlayer(body);
+                if(player != null && Vampire.Value == true)
                 {
-                    //var levelBoost = 2 * (body.level - 1);
-                    return -1f * body.maxHealth / 60 * (body.inventory.GetItemCount(ItemIndex.LunarDagger) + 1);
+                    return -1f * body.maxHealth / DecayTime.Value * (body.inventory.GetItemCount(ItemIndex.LunarDagger) + 1);
                 }
                 else
                 {
                     return a;
                 }                
             });
-        }      
-        
-        private bool CheckIsPlayer(CharacterBody body)
-        {
-            var player = NetworkUser.readOnlyInstancesList.Where(nu => nu.GetCurrentBody() == body).FirstOrDefault();
-            if(player != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-        }
+        }    
 
         private float GetSurvivorCoefficient(CharacterBody body)
         {
@@ -149,6 +132,11 @@ namespace RiskOfVampirism
                 return 3f;
             }
             return 1f;
+        }
+
+        private NetworkUser GetPlayer(CharacterBody body)
+        {
+            return NetworkUser.readOnlyInstancesList.Where(nu => nu.GetCurrentBody() == body).FirstOrDefault();
         }
 
         #region ConsoleCommands
@@ -170,23 +158,58 @@ namespace RiskOfVampirism
             }
         }
 
-        ///// <summary>
-        ///// Sets the decay time given at start of run.
-        ///// </summary>
-        ///// <param name="args">args\[0\]=Value(int)</param>
-        //[ConCommand(commandName = "vampire_decay", flags = ConVarFlags.ExecuteOnServer, helpText = "Sets decay time given at start of run. args[0]=Value(int).")]
-        //private static void VampireDecaySet(ConCommandArgs args)
-        //{
-        //    try
-        //    {
-        //        DecayTime.Value = Int32.Parse(args[0]);
-        //        Debug.Log($"decay time set to {args[0]}");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.LogError(ex);
-        //    }
-        //}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args">args[0]=bool</param>
+        [ConCommand(commandName = "vampire_role", flags = ConVarFlags.ExecuteOnServer, helpText = "Sets the number of leech items given at start of run. args[0]=Value(int).")]
+        private static void VampireRole(ConCommandArgs args)
+        {
+            try
+            {
+                switch (args[0])
+                {
+                    case "1":
+                    case "true":
+                    case "t":
+                        Vampire.Value = true;
+                        Debug.Log("You are now a vampire");
+                        break;
+
+                    case "0":
+                    case "false":
+                    case "f":
+                        Vampire.Value = false;
+                        Debug.Log("You are no longer a vampire");
+                        break;
+
+                    default:
+                        throw new Exception("Command arguements not valid.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex);
+            }
+        }
+
+        /// <summary>
+        /// Sets the decay time given at start of run.
+        /// </summary>
+        /// <param name="args">args\[0\]=Value(int)</param>
+        [ConCommand(commandName = "vampire_decay", flags = ConVarFlags.ExecuteOnServer, helpText = "Sets decay time given at start of run. args[0]=Value(int).")]
+        private static void VampireDecaySet(ConCommandArgs args)
+        {
+            try
+            {
+                DecayTime.Value = Int32.Parse(args[0]);
+                Debug.Log($"decay time set to {args[0]}");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError(ex);
+            }
+        }
         #endregion
     }
 }
