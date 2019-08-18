@@ -1,8 +1,9 @@
 ﻿using BepInEx;
 using MonoMod.Cil;
 using RoR2;
-using System;
+using R2API.Utils;
 using UnityEngine;
+using System;
 
 namespace RoR2FluffyMods
 {
@@ -12,19 +13,30 @@ namespace RoR2FluffyMods
     {
         public void Awake()
         {
-            On.RoR2.Console.Awake += (orig, self) =>
-            {
-                CommandHelper.RegisterCommands(self);
-                orig(self);
-            };
+            //On.RoR2.DamageNumberManager.SpawnDamageNumber += DamageNumberManager_SpawnDamageNumber;
+            IL.RoR2.DamageNumberManager.SpawnDamageNumber += DamageNumberManager_SpawnDamageNumber1;
+        }
 
-            
+        private void DamageNumberManager_SpawnDamageNumber1(ILContext il)
+        {
+            var c = new ILCursor(il);
+            c.EmitDelegate<Action>(() => { Debug.Log("ACTION ACTION!"); });
+        }
 
-            foreach(var plugin in BepInEx.Bootstrap.Chainloader.Plugins)
-            {
-                var x = MetadataHelper.GetMetadata(plugin);
-                Debug.Log($"PLUGINNAME: {x.Name}");
-            }
+        private void DamageNumberManager_SpawnDamageNumber(On.RoR2.DamageNumberManager.orig_SpawnDamageNumber orig, 
+            DamageNumberManager self, 
+            float amount,
+            Vector3 position, 
+            bool crit,
+            TeamIndex teamIndex, 
+            DamageColorIndex damageColorIndex)
+        {
+            orig(self,            
+                amount,           
+                position, 
+                crit, 
+                teamIndex, 
+                damageColorIndex);
         }
     }
 }
