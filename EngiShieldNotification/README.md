@@ -15,7 +15,7 @@ As usual, do please let me know if you have any feedback or suggestions for impr
 Enjoy,
 Thanks
 
-## Console Commands:
+## Console Commands
 
 `engishield_setvolume`: set the volume of the bubble shield notification sound args\[0\]=int value for volume (0=mute, 1=default, 2=2xdefault,etc... up to 4x)
 
@@ -26,19 +26,18 @@ Requires intallation of Bepinex and R2API.
 
 Place `EngiShieldNotification.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
-## Upcoming Features:
-
-- Configurable sounds. Instead of using default engi bubble end sound choose from a list of in-game sounds you'd lie to hear instead.
-- Long term: would like to add a custom sound instead of using just in-game sound
-- Also longer term as I don't know how to do graphics very well: if possible would like to change the colour of the shield.
-
-## Issues:
+## Issues
 
 - Bug in singleplayer where if you pause the game this will not stop the sound events from triggering. So you get the sounds going on pause. Not really an issue though, not one I care enough about to actually do anything with anyway.
+
+## Contact
+
+If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
 
 ## Changelog:
 v1.1.1
 - Changed maximum volume to be 4
+- Updated R2API dependecy string
 
 v1.1.0
 - Added volume configuration for sound
