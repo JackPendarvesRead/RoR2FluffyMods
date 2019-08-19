@@ -15,7 +15,7 @@ using System.Collections.Generic;
 namespace RiskOfVampirism
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.RiskOfVampirism", "RiskOfVampirism", "1.0.0")]
+    [BepInPlugin("com.FluffyMods.RiskOfVampirism", "RiskOfVampirism", "1.0.1")]
     public class RiskOfVampirism : BaseUnityPlugin
     {      
         private static ConfigWrapper<float> Leech { get; set; }
@@ -59,7 +59,7 @@ namespace RiskOfVampirism
         {
             var attacker = damageReport.damageInfo.attacker.GetComponent<CharacterBody>();
             var player = GetPlayer(attacker);
-            if (player != null && Vampire.Value == true)
+            if (player != null && Vampire.Value)
             {
                 attacker.baseMaxHealth += 1;
             }
@@ -74,7 +74,7 @@ namespace RiskOfVampirism
                 var healthComponent = attacker.GetComponent<HealthComponent>();
                 var player = GetPlayer(attacker);
                 if (player != null 
-                    && Vampire.Value == true
+                    && Vampire.Value
                     && (bool)((UnityEngine.Object)healthComponent))
                 {                    
                     var procChainMask = damageInfo.procChainMask;
@@ -107,7 +107,7 @@ namespace RiskOfVampirism
             c.EmitDelegate<Func<float, CharacterBody, float>>((a, body) =>
             {
                 var player = GetPlayer(body);
-                if(player != null && Vampire.Value == true)
+                if(player != null && Vampire.Value)
                 {
                     return -1f * body.maxHealth / DecayTime.Value * (body.inventory.GetItemCount(ItemIndex.LunarDagger) + 1);
                 }
