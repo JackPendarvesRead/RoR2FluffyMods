@@ -25,14 +25,20 @@ Thanks
 
 E.g. type `meteor_get` into the console to see that your friend you want to target is at index `2`. Then type `meteor_set 2` to set them as the target.
 
-
 ## Installation:
 
 Requires intallation of Bepinex and R2API. 
 
 Place `MeteorPunishment.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
+## Contact
+
+If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
+
 ## Changelog:
+
+v1.0.1
+- Updated R2API dependency string
 
 v1.0.0
 - Released

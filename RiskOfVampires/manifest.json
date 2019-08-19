@@ -1,10 +1,10 @@
 {
   "name": "RiskOfVampirism",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/blob/master/RiskOfVampires/",
   "description": "Power at any price. Become a Vampire with strong lifesteal but you must feed to stay alive...",
   "dependencies": [
-    "tristanmcpherson-R2API-2.1.0",
+    "tristanmcpherson-R2API-2.1.15",
     "bbepis-BepInExPack-2.0.0"
   ]
 }

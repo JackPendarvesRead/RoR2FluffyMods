@@ -7,7 +7,7 @@ using UnityEngine;
 namespace BackupEngiTurrets
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.BackupEngiTurrets", "BackupEngiTurrets", "2.0.2")]
+    [BepInPlugin("com.FluffyMods.BackupEngiTurrets", "BackupEngiTurrets", "2.0.3")]
     public class BackupEngiTurrets : BaseUnityPlugin
     {
         private static ConfigWrapper<bool> isTurretIncreased;

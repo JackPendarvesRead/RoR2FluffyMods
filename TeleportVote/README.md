@@ -17,7 +17,7 @@ I have had a lot of very mixed feedback ranging from "this is awesome!" to "this
 Enjoy,
 Thanks
 
-## Chat Commands:
+## Chat Commands
 
 You can use chat to register yourself as ready. This will not activate the teleporter but by flagging yourself as ready it will allow other players near the teleporter to start.
 
@@ -29,20 +29,25 @@ Accepted chat strings are: "r", "rdy", "ready", "y", "go"
 Note: these are not case sensitive
 Note also: this does not activate the teleporter. You still have to hit the teleporter after everyone is ready!
 
-## Installation:
+## Installation
 
 Requires intallation of Bepinex and R2API. 
 
 Place `TeleportVote.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
-## Issues:
+## Issues
 
 - Exploitative use of fireworks on teleporter. This has been prevented by disabled fireworks trigger on this type of interactable.
 - In one test game whilst using no_enemies from RoR2 cheats we found that the teleporter got stuck at 99%. I have no idea why and have not been able to reproduce this since. I do not beleive this has anything to do with this mod but noting this issue here incase it is observed again. If you see it please let me know, including steps to reproduce.
 
-## Changelog:
+## Contact
+
+If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
+
+## Changelog
 
 v1.0.3
+- Updated R2API dependency string
 - Updated mod information
 - Tidy up code
 

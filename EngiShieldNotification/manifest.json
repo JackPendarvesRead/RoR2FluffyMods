@@ -4,7 +4,7 @@
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/EngiShieldNotification",
   "description": "Plays a sound when the Engineer's bubble shield is about to time out. Now with volume control!",
   "dependencies": [
-    "tristanmcpherson-R2API-2.1.0",
+    "tristanmcpherson-R2API-2.1.15",
     "bbepis-BepInExPack-2.0.0"
   ]
 }

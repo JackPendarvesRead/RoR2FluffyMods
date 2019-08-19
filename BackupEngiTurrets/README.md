@@ -25,9 +25,17 @@ Place BackupEngiTurrets.dll inside of "/Risk of Rain 2/Bepinex/Plugins/"
 ##Issues:
 v1 releases will no longer work since Scorched Acres update
 
+## Contact
+
+If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
+
 ##Changelog:
+
+v2.0.3
+- Updated R2API dependency string
+
 v2.0.2
-- Updated R2API dependency string.
+- Updated R2API dependency string
 
 v2.0.1
 - Updated to work with Scorched Acres update

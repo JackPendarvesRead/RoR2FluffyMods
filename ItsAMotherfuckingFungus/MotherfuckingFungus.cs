@@ -11,7 +11,7 @@ using System.Linq;
 namespace MotherfuckingFungus
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.MotherfuckingFungus", "MotherfuckingFungus", "1.0.1")]
+    [BepInPlugin("com.FluffyMods.MotherfuckingFungus", "MotherfuckingFungus", "1.0.2")]
     public class MotherfuckingFungus : BaseUnityPlugin
     {
         private static bool IsEngineerInGame = false;

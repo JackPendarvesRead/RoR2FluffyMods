@@ -1,10 +1,10 @@
 {
   "name": "TheMightyBoop",
-  "version_number": "1.1.0",
+  "version_number": "1.1.1",
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/TheMightyBoop",
   "description": "Send everything flying with Rex's Mighty Boop. Fully configurable with console commands.",
   "dependencies": [
-    "tristanmcpherson-R2API-2.1.0",
+    "tristanmcpherson-R2API-2.1.15",
     "bbepis-BepInExPack-2.0.0"
   ]
 }

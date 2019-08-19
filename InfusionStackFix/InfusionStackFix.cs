@@ -11,7 +11,7 @@ using UnityEngine;
 namespace InfusionStackFix
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.0.0")]
+    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.0.1")]
     public class InfusionStackFix : BaseUnityPlugin
     {
         private static ConfigWrapper<int> InfusionMaximum;

@@ -11,7 +11,7 @@ using System.Linq;
 namespace PocketMoney
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.PocketMoney", "PocketMoney", "1.1.1")]
+    [BepInPlugin("com.FluffyMods.PocketMoney", "PocketMoney", "1.1.2")]
     public class TestingStuff : BaseUnityPlugin
     {
         private static ConfigWrapper<uint> StageExtraMoney { get; set; }
