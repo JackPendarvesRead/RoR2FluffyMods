@@ -11,7 +11,7 @@ using System.Timers;
 namespace RiskOfCatFacts
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.RiskOfCatFacts", "RiskOfCatFacts", "0.0.1")]
+    [BepInPlugin("com.FluffyMods.RiskOfCatFacts", "RiskOfCatFacts", "1.0.0")]
     public class RiskOfCatFacts : BaseUnityPlugin
     {
         private System.Random random;
@@ -35,7 +35,7 @@ namespace RiskOfCatFacts
         {
             if (damageReport.victim.body.isChampion)
             {
-                Message.Send("Meow meow MeWOW! You killed a champion! =D");
+                Message.Send("Meow meow Me-WOW! You killed a champion! =^o_o^=");
                 SendCatFact();
             }            
             orig(self, damageReport);
