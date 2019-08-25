@@ -13,30 +13,26 @@ namespace RoR2FluffyMods
     {
         public void Awake()
         {
-            //On.RoR2.DamageNumberManager.SpawnDamageNumber += DamageNumberManager_SpawnDamageNumber;
-            IL.RoR2.DamageNumberManager.SpawnDamageNumber += DamageNumberManager_SpawnDamageNumber1;
+            On.RoR2.GlobalEventManager.OnPlayerCharacterDeath += GlobalEventManager_OnPlayerCharacterDeath;
         }
 
-        private void DamageNumberManager_SpawnDamageNumber1(ILContext il)
+        private void GlobalEventManager_OnPlayerCharacterDeath(On.RoR2.GlobalEventManager.orig_OnPlayerCharacterDeath orig, 
+            GlobalEventManager self, 
+            DamageInfo damageInfo, 
+            GameObject victim, 
+            NetworkUser victimNetworkUser)
         {
-            var c = new ILCursor(il);
-            c.EmitDelegate<Action>(() => { Debug.Log("ACTION ACTION!"); });
-        }
+            var attacker = damageInfo.attacker;
+            var body = victimNetworkUser.GetCurrentBody();
 
-        private void DamageNumberManager_SpawnDamageNumber(On.RoR2.DamageNumberManager.orig_SpawnDamageNumber orig, 
-            DamageNumberManager self, 
-            float amount,
-            Vector3 position, 
-            bool crit,
-            TeamIndex teamIndex, 
-            DamageColorIndex damageColorIndex)
-        {
-            orig(self,            
-                amount,           
-                position, 
-                crit, 
-                teamIndex, 
-                damageColorIndex);
+
+            var mask = new ProcChainMask();
+            body.healthComponent.Heal(500, mask);
+
+            Debug.Log($"Attacker name: {attacker.name}");
+
+
+            orig(self, damageInfo, victim, victimNetworkUser);
         }
     }
 }
