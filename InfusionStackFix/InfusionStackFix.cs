@@ -15,18 +15,51 @@ namespace InfusionStackFix
     public class InfusionStackFix : BaseUnityPlugin
     {
         private static ConfigWrapper<int> InfusionMaximum;
+        //private static ConfigWrapper<bool> TurretsGiveEngineerStacks;
+        private static ConfigWrapper<bool> TurretsReceiveBonusFromEngineer;
 
         public void Awake()
         {
+            #region ConfigWrappers
             InfusionMaximum = Config.Wrap(
-                                   "InfusionMaximum",
-                                   "InfusionMaximum",
-                                   $"Set the maximum health that each infusion gives you (int from 1-500).",
-                                   100
-                                   );
+                "Infusion",
+                "MaxHpPerStack",
+                "Set the maximum health that each infusion gives you (int from 1-500)",
+                100
+                );
+
+            //TurretsGiveEngineerStacks = Config.Wrap<bool>(
+            //    "Engineer",
+            //    "Turret",
+            //    "Set to true to give Engineer infusion stacks from turret",
+            //    false
+            //    );
+
+            TurretsReceiveBonusFromEngineer = Config.Wrap<bool>(
+                "Engineer",
+                "TurretReceivesBonusFromEngineer",
+                "If set to true then turrets will receive the current infusion bonus of the Engi on creation",
+                true
+                );
+            #endregion
 
             IL.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             On.RoR2.Inventory.AddInfusionBonus += Inventory_AddInfusionBonus;
+            On.RoR2.CharacterMaster.AddDeployable += CharacterMaster_AddDeployable;
+        }
+
+        private void CharacterMaster_AddDeployable(On.RoR2.CharacterMaster.orig_AddDeployable orig, 
+            CharacterMaster self, 
+            Deployable deployable, 
+            DeployableSlot slot)
+        {            
+            orig(self, deployable, slot);
+            if (TurretsReceiveBonusFromEngineer.Value && slot == DeployableSlot.EngiTurret)
+            {
+                var ownerMasterBonus = deployable.ownerMaster.inventory.infusionBonus;
+                var turretMaster = deployable.GetComponent<CharacterMaster>();
+                turretMaster.inventory.AddInfusionBonus(ownerMasterBonus);
+            }
         }
 
         private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint value)
@@ -42,6 +75,15 @@ namespace InfusionStackFix
                 value = diff > 0 ? diff : 0;
             }
             orig(self, value);
+        }
+
+        private void TurretInfuseOwner(Inventory inv, uint value)
+        {
+            try
+            {
+                var master = inv.GetComponent<CharacterMaster>().GetComponent<Deployable>();
+                
+            }
         }
         
         private void GlobalEventManager_OnCharacterDeath(MonoMod.Cil.ILContext il)
