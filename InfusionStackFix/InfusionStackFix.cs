@@ -11,7 +11,7 @@ using UnityEngine;
 namespace InfusionStackFix
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.0.1")]
+    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.1.0")]
     public class InfusionStackFix : BaseUnityPlugin
     {
         private static ConfigWrapper<int> InfusionMaximum;
@@ -75,15 +75,6 @@ namespace InfusionStackFix
                 value = diff > 0 ? diff : 0;
             }
             orig(self, value);
-        }
-
-        private void TurretInfuseOwner(Inventory inv, uint value)
-        {
-            try
-            {
-                var master = inv.GetComponent<CharacterMaster>().GetComponent<Deployable>();
-                
-            }
         }
         
         private void GlobalEventManager_OnCharacterDeath(MonoMod.Cil.ILContext il)

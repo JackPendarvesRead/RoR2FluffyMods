@@ -11,6 +11,8 @@ This mod also fixed a minor "exploit" where you can get more health stacks from 
 Enjoy,
 Thanks
 
+Update 1.1.0: Added new improved functionality for Engineers who use infusion. Engineer turrets now have a configuration which when enabled will allow turrets to start with the current bonus that the Engineer who deployed it currently has. E.g. if an Engineer currently has +100 life from an infusion whenver the engineer deploys a turret that turret will also start with +100 life.
+
 ## Installation:
 
 Requires intallation of Bepinex and R2API. 
@@ -19,12 +21,13 @@ Place `InfusionStackFix.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
 ## Contact
 
-If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
+If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time for fun so may not always be able to immediately fix issues that you come up with but I will endeavour to do my best. 
 
 ## Changelog:
 
-v1.0.1
+v1.1.0
 - Updated R2API dependency string
+- Added TurretsReceiveBonusFromEngineer
 
 v1.0.0
 - Released
