@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CatFacts.cs" />
+    <Compile Include="DogFacts.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="RiskOfCatFacts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

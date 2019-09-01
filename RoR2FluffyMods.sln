@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiskOfVampirism", "RiskOfVa
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fin", "Fin", "{7CF587FF-DFEC-4C4B-9988-87FF40089DB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapedGlassBlackScreenFix", "ShapedGlassBlackScreenFix\ShapedGlassBlackScreenFix.csproj", "{5C956115-B50D-4B52-94D9-910DE49CFDB5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiskOfCatFacts", "RiskOfCatFacts\RiskOfCatFacts.csproj", "{AD83A989-CB7E-4332-A12A-1B4B12703A5B}"
 EndProject
 Global
@@ -87,10 +85,6 @@ Global
 		{3CBC7D64-F558-420E-AD70-881103BD8DAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CBC7D64-F558-420E-AD70-881103BD8DAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CBC7D64-F558-420E-AD70-881103BD8DAC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5C956115-B50D-4B52-94D9-910DE49CFDB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C956115-B50D-4B52-94D9-910DE49CFDB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C956115-B50D-4B52-94D9-910DE49CFDB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C956115-B50D-4B52-94D9-910DE49CFDB5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AD83A989-CB7E-4332-A12A-1B4B12703A5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AD83A989-CB7E-4332-A12A-1B4B12703A5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD83A989-CB7E-4332-A12A-1B4B12703A5B}.Release|Any CPU.ActiveCfg = Release|Any CPU

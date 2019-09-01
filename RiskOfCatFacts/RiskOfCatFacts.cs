@@ -11,17 +11,19 @@ using System.Timers;
 namespace RiskOfCatFacts
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.RiskOfCatFacts", "RiskOfCatFacts", "1.0.0")]
+    [BepInPlugin("com.FluffyMods.RiskOfCatFacts", "RiskOfCatFacts", "1.1.0")]
     public class RiskOfCatFacts : BaseUnityPlugin
     {
         private System.Random random;
         private Timer timer;
+        private double interval = 60 * 1000;
+
 
         public void Awake()
         {
             random = new System.Random();
 
-            timer = new Timer(60 * 1000);
+            timer = new Timer();
             timer.Elapsed += Timer_Elapsed;
 
             Chat.onChatChanged += Chat_onChatChanged;
@@ -43,7 +45,7 @@ namespace RiskOfCatFacts
 
         private void Run_BeginGameOver(On.RoR2.Run.orig_BeginGameOver orig, Run self, GameResultType gameResultType)
         {
-            timer.Stop();
+            Stop();
             orig(self, gameResultType);
         }
 
@@ -56,6 +58,7 @@ namespace RiskOfCatFacts
         {
             if (!timer.Enabled)
             {
+                timer.Interval = interval;
                 timer.Start();
             }
             orig(self);
@@ -65,6 +68,28 @@ namespace RiskOfCatFacts
         {
             var index = random.Next(0, CatFacts.Facts.Count);
             Message.SendColoured(CatFacts.Facts[index], Colours.LightBlue, "CatFact");
+        }
+
+        private void Unsubscribe()
+        {
+            Message.SendColoured("Command not recognised.", Colours.Red);
+            Message.SendColoured("Thank you for subscribing to CatFacts! We will double your fact rate free of charge!", Colours.Green);
+            HalfTimerTime();
+        }
+
+        private void HalfTimerTime()
+        {
+            if(interval > 1)
+            {
+                interval /= 2;
+                timer.Interval = interval;
+            }            
+        }
+
+        private void Stop()
+        {
+            interval = 60 * 1000;
+            timer.Stop();
         }
 
         private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
@@ -85,6 +110,28 @@ namespace RiskOfCatFacts
                         case "fact":
                             SendCatFact();
                             break;
+                            
+                        case "dog":
+                            Unsubscribe();
+                            break;
+
+                        case "unsubscribe":
+                            Message.SendColoured("Command not recognised.", Colours.Red);
+                            Message.SendColoured("You are already subscribed to CatFacts. Did you mean to increase frequency of facts? Increasing frequency. Type \"NO\" if you wish to undo this action.", Colours.Orange);
+                            break;
+
+                        case "yes":
+                        case "no":
+                        case "stop":
+                        case "undo":
+                        case "please":
+                            Unsubscribe();
+                            break;
+
+                        case "seriously please actually stop this is enough":
+                            Stop();
+                            break;
+                            
                     }
                 }
             }
