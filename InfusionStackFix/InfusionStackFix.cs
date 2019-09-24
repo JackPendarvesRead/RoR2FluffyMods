@@ -81,8 +81,10 @@ namespace InfusionStackFix
         private void GlobalEventManager_OnCharacterDeath(MonoMod.Cil.ILContext il)
         {            
             var c = new ILCursor(il);
+
+            //Method to replace maximum bonus per infusion
             c.GotoNext(
-                x => x.MatchLdloc(33),
+                x => x.MatchLdloc(33), //Infusion Count
                 x => x.MatchLdcI4(100),
                 x => x.MatchMul()
                 );
@@ -90,6 +92,7 @@ namespace InfusionStackFix
             c.Remove();
             c.Emit(OpCodes.Ldc_I4, Maximum);
 
+            //Method to replace 1hp being added per infusion kill
             c.GotoNext(
                 x => x.MatchLdloc(54),
                 x => x.MatchLdcI4(1),
@@ -99,11 +102,10 @@ namespace InfusionStackFix
             c.Remove(); //Remove the 1
             c.Emit(OpCodes.Ldloc, (short)33);  //Infusion Count
             c.Emit(OpCodes.Ldloc, (short)14);  //Inventory
-            //c.Emit(OpCodes.Callvirt, typeof(Inventory).GetProperty("infusionBonus").GetGetMethod());
-            c.EmitDelegate<Func<int, Inventory, int>>((infusionCount, bonus) =>
+            c.EmitDelegate<Func<int, Inventory, int>>((infusionCount, inventory) =>
             {
                 int maximumBonus = infusionCount * 100;
-                int currentBonus = (int)bonus.infusionBonus;
+                int currentBonus = (int)inventory.infusionBonus;
                 if (maximumBonus - currentBonus > infusionCount)
                 {
                     return infusionCount;
