@@ -11,7 +11,7 @@ using UnityEngine;
 namespace InfusionStackFix
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.1.0")]
+    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.1.1")]
     public class InfusionStackFix : BaseUnityPlugin
     {
         private static ConfigWrapper<int> InfusionMaximum;
@@ -54,7 +54,8 @@ namespace InfusionStackFix
             DeployableSlot slot)
         {            
             orig(self, deployable, slot);
-            if (TurretsReceiveBonusFromEngineer.Value && slot == DeployableSlot.EngiTurret)
+            if (TurretsReceiveBonusFromEngineer.Value 
+                && slot == DeployableSlot.EngiTurret)
             {
                 var ownerMasterBonus = deployable.ownerMaster.inventory.infusionBonus;
                 var turretMaster = deployable.GetComponent<CharacterMaster>();
@@ -81,7 +82,7 @@ namespace InfusionStackFix
         {            
             var c = new ILCursor(il);
             c.GotoNext(
-                x => x.MatchLdloc(29),
+                x => x.MatchLdloc(33),
                 x => x.MatchLdcI4(100),
                 x => x.MatchMul()
                 );
@@ -90,20 +91,20 @@ namespace InfusionStackFix
             c.Emit(OpCodes.Ldc_I4, Maximum);
 
             c.GotoNext(
-                x => x.MatchLdloc(51),
+                x => x.MatchLdloc(54),
                 x => x.MatchLdcI4(1),
                 x => x.MatchStfld(out FieldReference fr1)
                 );
             c.Index += 1;
             c.Remove(); //Remove the 1
-            c.Emit(OpCodes.Ldloc, (short)29);  //Infusion Count
-            c.Emit(OpCodes.Ldloc, (short)22);  //Inventory
-            c.Emit(OpCodes.Callvirt, typeof(Inventory).GetProperty("infusionBonus").GetGetMethod());
-            c.EmitDelegate<Func<int, uint, int>>((infusionCount, bonus) =>
+            c.Emit(OpCodes.Ldloc, (short)33);  //Infusion Count
+            c.Emit(OpCodes.Ldloc, (short)14);  //Inventory
+            //c.Emit(OpCodes.Callvirt, typeof(Inventory).GetProperty("infusionBonus").GetGetMethod());
+            c.EmitDelegate<Func<int, Inventory, int>>((infusionCount, bonus) =>
             {
                 int maximumBonus = infusionCount * 100;
-                int currentBonus = (int)bonus;
-                if(maximumBonus - currentBonus > infusionCount)
+                int currentBonus = (int)bonus.infusionBonus;
+                if (maximumBonus - currentBonus > infusionCount)
                 {
                     return infusionCount;
                 }
