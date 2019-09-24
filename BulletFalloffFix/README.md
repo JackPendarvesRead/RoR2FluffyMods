@@ -1,0 +1,38 @@
+# BulletFalloffFix
+
+The main reason for making this was I felt that commando should be more effective at a distance. I found that by just slightly buffing the falloff distance (i.e. you can shoot longer range without losing damage) this fixed everything and I did not need to make any further buffs to commando.
+
+This change is to the default bullet attack falloff so this will not only affect the commando but also any survivor (or enemy!) which uses the default bullet attack.
+
+Start Distance = the distance at which damage starts to fall
+End Distance = the distance at which damage reaches a minimum
+
+Enjoy,
+Thanks
+
+## Console Commands:
+
+`falloff_set recommended` sets recommended values
+
+`falloff_set default` sets default values
+
+`falloff_set start {value}` sets start value to {value}
+
+`falloff_set end {value}` sets end value to {value}
+
+NOTE: each command you can just use the first letter of the function if you prefer, e.g. `falloff_set r`
+
+## Installation:
+
+Requires intallation of Bepinex and R2API. 
+
+Place `BulletFalloffFix.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
+
+## Contact
+
+If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
+
+## Changelog:
+
+v1.0.0 
+- Released
