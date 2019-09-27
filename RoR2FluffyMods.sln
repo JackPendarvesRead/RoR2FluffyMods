@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RiskOfCatFacts", "RiskOfCat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BulletFalloffFix", "BulletFalloffFix\BulletFalloffFix.csproj", "{B810F50E-BC5F-4C14-B032-6A786DB7269C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RenergisedDrink", "RenergisedDrink\RenergisedDrink.csproj", "{B17B6827-B9E5-450A-A40B-737729F7E931}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,10 @@ Global
 		{B810F50E-BC5F-4C14-B032-6A786DB7269C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B810F50E-BC5F-4C14-B032-6A786DB7269C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B810F50E-BC5F-4C14-B032-6A786DB7269C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B17B6827-B9E5-450A-A40B-737729F7E931}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B17B6827-B9E5-450A-A40B-737729F7E931}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B17B6827-B9E5-450A-A40B-737729F7E931}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B17B6827-B9E5-450A-A40B-737729F7E931}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
