@@ -66,7 +66,8 @@ namespace InfusionStackFix
         private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint value)
         {
             var max = self.GetItemCount(ItemIndex.Infusion) * Maximum;
-            if(self.infusionBonus >= max)
+            Debug.Log($"LALALALALALALA {max}");
+            if (self.infusionBonus >= max)
             {
                 return;
             }
@@ -79,7 +80,8 @@ namespace InfusionStackFix
         }
         
         private void GlobalEventManager_OnCharacterDeath(MonoMod.Cil.ILContext il)
-        {            
+        {
+            Debug.Log($"LALALALALALALA {Maximum}");
             var c = new ILCursor(il);
 
             //Method to replace maximum bonus per infusion
@@ -104,7 +106,7 @@ namespace InfusionStackFix
             c.Emit(OpCodes.Ldloc, (short)14);  //Inventory
             c.EmitDelegate<Func<int, Inventory, int>>((infusionCount, inventory) =>
             {
-                int maximumBonus = infusionCount * 100;
+                int maximumBonus = infusionCount * Maximum;
                 int currentBonus = (int)inventory.infusionBonus;
                 if (maximumBonus - currentBonus > infusionCount)
                 {
