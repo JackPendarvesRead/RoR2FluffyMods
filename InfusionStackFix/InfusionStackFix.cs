@@ -15,6 +15,7 @@ namespace InfusionStackFix
     public class InfusionStackFix : BaseUnityPlugin
     {
         private static ConfigWrapper<int> InfusionMaximum;
+        private static ConfigWrapper<int> OrbGainMaximum;
         //private static ConfigWrapper<bool> TurretsGiveEngineerStacks;
         private static ConfigWrapper<bool> TurretsReceiveBonusFromEngineer;
 
@@ -26,6 +27,13 @@ namespace InfusionStackFix
                 "MaxHpPerStack",
                 "Set the maximum health that each infusion gives you (int from 1-500)",
                 100
+                );
+
+            OrbGainMaximum = Config.Wrap(
+                "Infusion",
+                "MaxGainPerOrb",
+                "Set the maximum health value that an orb can give you. If you set value to 0 it acts as default (i.e. not limited)",
+                0
                 );
 
             //TurretsGiveEngineerStacks = Config.Wrap<bool>(
@@ -65,19 +73,22 @@ namespace InfusionStackFix
 
         private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint value)
         {
-            var max = self.GetItemCount(ItemIndex.Infusion) * Maximum;
-            if (self.infusionBonus >= max)
+            Debug.Log($"Orb health value = {value}");
+            var maxInfusionBonus = self.GetItemCount(ItemIndex.Infusion) * Maximum;
+            if (self.infusionBonus >= maxInfusionBonus)
             {
+                Debug.Log("Already at maximum infusion");
                 return;
             }
-            uint diff = (uint)max - self.infusionBonus;
-            if (diff < self.GetItemCount(ItemIndex.Infusion))
+            var hpUntilMaximum = (uint)maxInfusionBonus - self.infusionBonus;
+            if (hpUntilMaximum < value)
             {
-                value = diff > 0 ? diff : 0;
+                value = hpUntilMaximum;
             }
+            Debug.Log($"Gaining {value}hp. HpUntilMaximum={hpUntilMaximum}");
             orig(self, value);
         }
-        
+
         private void GlobalEventManager_OnCharacterDeath(MonoMod.Cil.ILContext il)
         {
             var c = new ILCursor(il);
@@ -103,18 +114,30 @@ namespace InfusionStackFix
             c.Emit(OpCodes.Ldloc, (short)33);  //Infusion Count
             c.Emit(OpCodes.Ldloc, (short)14);  //Inventory
             c.EmitDelegate<Func<int, Inventory, int>>((infusionCount, inventory) =>
-            {
-                int maximumBonus = infusionCount * Maximum;
-                int currentBonus = (int)inventory.infusionBonus;
-                if (maximumBonus - currentBonus > infusionCount)
+            {                
+                var maximumBonus = infusionCount * Maximum;
+                var currentBonus = (int)inventory.infusionBonus;
+                var hpUntilMaximum = maximumBonus - currentBonus;
+                var maximumOrbGain = GetMaximumOrbValue(infusionCount);
+
+                if (hpUntilMaximum > maximumOrbGain)
                 {
-                    return infusionCount;
+                    return maximumOrbGain;
                 }
                 else
                 {
-                    return maximumBonus - currentBonus > 0 ? maximumBonus - currentBonus : 0;
+                    return hpUntilMaximum > 0 ? hpUntilMaximum : 0;
                 }
             });
+        }
+
+        private int GetMaximumOrbValue(int infusionCount)
+        {
+            if(OrbGainMaximum.Value > 0)
+            {
+                return infusionCount < OrbGainMaximum.Value ? infusionCount : OrbGainMaximum.Value;
+            }
+            return infusionCount;
         }
 
         private int Maximum
