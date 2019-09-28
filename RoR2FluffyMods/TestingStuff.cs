@@ -13,14 +13,19 @@ using BepInEx.Configuration;
 namespace ShapedGlassBlackScreenFix
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.ZZZZZ01", "ZZZZZ01", "0.0.0")]
+    [BepInPlugin("com.FluffyMods.TestingStuff", "TestingStuff", "0.0.0")]
     public class TestingStuff : BaseUnityPlugin
     {
-        ConfigWrapper<bool> MySetting { get; set; }
+        ConfigWrapper<float> MySetting { get; set; }
 
         public void Awake()
         {
-        }       
-        
-    }
+            MySetting = Config.Wrap(
+                "Placeholder",
+                "Placeholder",
+                "Placeholder",
+                50f
+                );           
+        }
+    }       
 }
