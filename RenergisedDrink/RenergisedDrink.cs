@@ -39,8 +39,8 @@ namespace RenergisedDrink
         private void CharacterBody_RecalculateStats(MonoMod.Cil.ILContext il)
         {
             var c = new ILCursor(il);
-            c.GotoNext(x => x.MatchLdarg(17));
-            c.GotoNext(x => x.MatchLdarg(17));
+            c.GotoNext(x => x.MatchLdloc(17));
+            c.GotoNext(x => x.MatchLdloc(17));
             c.Index--;
             c.Index--;
             c.RemoveRange(2);
