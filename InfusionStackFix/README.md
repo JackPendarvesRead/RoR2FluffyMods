@@ -25,6 +25,9 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+-v1.1.2
+- Fixed a bug in which orbs would not spawn if you set maximum values above 100 because I hard coded a 100 for orb spawn. Thank you for the report @Deathawaits4
+
 v1.1.1
 - Updated IL to work with Sirens update (stfld numbers changed)
 - Updated dependencies
