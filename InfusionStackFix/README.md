@@ -8,12 +8,12 @@ E.g. if you are holding 5 infusions in your inventory you will receive +5hp per 
 
 This mod also fixed a minor "exploit" where you can get more health stacks from an infusion than you are permitted by killing a group of enemies when you are near maximum stacks.
 
-As of v1.2.0 you can now set the maximum hp gain per orb. By default this value is 0 which acts as default as above (i.e. there is no limit). Setting this value to anything except 0 with limit the hp gained per kill to this number if you have more infusion stacks than the maximum. E.g. if your maximum number is 10 and you have 15 infusion stacks you will gain 10hp per kill rather than 15hp as outlined above.
-
 Enjoy,
 Thanks
 
 Update 1.1.0: Added new improved functionality for Engineers who use infusion. Engineer turrets now have a configuration which when enabled will allow turrets to start with the current bonus that the Engineer who deployed it currently has. E.g. if an Engineer currently has +100 life from an infusion whenver the engineer deploys a turret that turret will also start with +100 life.
+
+Update 1.2.0: You can now set the maximum hp gain per orb. By default this value is 0 which acts as default as above (i.e. there is no limit). Setting this value to anything except 0 limits the hp gained per kill to this number if you have more infusion stacks than the maximum. E.g. if your maximum number is 10 and you have 15 infusion stacks you will gain 10hp per kill rather than 15hp as outlined above.
 
 ## Installation:
 
