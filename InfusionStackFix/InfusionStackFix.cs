@@ -11,7 +11,7 @@ using UnityEngine;
 namespace InfusionStackFix
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.1.2")]
+    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.2.0")]
     public class InfusionStackFix : BaseUnityPlugin
     {
         private static ConfigWrapper<int> InfusionMaximum;
@@ -31,8 +31,8 @@ namespace InfusionStackFix
 
             OrbGainMaximum = Config.Wrap(
                 "Infusion",
-                "MaxGainPerOrb",
-                "Set the maximum health value that an orb can give you. If you set value to 0 it acts as default (i.e. not limited)",
+                "MaxHealthGainPerKill",
+                "Set the maximum value for health gain per kill. Set value to 0 for default mod behaviour (i.e. not limited, max=infusionStacks)",
                 0
                 );
 
@@ -73,11 +73,11 @@ namespace InfusionStackFix
 
         private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint value)
         {
-            Debug.Log($"Orb health value = {value}");
+            //Debug.Log($"Orb health value = {value}");
             var maxInfusionBonus = self.GetItemCount(ItemIndex.Infusion) * Maximum;
             if (self.infusionBonus >= maxInfusionBonus)
             {
-                Debug.Log("Already at maximum infusion");
+                //Debug.Log("Already at maximum infusion");
                 return;
             }
             var hpUntilMaximum = (uint)maxInfusionBonus - self.infusionBonus;
@@ -85,7 +85,7 @@ namespace InfusionStackFix
             {
                 value = hpUntilMaximum;
             }
-            Debug.Log($"Gaining {value}hp. HpUntilMaximum={hpUntilMaximum}");
+            //Debug.Log($"Gaining {value}hp. HpUntilMaximum={hpUntilMaximum}");
             orig(self, value);
         }
 

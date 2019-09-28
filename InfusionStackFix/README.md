@@ -8,6 +8,8 @@ E.g. if you are holding 5 infusions in your inventory you will receive +5hp per 
 
 This mod also fixed a minor "exploit" where you can get more health stacks from an infusion than you are permitted by killing a group of enemies when you are near maximum stacks.
 
+As of v1.2.0 you can now set the maximum hp gain per orb. By default this value is 0 which acts as default as above (i.e. there is no limit). Setting this value to anything except 0 with limit the hp gained per kill to this number if you have more infusion stacks than the maximum. E.g. if your maximum number is 10 and you have 15 infusion stacks you will gain 10hp per kill rather than 15hp as outlined above.
+
 Enjoy,
 Thanks
 
@@ -24,6 +26,10 @@ Place `InfusionStackFix.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time for fun so may not always be able to immediately fix issues that you come up with but I will endeavour to do my best. 
 
 ## Changelog:
+
+-v1.2.0
+- Added configuration value to set maximum gain per orb
+- Tidy code. Renamed variables to make code more readable
 
 -v1.1.2
 - Fixed a bug in which orbs would not spawn if you set maximum values above 100 because I hard coded a 100 for orb spawn. Thank you for the report @Deathawaits4
