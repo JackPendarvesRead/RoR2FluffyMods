@@ -6,7 +6,7 @@ By default the bubble shield makes a sound when it is destroyed. With this mod y
 
 i.e. The shield lifetime is 15s. You will hear a sound on 12s, 13s, 14s and finally the shield goes down on 15s.
 
-You can set the volume of the notification sound in configuration file or on-the-go with a console command.
+You can set the volume of the notification sound in configuration file.
 
 Note: this is a client-side mod. Only players who have the mod installed will hear the additional sounds. You will be able to hear the sounds of all Engineer bubble shields in your game regardless of whether they have the mod installed.
 
@@ -14,11 +14,6 @@ As usual, do please let me know if you have any feedback or suggestions for impr
 
 Enjoy,
 Thanks
-
-## Console Commands
-
-`engishield_setvolume`: set the volume of the bubble shield notification sound args\[0\]=int value for volume (0=mute, 1=default, 2=2xdefault,etc... up to 4x)
-
 
 ## Installation:
 
@@ -35,6 +30,11 @@ Place `EngiShieldNotification.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
 
 ## Changelog:
+
+v2.0.0
+- Update for Bepinex5
+- Removed now obsolete console commands
+
 v1.1.1
 - Changed maximum volume to be 4
 - Updated R2API dependecy string
