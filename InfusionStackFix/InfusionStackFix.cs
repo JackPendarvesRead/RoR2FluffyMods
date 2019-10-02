@@ -11,43 +11,43 @@ using UnityEngine;
 namespace InfusionStackFix
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.2.0")]
+    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "2.0.0")]
     public class InfusionStackFix : BaseUnityPlugin
     {
-        private static ConfigWrapper<int> InfusionMaximum;
-        private static ConfigWrapper<int> OrbGainMaximum;
-        //private static ConfigWrapper<bool> TurretsGiveEngineerStacks;
-        private static ConfigWrapper<bool> TurretsReceiveBonusFromEngineer;
+        private ConfigEntry<int> MaxHpPerInfusionStack;
+        private ConfigEntry<int> MaxHealthGainPerKill;
+        private ConfigEntry<bool> TurretReceivesBonusFromEngineer;
 
         public void Awake()
         {
             #region ConfigWrappers
-            InfusionMaximum = Config.Wrap(
-                "Infusion",
-                "MaxHpPerStack",
-                "Set the maximum health that each infusion gives you (int from 1-500)",
-                100
+            const string infusionSectionName = "Infusion";
+            const string engineerSectionName = "Engineer";
+
+            MaxHpPerInfusionStack = Config.AddSetting<int>(                
+                new ConfigDefinition(infusionSectionName, nameof(MaxHpPerInfusionStack)),
+                100,
+                new ConfigDescription(
+                    "Set the maximum health that each infusion gives you",
+                    new AcceptableValueRange<int>(1, 500)
+                    )
                 );
 
-            OrbGainMaximum = Config.Wrap(
-                "Infusion",
-                "MaxHealthGainPerKill",
-                "Set the maximum value for health gain per kill. Set value to 0 for default mod behaviour (i.e. not limited, max=infusionStacks)",
-                0
+            MaxHealthGainPerKill = Config.AddSetting<int>(
+                new ConfigDefinition(infusionSectionName, nameof(MaxHealthGainPerKill)),
+                0,
+                new ConfigDescription(
+                    "Set the maximum value for health gain per kill. Set value to 0 for default mod behaviour (i.e. not limited, max=infusionStacks)",
+                    tags: new object[]{ "Advanced" }
+                    )                    
                 );
 
-            //TurretsGiveEngineerStacks = Config.Wrap<bool>(
-            //    "Engineer",
-            //    "Turret",
-            //    "Set to true to give Engineer infusion stacks from turret",
-            //    false
-            //    );
-
-            TurretsReceiveBonusFromEngineer = Config.Wrap<bool>(
-                "Engineer",
-                "TurretReceivesBonusFromEngineer",
-                "If set to true then turrets will receive the current infusion bonus of the Engi on creation",
-                true
+            TurretReceivesBonusFromEngineer = Config.AddSetting<bool>(
+                new ConfigDefinition(engineerSectionName, nameof(TurretReceivesBonusFromEngineer)),
+                true,
+                new ConfigDescription(                
+                    "If enabled then turrets will receive the current infusion bonus of the Engineer on creation"
+                    )
                 );
             #endregion
 
@@ -60,9 +60,9 @@ namespace InfusionStackFix
             CharacterMaster self, 
             Deployable deployable, 
             DeployableSlot slot)
-        {            
+        {
             orig(self, deployable, slot);
-            if (TurretsReceiveBonusFromEngineer.Value 
+            if (this.TurretReceivesBonusFromEngineer.Value
                 && slot == DeployableSlot.EngiTurret)
             {
                 var ownerMasterBonus = deployable.ownerMaster.inventory.infusionBonus;
@@ -73,11 +73,9 @@ namespace InfusionStackFix
 
         private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint value)
         {
-            //Debug.Log($"Orb health value = {value}");
-            var maxInfusionBonus = self.GetItemCount(ItemIndex.Infusion) * Maximum;
+            var maxInfusionBonus = self.GetItemCount(ItemIndex.Infusion) * this.MaxHpPerInfusionStack.Value;
             if (self.infusionBonus >= maxInfusionBonus)
             {
-                //Debug.Log("Already at maximum infusion");
                 return;
             }
             var hpUntilMaximum = (uint)maxInfusionBonus - self.infusionBonus;
@@ -85,7 +83,6 @@ namespace InfusionStackFix
             {
                 value = hpUntilMaximum;
             }
-            //Debug.Log($"Gaining {value}hp. HpUntilMaximum={hpUntilMaximum}");
             orig(self, value);
         }
 
@@ -101,7 +98,7 @@ namespace InfusionStackFix
                 );
             c.Index += 1;
             c.Remove();
-            c.Emit(OpCodes.Ldc_I4, Maximum);
+            c.Emit(OpCodes.Ldc_I4, MaxHpPerInfusionStack.Value);
 
             //Method to replace 1hp being added per infusion kill
             c.GotoNext(
@@ -115,7 +112,7 @@ namespace InfusionStackFix
             c.Emit(OpCodes.Ldloc, (short)14);  //Inventory
             c.EmitDelegate<Func<int, Inventory, int>>((infusionCount, inventory) =>
             {                
-                var maximumBonus = infusionCount * Maximum;
+                var maximumBonus = infusionCount * MaxHpPerInfusionStack.Value;
                 var currentBonus = (int)inventory.infusionBonus;
                 var hpUntilMaximum = maximumBonus - currentBonus;
                 var maximumOrbGain = GetMaximumOrbValue(infusionCount);
@@ -133,34 +130,11 @@ namespace InfusionStackFix
 
         private int GetMaximumOrbValue(int infusionCount)
         {
-            if(OrbGainMaximum.Value > 0)
+            if(MaxHealthGainPerKill.Value > 0)
             {
-                return infusionCount < OrbGainMaximum.Value ? infusionCount : OrbGainMaximum.Value;
+                return infusionCount < MaxHealthGainPerKill.Value ? infusionCount : MaxHealthGainPerKill.Value;
             }
             return infusionCount;
-        }
-
-        private int Maximum
-        {
-            get
-            {
-                try
-                {
-                    if (InfusionMaximum.Value < 1)
-                    {
-                        return 1;
-                    }
-                    if (InfusionMaximum.Value > 500)
-                    {
-                        return 500;
-                    }
-                    return InfusionMaximum.Value;
-                }
-                catch
-                {
-                    return 100;
-                }
-            }
-        }
+        }        
     }
 }

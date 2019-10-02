@@ -15,6 +15,8 @@ Update 1.1.0: Added new improved functionality for Engineers who use infusion. E
 
 Update 1.2.0: You can now set the maximum hp gain per orb. By default this value is 0 which acts as default as above (i.e. there is no limit). Setting this value to anything except 0 limits the hp gained per kill to this number if you have more infusion stacks than the maximum. E.g. if your maximum number is 10 and you have 15 infusion stacks you will gain 10hp per kill rather than 15hp as outlined above.
 
+Update 2.0.0: You need the new version of Bepinex for this build. I also recommend downloading BepinexConfigurationManager to edit configurations.
+
 ## Installation:
 
 Requires intallation of Bepinex and R2API. 
@@ -27,11 +29,14 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
--v1.2.0
+v2.0.0
+- Updated for Bepinex5
+
+v1.2.0
 - Added configuration value to set maximum gain per orb
 - Tidy code. Renamed variables to make code more readable
 
--v1.1.2
+v1.1.2
 - Fixed a bug in which orbs would not spawn if you set maximum values above 100 because I hard coded a 100 for orb spawn. Thank you for the report @Deathawaits4
 
 v1.1.1
