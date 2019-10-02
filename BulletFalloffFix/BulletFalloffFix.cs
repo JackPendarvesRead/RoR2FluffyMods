@@ -13,28 +13,33 @@ using UnityEngine;
 namespace BulletFalloffFix
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.BulletFalloffFix", "BulletFalloffFix", "1.0.0")]
+    [BepInPlugin("com.FluffyMods.BulletFalloffFix", "BulletFalloffFix", "2.0.0")]
     public class BulletFalloffFix : BaseUnityPlugin
     {
-        private static ConfigWrapper<float> FallOffStartDistance;
-        private static ConfigWrapper<float> FallOffEndDistance;
+        private static ConfigEntry<float> FallOffStartDistance;
+        private static ConfigEntry<float> FallOffEndDistance;
 
         public void Awake()
         {
-            FallOffStartDistance = Config.Wrap(
-                "Falloff Distance",
-                "Start distance",
-                "Set the distance at which damage starts to fall off (default=25, recommended=40)",
-                40f
+            const string falloffDistanceHeading = "Falloff Distance";
+
+            FallOffStartDistance = Config.AddSetting<float>(
+                new ConfigDefinition(falloffDistanceHeading, nameof(FallOffStartDistance)),
+                40f,
+                new ConfigDescription(                
+                    "Set the distance at which damage starts to fall off (default=25, recommended=40)"                
+                    )
                 );
 
-            FallOffEndDistance = Config.Wrap(
-                "Falloff Distance",
-                "End distance",
-                "Set the distance at which damage reaches minimum (default=60, recommended=80)",
-                80f
+            FallOffEndDistance = Config.AddSetting<float>(
+                new ConfigDefinition(falloffDistanceHeading, nameof(FallOffEndDistance)),
+                80f,
+                new ConfigDescription(
+                    "Set the distance at which damage reaches minimum (default=60, recommended=80)"                    
+                    )
                 );            
 
+            
             On.RoR2.Console.Awake += (orig, self) =>
             {
                 CommandHelper.RegisterCommands(self);
