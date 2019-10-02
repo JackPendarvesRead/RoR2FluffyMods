@@ -8,7 +8,7 @@ namespace BackupEngiTurrets
 {
     public static class CharBodyStrings
     {
-        public static string Engineer { get => "EngiBody(Clone)"; }
-        public static string Mage { get => "MageBody(Clone)"; }
+        public static string Engineer { get => "EngiBody"; }
+        public static string Mage { get => "MageBody"; }
     }
 }

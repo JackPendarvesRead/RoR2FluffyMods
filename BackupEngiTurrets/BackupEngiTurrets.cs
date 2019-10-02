@@ -7,26 +7,28 @@ using UnityEngine;
 namespace BackupEngiTurrets
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.BackupEngiTurrets", "BackupEngiTurrets", "2.0.3")]
+    [BepInPlugin("com.FluffyMods.BackupEngiTurrets", "BackupEngiTurrets", "3.0.0")]
     public class BackupEngiTurrets : BaseUnityPlugin
     {
-        private static ConfigWrapper<bool> isTurretIncreased;
-        private static ConfigWrapper<bool> isFlameBlastIncreased;
+        private static ConfigEntry<bool> TurretStockIncreasesWithBackup;
+        private static ConfigEntry<bool> PrimaryIncreasesWitBackup;
 
         public void Awake()
-        {            
-            isTurretIncreased = Config.Wrap(
-                                   "Engineer",
-                                   "IsTurretIncreased",
-                                   "Set to true to set Place Turret (R) ability to gain stock with BackupMagazine.",
-                                   true
+        {
+            TurretStockIncreasesWithBackup = Config.AddSetting<bool>(
+                                   new ConfigDefinition("Engineer", nameof(TurretStockIncreasesWithBackup)),
+                                   true,
+                                   new ConfigDescription(
+                                       "Enable to set Place Turret (R) ability to gain stock with BackupMagazine."
+                                       )
                                    );
 
-            isFlameBlastIncreased = Config.Wrap(
-                                   "Mage",
-                                   "IsFlameBlastIncreased",
-                                   "Set to true to set Mage Flame Blast (LMB) ability to gain stock with BackupMagazine.",
-                                   false
+            PrimaryIncreasesWitBackup = Config.AddSetting<bool>(
+                                   new ConfigDefinition("Mage", nameof(PrimaryIncreasesWitBackup)),
+                                   false,
+                                   new ConfigDescription(
+                                       "Enable to set Artificier primary (LMB) ability to gain stock with BackupMagazine."                                       
+                                       )
                                    );
 
             On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
@@ -36,29 +38,26 @@ namespace BackupEngiTurrets
         {
             try
             {
-                if (self.name == CharBodyStrings.Engineer)
+                if (self.name.StartsWith(CharBodyStrings.Engineer))
                 {
-                    if (isTurretIncreased.Value)
+                    if (TurretStockIncreasesWithBackup.Value)
                     {
                         self.GetComponent<SkillLocator>().special.SetBonusStockFromBody(self.inventory.GetItemCount(ItemIndex.SecondarySkillMagazine));
                     }
                 }
-                if(self.name == CharBodyStrings.Mage)
+                if(self.name.StartsWith(CharBodyStrings.Mage))
                 {
-                    if (isFlameBlastIncreased.Value)
+                    if (PrimaryIncreasesWitBackup.Value)
                     {
                         self.GetComponent<SkillLocator>().primary.SetBonusStockFromBody(self.inventory.GetItemCount(ItemIndex.SecondarySkillMagazine));
                     }
                 }
             }
-            catch
+            catch(System.Exception ex)
             {
-                Logger.LogError("CharacterBody_RecalculateStats failed.");
+                Logger.LogError(ex);
             }
-            finally
-            {
-                orig(self);
-            }
+            orig(self);
         }      
     }
 }
