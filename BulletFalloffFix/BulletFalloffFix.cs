@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using ConfigurationManager;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using RoR2;
@@ -18,33 +19,38 @@ namespace BulletFalloffFix
     {
         private static ConfigEntry<float> FallOffStartDistance;
         private static ConfigEntry<float> FallOffEndDistance;
+        private static ConfigEntry<string> FalloffPreset;
+
 
         public void Awake()
         {
-            const string falloffDistanceHeading = "Falloff Distance";
+            const string falloffDistanceSection = "Falloff Distance";
+            const string presetSection = "Presets";
+
+            FalloffPreset = Config.AddSetting<string>(
+                new ConfigDefinition(presetSection, "Falloff Values"),
+                "",
+                new ConfigDescription(
+                    "",
+                    null,
+                    new Action<SettingEntryBase>(SetFalloffPresets)
+                    ));
 
             FallOffStartDistance = Config.AddSetting<float>(
-                new ConfigDefinition(falloffDistanceHeading, nameof(FallOffStartDistance)),
+                new ConfigDefinition(falloffDistanceSection, nameof(FallOffStartDistance)),
                 40f,
-                new ConfigDescription(                
-                    "Set the distance at which damage starts to fall off (default=25, recommended=40)"                
+                new ConfigDescription(
+                    "Set the distance at which damage starts to fall off (default=25, recommended=40)"
                     )
                 );
 
             FallOffEndDistance = Config.AddSetting<float>(
-                new ConfigDefinition(falloffDistanceHeading, nameof(FallOffEndDistance)),
+                new ConfigDefinition(falloffDistanceSection, nameof(FallOffEndDistance)),
                 80f,
                 new ConfigDescription(
-                    "Set the distance at which damage reaches minimum (default=60, recommended=80)"                    
+                    "Set the distance at which damage reaches minimum (default=60, recommended=80)"
                     )
-                );            
-
-            
-            On.RoR2.Console.Awake += (orig, self) =>
-            {
-                CommandHelper.RegisterCommands(self);
-                orig(self);
-            };
+                );
 
             IL.RoR2.BulletAttack.DefaultHitCallback += BulletAttack_DefaultHitCallback;
         }
@@ -63,51 +69,28 @@ namespace BulletFalloffFix
             c.Emit(OpCodes.Ldc_R4, FallOffStartDistance.Value);
         }
 
-        
-        [ConCommand(commandName = "falloff_set", flags = ConVarFlags.ExecuteOnServer, helpText = "")]
-        private static void FalloffSet(ConCommandArgs args)
+        private void SetFalloffPresets(SettingEntryBase entry)
         {
-            try
+            GUILayout.Label(FalloffPreset.Value, GUILayout.ExpandWidth(true));
+            bool PressDefaultButton()
             {
-                var function = args[0].ToLower().Trim();
-                switch (function)
-                {
-                    case "default":
-                    case "d":
-                        FallOffStartDistance.Value = BulletFalloffConstantValues.DefaultStart;
-                        FallOffEndDistance.Value = BulletFalloffConstantValues.DefaultEnd;
-                        Debug.Log("Default falloff values set");
-                        break;
-
-                    case "recommended":
-                    case "r":
-                        FallOffStartDistance.Value = BulletFalloffConstantValues.RecommendedStart;
-                        FallOffEndDistance.Value = BulletFalloffConstantValues.RecommendedEnd;
-                        Debug.Log("Recommended falloff values set");
-                        break;
-
-                    case "start":
-                    case "s":
-                        var startValue = float.Parse(args[1]);
-                        FallOffStartDistance.Value = startValue;
-                        Debug.Log($"Start falloff value set to {startValue}");
-                        break;
-
-                    case "end":
-                    case "e":
-                        var endValue = float.Parse(args[1]);
-                        FallOffEndDistance.Value = endValue;
-                        Debug.Log($"End falloff value set to {endValue}");
-                        break;
-
-                    default:
-                        Debug.Log("Command not recognised. Allowed functions: s, e, r, d");
-                        break;
-                }
+                return GUILayout.Button("DEFAULT", GUILayout.ExpandWidth(true));
             }
-            catch (Exception ex)
+            bool PressRecommendedButton()
             {
-                Debug.Log(ex.Message);
+                return GUILayout.Button("RECOMMENDED", GUILayout.ExpandWidth(true));
+            }
+            if (PressDefaultButton())
+            {
+                FallOffStartDistance.Value = BulletFalloffConstantValues.DefaultStart;
+                FallOffEndDistance.Value = BulletFalloffConstantValues.DefaultEnd;
+                Debug.Log("Default falloff values set");
+            }
+            if (PressRecommendedButton())
+            {
+                FallOffStartDistance.Value = BulletFalloffConstantValues.RecommendedStart;
+                FallOffEndDistance.Value = BulletFalloffConstantValues.RecommendedEnd;
+                Debug.Log("Recommended falloff values set");
             }
         }
     }
