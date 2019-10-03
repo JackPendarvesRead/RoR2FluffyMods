@@ -14,23 +14,29 @@ namespace RenergisedDrink
     [BepInPlugin("com.FluffyMods.ReEnergisedDrink", "ReEnergisedDrink", "0.0.0")]
     public class BulletFalloffFix : BaseUnityPlugin
     {
-        private static ConfigWrapper<float> EnergyDrinkBoost;
-        private static ConfigWrapper<float> EnergyDrinkCoefficient;
+        private static ConfigEntry<float> EnergyDrinkBoost;
+        private static ConfigEntry<float> EnergyDrinkCoefficient;
 
         public void Awake()
         {
-            EnergyDrinkBoost = Config.Wrap(
+            EnergyDrinkBoost = Config.AddSetting<float>(
                 "Energy Drink",
                 "Boost",
-                "Flat value added to sprint speed boost on first pickup of Energy Drink [default=1.0f, recommended=0.5f]",
-                0.5f
+                0.5f,
+                new ConfigDescription(
+                    "Flat value added to sprint speed boost on first pickup of Energy Drink [default=1.0f, recommended=0.5f]",
+                    new AcceptableValueRange<float>(0f, 2f)
+                    )
                 );
 
-            EnergyDrinkCoefficient = Config.Wrap(
+            EnergyDrinkCoefficient = Config.AddSetting<float>(
                 "Energy Drink",
                 "Coefficient",
-                "Number determines scaling adding sprint speed per Energy Drink (default=0.2f, recommended=0.3f)",
-                0.3f
+                0.3f,
+                new ConfigDescription(
+                    "Number determines scaling adding sprint speed per Energy Drink (default=0.2f, recommended=0.3f)",
+                    new AcceptableValueRange<float>(0f, 1f)
+                    )
                 );
 
             IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
