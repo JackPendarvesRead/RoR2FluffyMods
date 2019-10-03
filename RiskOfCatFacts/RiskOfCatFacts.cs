@@ -112,6 +112,10 @@ namespace RiskOfCatFacts
         private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
         private void Chat_onChatChanged()
         {
+            if (!CatFactsEnabled.Value)
+            {
+                return;
+            }
             try
             {
                 var chatLog = Chat.readOnlyLog;
