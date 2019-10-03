@@ -100,7 +100,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandHelper.cs" />
     <Compile Include="PocketMoney.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

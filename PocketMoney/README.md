@@ -11,16 +11,10 @@ FlatBonus = 0, WeightedBonus = 1
 
 These default values give everyone the cost on 1 small chest extra at the start of round as a quickstart bonus.
 
+Update v2.0.0: you may now set a LatestStageToReceiveMoney. Setting this to anything above 0 will set the last stage in which you receive your bonus. i.e. if you only want to receive the bonus for the first 4 stages set this number to 4. Leave this number set to 0 if you do not wish to set a maximum.
+
 Enjoy,
 Thanks
-
-## Console Commands:
-
-`pocket_setweighted`: sets the weighted extra money given at start of each stage. args\[0\]=Value(int)
-
-`pocket_setflat`: sets the flat value for extra money given at the start of each stage. args\[0\]=Value(int) (i.e. if this is set to 50 you will gain 50 extra gold at the start of each stage)
-
-e.g. type `pocket_setflat 100` into console to set the flat extra money players receive to 100
 
 ## Installation:
 
@@ -33,6 +27,10 @@ Place `PocketMoney.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
 
 ## Changelog:
+v 2.0.0
+- Updated for Bepinex5
+- Removed obsolete console commands
+- Added new configuration to allow you to choose a maximum stage in which you wish to receive bonus
 
 v1.1.2
 - Updated R2API dependency string
