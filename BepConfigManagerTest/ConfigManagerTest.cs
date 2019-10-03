@@ -19,12 +19,20 @@ namespace BepConfigManagerTest
     {
         private static ConfigEntry<bool> MyBoolConfig;
         private static ConfigEntry<float> MyFloatConfig;
+        private static ConfigEntry<TestEnum> EnumConfig;
 
         public void Awake()
         {
             //ConfigurationManager.ConfigurationManager.RegisterCustomSettingDrawer(typeof(float), CustomDrawer);
 
             const string sectionName = "MySection";
+
+            EnumConfig = Config.AddSetting<TestEnum>(
+                "Enum",
+                "Enum",
+                TestEnum.Silly,
+                new ConfigDescription("This is enum", null, new Action<SettingEntryBase>(SetupEnum))
+                );
 
             MyBoolConfig = Config.AddSetting<bool>(
                 new ConfigDefinition(sectionName, nameof(MyBoolConfig)),
@@ -41,6 +49,14 @@ namespace BepConfigManagerTest
                    null,
                    new Action<SettingEntryBase>(CustomDrawer)
                    ));
+        }
+
+        private void SetupEnum(SettingEntryBase obj)
+        {
+            foreach(var e in Enum.GetValues(typeof(TestEnum)))
+            {
+                GUILayout.Label(e.ToString());
+            }
         }
 
         private void CustomDrawer(SettingEntryBase entry)
