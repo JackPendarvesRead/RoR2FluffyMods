@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System;
 using System.Timers;
+using BepInEx.Configuration;
 
 namespace RiskOfCatFacts
 {
@@ -18,16 +19,23 @@ namespace RiskOfCatFacts
         private Timer timer;
         private double interval = 60 * 1000;
 
+        private static ConfigEntry<bool> CatFactsEnabled { get; set; }
 
         public void Awake()
         {
+            CatFactsEnabled = Config.AddSetting<bool>(
+                "CatFacts",
+                "ReceiveCatFacts",
+                true,
+                new ConfigDescription("Enable/Disable receiving CatFacts"));
+
+
             random = new System.Random();
 
             timer = new Timer();
             timer.Elapsed += Timer_Elapsed;
 
             Chat.onChatChanged += Chat_onChatChanged;
-
             On.RoR2.Run.BeginStage += Run_BeginStage;
             On.RoR2.Run.BeginGameOver += Run_BeginGameOver;
             On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
@@ -35,7 +43,8 @@ namespace RiskOfCatFacts
 
         private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
         {
-            if (damageReport.victim.body.isChampion)
+            if (CatFactsEnabled.Value
+                && damageReport.victim.body.isChampion)
             {
                 Message.Send("Meow meow Me-WOW! You killed a champion! =^o_o^=");
                 SendCatFact();
@@ -51,12 +60,20 @@ namespace RiskOfCatFacts
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            SendCatFact();
+            if (CatFactsEnabled.Value)
+            {
+                SendCatFact();
+            }
+            else
+            {
+                Stop();
+            }
         }
 
         private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
         {
-            if (!timer.Enabled)
+            if (CatFactsEnabled.Value
+                && !timer.Enabled)
             {
                 timer.Interval = interval;
                 timer.Start();
