@@ -9,6 +9,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using BepInEx.Configuration;
 using UnityEngine;
+using ConfigurationManager;
 
 namespace BepConfigManagerTest
 {
@@ -21,6 +22,8 @@ namespace BepConfigManagerTest
 
         public void Awake()
         {
+            //ConfigurationManager.ConfigurationManager.RegisterCustomSettingDrawer(typeof(float), CustomDrawer);
+
             const string sectionName = "MySection";
 
             MyBoolConfig = Config.AddSetting<bool>(
@@ -31,11 +34,26 @@ namespace BepConfigManagerTest
                     ));
 
             MyFloatConfig = Config.AddSetting<float>(
-               new ConfigDefinition(sectionName, nameof(MyBoolConfig)),
+               new ConfigDefinition(sectionName, nameof(MyFloatConfig)),
                10.0f,
                new ConfigDescription(
-                   "My float config"
+                   "My float config", 
+                   null,
+                   new Action<SettingEntryBase>(CustomDrawer)
                    ));
+        }
+
+        private void CustomDrawer(SettingEntryBase entry)
+        {
+            bool PressButton()
+            {
+                GUILayout.Label(MyFloatConfig.Value.ToString(), GUILayout.ExpandWidth(true));
+                return GUILayout.Button("BUTTON", GUILayout.ExpandWidth(true));
+            }
+            if (PressButton())
+            {
+                MyFloatConfig.Value = 100f;
+            }
         }
     }
 }
