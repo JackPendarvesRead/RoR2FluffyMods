@@ -52,6 +52,10 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v2.0.0
+- Updated for Bepinex5
+- Renamed variables for more readable code
+
 v1.1.1
 - Updated R2API dependency string
 

@@ -14,15 +14,14 @@ namespace TheMightyBoop
 {
 
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "1.1.0")]
-    public class RexMegaSonicBoop : BaseUnityPlugin
+    [BepInPlugin("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "2.0.0")]
+    public class TheMightyBoop : BaseUnityPlugin
     {
-        private static ConfigWrapper<bool> MightyClayBruiser;
-
-        private static ConfigWrapper<float> AirKnockBackDistance;
-        private static ConfigWrapper<float> GroundKnockBackDistance;
-        private static ConfigWrapper<float> LiftVelocity;
-        private static ConfigWrapper<float> MaxDistance;
+        private static ConfigEntry<bool> ClayBruiserIsMighty;
+        private static ConfigEntry<float> AirKnockBackDistance;
+        private static ConfigEntry<float> GroundKnockBackDistance;
+        private static ConfigEntry<float> LiftVelocity;
+        private static ConfigEntry<float> MaxDistance;
 
         public void Awake()
         {            
@@ -32,70 +31,75 @@ namespace TheMightyBoop
                 orig(self);
             };
 
-            #region ConfigWrapperSetup
+            #region ConfigSetup
+            const string fireSonicBoomSection = "FireSonicBoom";
+            const string clayBruiserSection = "ClayBruiser";
 
-            string sectionName = "FireSonicBoom";
+            ClayBruiserIsMighty = Config.AddSetting<bool>(
+                new ConfigDefinition(clayBruiserSection, nameof(ClayBruiserIsMighty)), 
+                false, 
+                new ConfigDescription(
+                    "Set whether the boop of the Clay Templar is mighty like Rex"
+                    ));
 
-            MightyClayBruiser = Config.Wrap(                               
-                "Clay Bruiser",                               
-                "ClayBruiserIsMighty",                                
-                $"Set whether the boop of the Clay Templar is mighty like Rex",
-                false                                
-                );
+            AirKnockBackDistance = Config.AddSetting<float>(
+                new ConfigDefinition(fireSonicBoomSection, nameof(AirKnockBackDistance)), 
+                BoopConstants.AirKnockBackDistanceRecommended, 
+                new ConfigDescription(
+                    "Set how far you knock yourself back when you boop in mid-air. " +
+                    $"(Game default = {BoopConstants.AirKnockBackDistanceDefault},  Recommended = {BoopConstants.AirKnockBackDistanceRecommended})",
+                    new AcceptableValueRange<float>(0, BoopConstants.MaximumBoop)
+                    ));
 
-            AirKnockBackDistance = Config.Wrap(
-                                   sectionName,
-                                   nameof(AirKnockBackDistance),
-                                   $"Set how far you knock yourself back when you boop in mid-air. (Game default = {BoopConstants.AirKnockBackDistanceDefault},  Recommended = {BoopConstants.AirKnockBackDistanceRecommended})",
-                                   BoopConstants.AirKnockBackDistanceRecommended
-                                   );
+            GroundKnockBackDistance = Config.AddSetting<float>(
+                new ConfigDefinition(fireSonicBoomSection, nameof(GroundKnockBackDistance)), 
+                BoopConstants.GroundKnockBackDistanceRecommended, 
+                new ConfigDescription(
+                    "Set how far you knock yourself back when you boop whilst on the ground. " +
+                    $"(Game default = {BoopConstants.GroundKnockBackDistanceDefault}, Recommended = {BoopConstants.GroundKnockBackDistanceRecommended})",
+                    new AcceptableValueRange<float>(0, BoopConstants.MaximumBoop)
+                    ));
 
-            GroundKnockBackDistance = Config.Wrap(
-                                   sectionName,
-                                   nameof(GroundKnockBackDistance),
-                                   $"Set how far you knock yourself back when you boop whilst on the ground. (Game default = {BoopConstants.GroundKnockBackDistanceDefault}, Recommended = {BoopConstants.GroundKnockBackDistanceRecommended})",
-                                   BoopConstants.GroundKnockBackDistanceRecommended
-                                   );
+            MaxDistance = Config.AddSetting<float>(
+                new ConfigDefinition(fireSonicBoomSection, nameof(MaxDistance)), 
+                BoopConstants.MaxDistanceRecommended, 
+                new ConfigDescription(
+                    "Set the horizontal distance which enemies should be knocked back by the boop. " +
+                    $"(Game default = {BoopConstants.MaxDistanceDefault}, Recommended = {BoopConstants.MaxDistanceRecommended})",
+                    new AcceptableValueRange<float>(0, BoopConstants.MaximumBoop)
+                    ));
 
-            MaxDistance = Config.Wrap(
-                                   sectionName,
-                                   nameof(MaxDistance),
-                                   $"Set the horizontal distance which enemies should be knocked back by the boop. (Game default = {BoopConstants.MaxDistanceDefault}, Recommended = {BoopConstants.MaxDistanceRecommended})",
-                                   BoopConstants.MaxDistanceRecommended
-                                   );
-
-            LiftVelocity = Config.Wrap(
-                                   sectionName,
-                                   nameof(LiftVelocity),
-                                   $"Set the vertical lift of enemies affected by the boop. (Game default = {BoopConstants.LiftVelocityDefault}, Recommended = {BoopConstants.LiftVelocityRecommended})",
-                                   BoopConstants.LiftVelocityRecommended
-                                   );
-
-
-
+            LiftVelocity = Config.AddSetting<float>(
+                new ConfigDefinition(fireSonicBoomSection, nameof(LiftVelocity)), 
+                BoopConstants.LiftVelocityRecommended, 
+                new ConfigDescription(
+                "Set the vertical lift of enemies affected by the boop. " +
+                $"(Game default = {BoopConstants.LiftVelocityDefault}, Recommended = {BoopConstants.LiftVelocityRecommended})",
+                new AcceptableValueRange<float>(0, BoopConstants.MaximumBoop)
+                ));
             #endregion
 
-            On.EntityStates.ClayBruiser.Weapon.FireSonicBoom.OnEnter += FireSonicBoom_OnEnter1;
             On.EntityStates.Treebot.Weapon.FireSonicBoom.OnEnter += FireSonicBoom_OnEnter;
+            On.EntityStates.ClayBruiser.Weapon.FireSonicBoom.OnEnter += ClayBruiserFireSonicBoom_OnEnter;
         }
 
-        private void FireSonicBoom_OnEnter1(On.EntityStates.ClayBruiser.Weapon.FireSonicBoom.orig_OnEnter orig, EntityStates.ClayBruiser.Weapon.FireSonicBoom self)
+        private void ClayBruiserFireSonicBoom_OnEnter(On.EntityStates.ClayBruiser.Weapon.FireSonicBoom.orig_OnEnter orig, EntityStates.ClayBruiser.Weapon.FireSonicBoom self)
         {
-            if (MightyClayBruiser.Value == false)
+            if (!ClayBruiserIsMighty.Value)
             {
-                isTemplarBoop = true;
+                useDefaultBoop = true;
             }
             orig(self);
         }
-        private bool isTemplarBoop = false;
 
+        private bool useDefaultBoop = false;
         private void FireSonicBoom_OnEnter(On.EntityStates.Treebot.Weapon.FireSonicBoom.orig_OnEnter orig, EntityStates.Treebot.Weapon.FireSonicBoom self)
         {
             try
             {
-                if (isTemplarBoop)
+                if (useDefaultBoop)
                 {
-                    isTemplarBoop = false;
+                    useDefaultBoop = false;
                     self.airKnockbackDistance = BoopConstants.AirKnockBackDistanceDefault;
                     self.groundKnockbackDistance = BoopConstants.GroundKnockBackDistanceDefault;
                     self.liftVelocity = BoopConstants.LiftVelocityDefault;
@@ -103,10 +107,10 @@ namespace TheMightyBoop
                 }    
                 else 
                 {
-                    self.airKnockbackDistance = (AirKnockBackDistance.Value < BoopConstants.MaximumBoop) ? AirKnockBackDistance.Value : BoopConstants.MaximumBoop;
-                    self.groundKnockbackDistance = (GroundKnockBackDistance.Value < BoopConstants.MaximumBoop) ? GroundKnockBackDistance.Value : BoopConstants.MaximumBoop;
-                    self.liftVelocity = (LiftVelocity.Value < BoopConstants.MaximumBoop) ? LiftVelocity.Value : BoopConstants.MaximumBoop;
-                    self.maxDistance = (MaxDistance.Value < BoopConstants.MaximumBoop) ? MaxDistance.Value : BoopConstants.MaximumBoop;
+                    self.airKnockbackDistance = AirKnockBackDistance.Value;
+                    self.groundKnockbackDistance = GroundKnockBackDistance.Value;
+                    self.liftVelocity = LiftVelocity.Value;
+                    self.maxDistance = MaxDistance.Value;
                 }
                 
             }
@@ -252,7 +256,7 @@ namespace TheMightyBoop
                     default:
                         throw new Exception("Arguement string is incorrect format. Type true or false.");
                 }
-                MightyClayBruiser.Value = mighty;
+                ClayBruiserIsMighty.Value = mighty;
                 Debug.Log($"Setting clay bruiser is mighty to {mighty}");
             }
             catch(Exception ex)
