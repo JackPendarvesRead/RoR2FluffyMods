@@ -38,7 +38,8 @@ namespace InfusionStackFix
                 0,
                 new ConfigDescription(
                     "Set the maximum value for health gain per kill. Set value to 0 for default mod behaviour (i.e. not limited, max=infusionStacks)",
-                    tags: new object[]{ "Advanced" }
+                    null,
+                    ConfigTags.Advanced
                     )                    
                 );
 

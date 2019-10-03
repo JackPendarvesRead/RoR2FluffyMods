@@ -98,6 +98,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigTags.cs" />
     <Compile Include="InfusionStackFix.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
