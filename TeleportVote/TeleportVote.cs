@@ -8,24 +8,67 @@ using Mono.Cecil.Cil;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using BepInEx.Configuration;
 
 namespace TeleportVote
 {
     [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.TeleportVote", "TeleportVote", "1.0.4")]
+    [BepInPlugin("com.FluffyMods.TeleportVote", "TeleportVote", "2.0.0")]
     public class TeleportVote : BaseUnityPlugin
     {
         private RestrictionController Controller { get; set; }
 
+        private ConfigEntry<bool> VotesEnabled { get; set; }
+        private ConfigEntry<int> VotesNeeded { get; set; }
+        private ConfigEntry<int> TimerNotificationInterval { get; set; }
+        private ConfigEntry<int> TimerTimeUntilOverride { get; set; }
+
         public void Awake()
         {
-            //TODO add config???
-            //TODO ping teleporter whilst restriction is active???
+            #region ConfigSetup
+            const string votesSection = "Votes";
+            const string timerSection = "Timer";
 
-            int notificationInterval = 15;
-            int timeUntilUnlock = 60;
-            this.Controller = new RestrictionController(notificationInterval, timeUntilUnlock);   
-            
+            VotesEnabled = Config.AddSetting<bool>(
+                votesSection,
+                nameof(VotesEnabled),
+                true,
+                new ConfigDescription(
+                    "Enable/Disable voting"
+                    ));
+
+            VotesNeeded = Config.AddSetting<int>(
+                votesSection,
+                nameof(VotesEnabled),
+                4,
+                new ConfigDescription(
+                    "Set maximum number of votes needed to continue (regardless of player count). Set to 0 for no limit.",
+                    new AcceptableValueRange<int>(0, 16),
+                    ConfigTags.Advanced
+                    ));
+
+            TimerNotificationInterval = Config.AddSetting<int>(
+               timerSection,
+               nameof(TimerNotificationInterval),
+               15,
+               new ConfigDescription(
+                   "Time between chat notifications and reminders",
+                   new AcceptableValueList<int>(15, 30),
+                   ConfigTags.Advanced
+                   ));
+
+            TimerTimeUntilOverride = Config.AddSetting<int>(
+               timerSection,
+               nameof(TimerTimeUntilOverride),
+               60,
+               new ConfigDescription(
+                   "Time after first vote until lock is overriden and you can use teleporter",
+                   new AcceptableValueList<int>(30, 60, 90, 120),
+                   ConfigTags.Advanced
+                   ));
+            #endregion
+
+            #region HookRegistration
             //Main hooks - triggers restriction logics
             On.RoR2.TeleporterInteraction.OnInteractionBegin += TeleporterInteraction_OnInteractionBegin;
             On.RoR2.TeleporterInteraction.OnStateChanged += TeleporterInteraction_OnStateChanged;
@@ -37,11 +80,13 @@ namespace TeleportVote
 
             //Prevent an exploitative interaction with teleporter and fireworks
             IL.RoR2.GlobalEventManager.OnInteractionBegin += GlobalEventManager_OnInteractionBegin;
-            
+
             //Cleanup Hooks - Needed to avoid bugs where list persists from one run to another
             On.RoR2.Run.BeginGameOver += Run_BeginGameOver;
             On.RoR2.Run.BeginStage += Run_BeginStage;
             On.RoR2.Run.EndStage += Run_EndStage;
+            #endregion
+
         }        
 
         #region ControllerTidyUp   
@@ -114,12 +159,12 @@ namespace TeleportVote
             {
                 case 1:
                 case 2:
-                case 4:
                     Controller.TeleporterIsCharging = true;
                     break;
 
                 case 0:
                 case 3:
+                case 4:
                     Controller.TeleporterIsCharging = false;
                     break;
             }
@@ -150,8 +195,7 @@ namespace TeleportVote
         /// <returns>Unique NetworkUserId of player</returns>
         private NetworkUser GetNetworkUserFromInteractor(Interactor interactor)
         {
-            var netUser = interactor.GetComponent<CharacterBody>().master.GetComponent<PlayerCharacterMasterController>().networkUser;
-            return netUser;
+            return interactor.GetComponent<CharacterBody>().master.GetComponent<PlayerCharacterMasterController>().networkUser;
         }
         #endregion
 
@@ -200,7 +244,7 @@ namespace TeleportVote
         /// <param name="il">il context</param>
         private void GlobalEventManager_OnInteractionBegin(ILContext il)
         {
-            ILLabel myLabel = il.DefineLabel();
+            ILLabel returnLabel = il.DefineLabel();
             var c = new ILCursor(il);
             c.GotoNext(
                 x => x.MatchLdloc(2),                                       // Item Count
@@ -217,10 +261,9 @@ namespace TeleportVote
                 if (interactableThing.name == InteractableObjectNames.Teleporter) { return true; }
                 else { return false; }
             });
-            c.Emit(OpCodes.Brtrue, myLabel);            
-            //Go to return
+            c.Emit(OpCodes.Brtrue, returnLabel); 
             c.GotoNext(x => x.MatchRet());
-            c.MarkLabel(myLabel);
+            c.MarkLabel(returnLabel);
         }
         #endregion       
     }
