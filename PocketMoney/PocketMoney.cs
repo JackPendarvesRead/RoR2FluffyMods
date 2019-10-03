@@ -49,12 +49,6 @@ namespace PocketMoney
                     )
                 );
 
-            On.RoR2.Console.Awake += (orig, self) =>
-            {
-                CommandHelper.RegisterCommands(self);
-                orig(self);
-            };
-
             On.RoR2.Run.BeginStage += Run_BeginStage;
         }
 
