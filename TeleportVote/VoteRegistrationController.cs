@@ -9,35 +9,69 @@ namespace TeleportVote
 {
     internal class VoteRegistrationController
     {
-        public int VotesNeeded
+        public bool PlayersCanVote { get; set; } = true;
+
+        public bool VotesReady
         {
             get
             {
-                return RoR2.Run.instance.livingPlayerCount;
+                if(RegisteredPlayers.Count >= VotesNeeded)
+                {
+                    return true;
+                }
+                return false;
             }
         }
-        public List<NetworkUserId> RegisteredPlayers { get; set; }
+
+        private int VotesNeeded
+        {
+            get
+            {   
+                return RoR2.Run.instance.livingPlayerCount < TeleportVote.MaximumVotes.Value ? RoR2.Run.instance.livingPlayerCount : TeleportVote.MaximumVotes.Value;
+            }
+        }
+
+        private List<NetworkUserId> RegisteredPlayers { get; set; } = new List<NetworkUserId>();
 
         public event EventHandler PlayerRegistered;
 
         public void RegisterPlayer(NetworkUser netUser)
         {
             var netId = netUser.Network_id;
-            if (!RegisteredPlayers.Contains(netId))
+            if (PlayersCanVote && !RegisteredPlayers.Contains(netId))
             {
                 RegisteredPlayers.Add(netId);
-                PlayerRegistered.Invoke(this, new PlayerRegisteredEventArgs(netUser));
+                if (VotesReady)
+                {
+                    return;
+                }
+                else
+                {
+                    Message.SendColoured($"{RegisteredPlayers.Count}/{VotesNeeded} players are ready", Colours.Green);
+                }
             }
         }
-    }
+
+        public void Reset()
+        {
+            RegisteredPlayers.Clear();
+            PlayersCanVote = true;
+        }
+    }  
 
     internal class PlayerRegisteredEventArgs : EventArgs
     {
-        public PlayerRegisteredEventArgs(NetworkUser registeredPlayer)
+        public PlayerRegisteredEventArgs(NetworkUser registeredPlayer, bool ready, int numberOfRegisteredPlayers, int numberOfVotesNeeded)
         {
             RegisteredPlayer = registeredPlayer;
+            Ready = ready;
+            NumberOfRegisteredPlayers = numberOfRegisteredPlayers;
+            NumberOfVotesNeeded = numberOfVotesNeeded;
         }
 
-        public NetworkUser RegisteredPlayer { get; set; }
+        public NetworkUser RegisteredPlayer { get; }
+        public bool Ready { get; }
+        public int NumberOfRegisteredPlayers { get; }
+        public int NumberOfVotesNeeded { get; }
     }
 }

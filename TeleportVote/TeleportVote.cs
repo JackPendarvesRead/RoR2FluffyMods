@@ -16,30 +16,31 @@ namespace TeleportVote
     [BepInPlugin("com.FluffyMods.TeleportVote", "TeleportVote", "2.0.0")]
     public class TeleportVote : BaseUnityPlugin
     {
-        private RestrictionController Controller { get; set; }
-
-        private ConfigEntry<bool> VotesEnabled { get; set; }
-        private ConfigEntry<int> VotesNeeded { get; set; }
-        private ConfigEntry<int> TimerNotificationInterval { get; set; }
-        private ConfigEntry<int> TimerTimeUntilOverride { get; set; }
+        private VoteRegistrationController VoteController { get; set; } = new VoteRegistrationController();
+        private TimerController TimerController { get; set; } = new TimerController();
+        
+        public static ConfigEntry<bool> VotesEnabled { get; set; }
+        public static ConfigEntry<int> MaximumVotes { get; set; }
+        //public static ConfigEntry<int> TimerNotificationInterval { get; set; }
+        //public static ConfigEntry<int> TimeUntilVoteOverride { get; set; }
 
         public void Awake()
-        {
+        {            
             #region ConfigSetup
             const string votesSection = "Votes";
-            const string timerSection = "Timer";
+            //const string timerSection = "Timer";
 
             VotesEnabled = Config.AddSetting<bool>(
                 votesSection,
-                nameof(VotesEnabled),
+                "Enable Votes",
                 true,
                 new ConfigDescription(
                     "Enable/Disable voting"
                     ));
 
-            VotesNeeded = Config.AddSetting<int>(
+            MaximumVotes = Config.AddSetting<int>(
                 votesSection,
-                nameof(VotesEnabled),
+                "Maximum Votes",
                 4,
                 new ConfigDescription(
                     "Set maximum number of votes needed to continue (regardless of player count). Set to 0 for no limit.",
@@ -47,25 +48,25 @@ namespace TeleportVote
                     ConfigTags.Advanced
                     ));
 
-            TimerNotificationInterval = Config.AddSetting<int>(
-               timerSection,
-               nameof(TimerNotificationInterval),
-               15,
-               new ConfigDescription(
-                   "Time between chat notifications and reminders",
-                   new AcceptableValueList<int>(15, 30),
-                   ConfigTags.Advanced
-                   ));
+            //TimerNotificationInterval = Config.AddSetting<int>(
+            //   timerSection,
+            //   "Timer Interval",
+            //   15,
+            //   new ConfigDescription(
+            //       "Time between chat notifications and reminders",
+            //       new AcceptableValueList<int>(15, 30),
+            //       ConfigTags.Advanced
+            //       ));
 
-            TimerTimeUntilOverride = Config.AddSetting<int>(
-               timerSection,
-               nameof(TimerTimeUntilOverride),
-               60,
-               new ConfigDescription(
-                   "Time after first vote until lock is overriden and you can use teleporter",
-                   new AcceptableValueList<int>(30, 60, 90, 120),
-                   ConfigTags.Advanced
-                   ));
+            //TimeUntilVoteOverride = Config.AddSetting<int>(
+            //   timerSection,
+            //   "Timer Limit",
+            //   60,
+            //   new ConfigDescription(
+            //       "Time after first vote until lock is overriden and you can use teleporter",
+            //       new AcceptableValueList<int>(30, 60, 90, 120),
+            //       ConfigTags.Advanced
+            //       ));
             #endregion
 
             #region HookRegistration
@@ -74,6 +75,7 @@ namespace TeleportVote
             On.RoR2.TeleporterInteraction.OnStateChanged += TeleporterInteraction_OnStateChanged;
             On.RoR2.Interactor.PerformInteraction += Interactor_PerformInteraction;
             On.RoR2.PlayerCharacterMasterController.OnBodyDeath += PlayerCharacterMasterController_OnBodyDeath;
+            VoteController.PlayerRegistered += VoteController_PlayerRegistered;
 
             //Chat Ready Command - type "r" to set yourself as ready
             Chat.onChatChanged += Chat_onChatChanged;
@@ -86,20 +88,37 @@ namespace TeleportVote
             On.RoR2.Run.BeginStage += Run_BeginStage;
             On.RoR2.Run.EndStage += Run_EndStage;
             #endregion
+        }
 
-        }        
+        private void VoteController_PlayerRegistered(object sender, EventArgs e)
+        {
+            var args = (PlayerRegisteredEventArgs)e;
+            Message.SendColoured($"{args.NumberOfRegisteredPlayers}/{args.NumberOfVotesNeeded} players ready.", Colours.Green);
+        }
 
-        #region ControllerTidyUp   
+        #region ControllerTidyUp  
+        private void StopAll()
+        {
+            VoteController.Reset();
+            TimerController.Stop();
+        }
+
+        private void PlayerCharacterMasterController_OnBodyDeath(On.RoR2.PlayerCharacterMasterController.orig_OnBodyDeath orig, PlayerCharacterMasterController self)
+        {
+            StopAll();
+            Message.SendColoured("Player died. Reinstating restriction.", Colours.Red);
+            orig(self);
+        }
+
         private void Run_EndStage(On.RoR2.Run.orig_EndStage orig, Run self)
         {
-            Controller.Stop();
+            StopAll();
             orig(self);
         }
 
         private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
-        {            
-            Controller.Stop();
-            Controller.TeleporterIsCharging = false;
+        {
+            StopAll();
             orig(self);
         }
 
@@ -107,29 +126,31 @@ namespace TeleportVote
         {
             if (self.isGameOverServer)
             {
-                Controller.Stop();                
+                StopAll();                
             }
             orig(self, gameResultType);
         }
         #endregion
 
-        #region MainHookMethods
+        #region VoteRegisterMethods
         private void TeleporterInteraction_OnInteractionBegin(On.RoR2.TeleporterInteraction.orig_OnInteractionBegin orig, TeleporterInteraction self, Interactor activator)
         {
-            var userNetId = GetNetworkUserFromInteractor(activator);
-            if (Controller.IsInteractionLegal(userNetId))
+            VoteController.RegisterPlayer(GetNetworkUserFromInteractor(activator));
+            if (VoteController.VotesReady)
             {
+                StopAll();
                 orig(self, activator);
             }
         }
 
         private void Interactor_PerformInteraction(On.RoR2.Interactor.orig_PerformInteraction orig, Interactor self, GameObject interactableObject)
-        {            
-            if (IsRestictableInteractableObject(interactableObject.name))
+        { 
+            if (InteractableObjectNames.IsRestictedInteractableObject(interactableObject.name))
             {
-                var userNetId = GetNetworkUserFromInteractor(self);
-                if (Controller.IsInteractionLegal(userNetId))
+                VoteController.RegisterPlayer(GetNetworkUserFromInteractor(self));
+                if (VoteController.VotesReady)
                 {
+                    StopAll();
                     orig(self, interactableObject);
                 }
             }
@@ -137,13 +158,6 @@ namespace TeleportVote
             {
                 orig(self, interactableObject);
             }
-        }
-
-        private void PlayerCharacterMasterController_OnBodyDeath(On.RoR2.PlayerCharacterMasterController.orig_OnBodyDeath orig, PlayerCharacterMasterController self)
-        {
-            Controller.Stop();
-            Message.SendToAll("Player died. Reinstating restriction.", Colours.Red);
-            orig(self);
         }
 
         private void TeleporterInteraction_OnStateChanged(On.RoR2.TeleporterInteraction.orig_OnStateChanged orig, TeleporterInteraction self, int oldActivationState, int newActivationState)
@@ -157,49 +171,27 @@ namespace TeleportVote
 
             switch (newActivationState)
             {
-                case 1:
-                case 2:
-                    Controller.TeleporterIsCharging = true;
+                case 1: // IdleToCharging
+                case 2: // Charging
+                case 4: // Finished
+                    VoteController.PlayersCanVote = false;
                     break;
 
-                case 0:
-                case 3:
-                case 4:
-                    Controller.TeleporterIsCharging = false;
+                case 0: // Idle
+                case 3: // Charged
+                    VoteController.PlayersCanVote = true;
                     break;
             }
             orig(self, oldActivationState, newActivationState);
-        }
+        }      
 
-        /// <summary>
-        /// Checks if an interactable should be checked for vote restriction logics
-        /// </summary>
-        /// <param name="interactableObjectName">String name of the interactable object</param>
-        /// <returns>True if object should be run through TeleporterVote restriction logic</returns>
-        private bool IsRestictableInteractableObject(string interactableObjectName)
-        {
-            foreach(var restrictedInteractable in InteractableObjectNames.GetAllRestrictedInteractableNames())
-            {
-                if(interactableObjectName.Trim().ToLower() == restrictedInteractable.ToLower())
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Get the unique NetworkUserId of player. Credit to Wildbook for help in getting this.
-        /// </summary>
-        /// <param name="interactor">Interactor object belonging to the player</param>
-        /// <returns>Unique NetworkUserId of player</returns>
         private NetworkUser GetNetworkUserFromInteractor(Interactor interactor)
         {
             return interactor.GetComponent<CharacterBody>().master.GetComponent<PlayerCharacterMasterController>().networkUser;
         }
         #endregion
 
-        #region ChatReadyCommand
+        #region ChatCommand
         private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
         private void Chat_onChatChanged()
         {
@@ -207,10 +199,10 @@ namespace TeleportVote
             {
                 var chatLog = Chat.readOnlyLog;
                 var match = ParseChatLog.Match(chatLog.Last());
-                var name = match.Groups["name"].Value.Trim();
+                var playerName = match.Groups["name"].Value.Trim();
                 var message = match.Groups["message"].Value.Trim();
-                Logger.LogDebug($"Chatlog={chatLog.Last()}, RMName={name}, RMMessage={message}");
-                if (!string.IsNullOrWhiteSpace(name))
+                Logger.LogDebug($"Chatlog={chatLog.Last()}, RMName={playerName}, RMMessage={message}");
+                if (!string.IsNullOrWhiteSpace(playerName))
                 {
                     switch (message.ToLower())
                     {
@@ -219,12 +211,12 @@ namespace TeleportVote
                         case "r":
                         case "y":
                         case "go":
-                            var netUser = (from u in RoR2.NetworkUser.readOnlyInstancesList
-                                           where u.userName.Trim() == name
-                                           select u).FirstOrDefault();
+                            var netUser = RoR2.NetworkUser.readOnlyInstancesList
+                                .Where(x => x.userName.Trim() == playerName)
+                                .FirstOrDefault();
                             if (netUser.GetCurrentBody().healthComponent.alive)
                             {
-                                Controller.ChatCommandReady(netUser);
+                                VoteController.RegisterPlayer(netUser);
                             }
                             break;
                     }

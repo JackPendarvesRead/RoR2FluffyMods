@@ -10,8 +10,7 @@ namespace TeleportVote
         public static string GoldPortal => "portalgoldshores";
         public static string GoldPortalClone => "portalgoldshores(Clone)"; 
         public static string MsPortal => "portalms"; 
-        public static string MsPortalClone => "portalms(Clone)";
-
+        public static string MsPortalClone => "portalms(Clone)";        
 
         public static List<string> GetAllRestrictedInteractableNames()
         {
@@ -26,6 +25,18 @@ namespace TeleportVote
                 MsPortal,
                 MsPortalClone
             };
+        }
+
+        public static bool IsRestictedInteractableObject(string interactableObjectName)
+        {
+            foreach (var restrictedInteractable in GetAllRestrictedInteractableNames())
+            {
+                if (interactableObjectName.Trim().ToLower() == restrictedInteractable.ToLower())
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
