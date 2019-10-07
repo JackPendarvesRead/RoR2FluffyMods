@@ -55,23 +55,18 @@ namespace ChronobaubleFix
             c.GotoNext(
                 x => x.MatchLdloc(1),
                 x => x.MatchLdcI4(26),
-                x => x.MatchLdcI4(2)
+                x => x.MatchLdcR4(2)
                 );
-            c.Emit(OpCodes.Ldarg_1);
-            c.Emit(OpCodes.Ldarg_2);
-            c.EmitDelegate<Func<DamageInfo, GameObject, bool>>((damageInfo, victim) =>
-            {       
-                if(DebuffStacksPerItemStack.Value > 0)
+            c.Emit(OpCodes.Ldloc_S, (byte)10); //Number of Chronobaubles on attacker
+            c.Emit(OpCodes.Ldloc_1); //Victim CharacterBody
+            c.EmitDelegate<Func<int, CharacterBody, bool>>((chronobaubleCount, victim) =>
+            {
+                if (DebuffStacksPerItemStack.Value > 0
+                    && victim.GetBuffCount(BuffIndex.Slow60) >= DebuffStacksPerItemStack.Value * chronobaubleCount)
                 {
-                    var itemCount = damageInfo.attacker.GetComponent<CharacterBody>().inventory.GetItemCount(ItemIndex.SlowOnHit);
-                    var buffCount = victim.GetComponent<CharacterBody>().GetBuffCount(BuffIndex.Slow60);
-                    if (buffCount >= DebuffStacksPerItemStack.Value * itemCount)
-                    {
-                        return false;
-                    }
-                }
-                return true;
-               
+                    return false;
+                }                
+                return true;               
             });
             c.Emit(OpCodes.Brfalse, label); //If delegate returns false, break and do not add buff
             c.GotoNext(x => x.MatchLdloc(0));
@@ -80,9 +75,9 @@ namespace ChronobaubleFix
 
         private void CharacterBody_RecalculateStats1(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
         {
-            Logger.LogInfo($"{self.name} Before: BuffCount={self.GetBuffCount(BuffIndex.Slow60)}, AttackSpeed={self.attackSpeed}, MoveSpeed={self.moveSpeed}");
+            Logger.LogDebug($"{self.name} Before: BuffCount={self.GetBuffCount(BuffIndex.Slow60)}, AttackSpeed={self.attackSpeed}, MoveSpeed={self.moveSpeed}");
             orig(self);
-            Logger.LogInfo($"{self.name} After: BuffCount={self.GetBuffCount(BuffIndex.Slow60)}, AttackSpeed={self.attackSpeed}, MoveSpeed={self.moveSpeed}");
+            Logger.LogDebug($"{self.name} After: BuffCount={self.GetBuffCount(BuffIndex.Slow60)}, AttackSpeed={self.attackSpeed}, MoveSpeed={self.moveSpeed}");
         }       
 
         private void CharacterBody_SetBuffCount(On.RoR2.CharacterBody.orig_SetBuffCount orig, CharacterBody self, BuffIndex buffType, int newCount)
