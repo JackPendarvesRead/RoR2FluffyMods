@@ -17,32 +17,31 @@ namespace ChronobaubleFix
     [BepInPlugin("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "1.0.0")]
     public class ChronobaubleFix : BaseUnityPlugin
     {
-        private static ConfigEntry<float> SlowScalingCoefficient;
-        private static ConfigEntry<int> DebuffStacksPerItemStack;
+        //private static ConfigEntry<float> SlowScalingCoefficient;
+        //private static ConfigEntry<int> DebuffStacksPerItemStack;
 
         public void Awake()
         {
-            const string chronobaubleSection = "Chronobauble";
+            //const string chronobaubleSection = "Chronobauble";
 
-            SlowScalingCoefficient = Config.AddSetting<float>(
-                new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
-                0.05f,
-                new ConfigDescription(
-                    "The scaling coefficient for how much each stack of slow will slow enemies (higher is slower)",
-                    new AcceptableValueRange<float>(0.00f, 0.20f)
-                    ));
+            //SlowScalingCoefficient = Config.AddSetting<float>(
+            //    new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
+            //    0.05f,
+            //    new ConfigDescription(
+            //        "The scaling coefficient for how much each stack of slow will slow enemies (higher is slower)",
+            //        new AcceptableValueRange<float>(0.00f, 0.20f)
+            //        ));
 
-            DebuffStacksPerItemStack = Config.AddSetting<int>(
-                new ConfigDefinition(chronobaubleSection, nameof(DebuffStacksPerItemStack)),
-                5,
-                new ConfigDescription(
-                    "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
-                    new AcceptableValueRange<int>(0, 20)
-                    ));
+            //DebuffStacksPerItemStack = Config.AddSetting<int>(
+            //    new ConfigDefinition(chronobaubleSection, nameof(DebuffStacksPerItemStack)),
+            //    5,
+            //    new ConfigDescription(
+            //        "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
+            //        new AcceptableValueRange<int>(0, 20)
+            //        ));
 
             On.RoR2.CharacterBody.SetBuffCount += CharacterBody_SetBuffCount;
             IL.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
-            On.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats1;
             IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
         }
 
@@ -61,8 +60,8 @@ namespace ChronobaubleFix
             c.Emit(OpCodes.Ldloc_1); //Victim CharacterBody
             c.EmitDelegate<Func<int, CharacterBody, bool>>((chronobaubleCount, victim) =>
             {
-                if (DebuffStacksPerItemStack.Value > 0
-                    && victim.GetBuffCount(BuffIndex.Slow60) >= DebuffStacksPerItemStack.Value * chronobaubleCount)
+                if (//DebuffStacksPerItemStack.Value > 0 &&
+                    victim.GetBuffCount(BuffIndex.Slow60) >= 5 * chronobaubleCount)// DebuffStacksPerItemStack.Value * chronobaubleCount)
                 {
                     return false;
                 }                
@@ -71,14 +70,7 @@ namespace ChronobaubleFix
             c.Emit(OpCodes.Brfalse, label); //If delegate returns false, break and do not add buff
             c.GotoNext(x => x.MatchLdloc(0));
             c.MarkLabel(label);
-        }
-
-        private void CharacterBody_RecalculateStats1(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
-        {
-            Logger.LogDebug($"{self.name} Before: BuffCount={self.GetBuffCount(BuffIndex.Slow60)}, AttackSpeed={self.attackSpeed}, MoveSpeed={self.moveSpeed}");
-            orig(self);
-            Logger.LogDebug($"{self.name} After: BuffCount={self.GetBuffCount(BuffIndex.Slow60)}, AttackSpeed={self.attackSpeed}, MoveSpeed={self.moveSpeed}");
-        }       
+        }   
 
         private void CharacterBody_SetBuffCount(On.RoR2.CharacterBody.orig_SetBuffCount orig, CharacterBody self, BuffIndex buffType, int newCount)
         {
@@ -126,7 +118,8 @@ namespace ChronobaubleFix
 
         private float GetDiminishingReturns(int count)
         {
-            return 1.0f / (count * SlowScalingCoefficient.Value + 1);
+            return 1.0f / (count * 0.05f + 1);
+            //return 1.0f / (count * SlowScalingCoefficient.Value + 1);
         }
     }
 }
