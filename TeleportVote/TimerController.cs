@@ -9,44 +9,29 @@ namespace TeleportVote
 {
     internal class TimerController
     {
-        private Timer mainTimer;
+        private PausableTimer mainTimer;
         private readonly int mainTimerInterval = 15;
 
-        private Timer lockAgainTimer;
+        private PausableTimer lockAgainTimer;
         private readonly int lockAgainTimerInterval = 5;
 
-        private Timer finalCountdownTimer;
+        private PausableTimer finalCountdownTimer;
         private readonly int finalCountdownTimerInterval = 1;
 
         public void Start()
         {
-            mainTimer = new Timer
-            {
-                AutoReset = true,
-                Interval = mainTimerInterval * 1000,
-                Enabled = false
-            };
+            mainTimer = new PausableTimer(mainTimerInterval, true);
             mainTimer.Elapsed += MainTimer_Elapsed;
 
-            lockAgainTimer = new Timer
-            {
-                AutoReset = true,
-                Interval = lockAgainTimerInterval * 1000,
-                Enabled = false
-            };
+            lockAgainTimer = new PausableTimer(lockAgainTimerInterval, true);
             lockAgainTimer.Elapsed += LockAgainTimer_Elapsed;
 
-            finalCountdownTimer = new Timer
-            {
-                AutoReset = true,
-                Interval = finalCountdownTimerInterval * 1000,
-                Enabled = false
-            };
+            finalCountdownTimer = new PausableTimer(finalCountdownTimerInterval, true);
             finalCountdownTimer.Elapsed += FinalCountdownTimer_Elapsed;
 
             mainTimer.Start();
             Message.SendColoured("Timer started. Restrictions will be lifted in 60s.", Colours.LightBlue);
-        }
+        }       
 
         public void Stop()
         {
@@ -61,7 +46,7 @@ namespace TeleportVote
         }
 
         private int mainLoop = 0;
-        private void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void MainTimer_Elapsed(object sender, EventArgs e)
         {
             var time = (mainLoop + 1) * mainTimerInterval;
             var timeRemaining = 60 - time;
@@ -79,7 +64,7 @@ namespace TeleportVote
         }
 
         private int lockedAgainLoop = 0;
-        private void LockAgainTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void LockAgainTimer_Elapsed(object sender, EventArgs e)
         {
             var time = (lockedAgainLoop + 1) * lockAgainTimerInterval;
             var timeRemaining = 25 - time;
@@ -97,7 +82,7 @@ namespace TeleportVote
         }
 
         private int countdown = 5;
-        private void FinalCountdownTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void FinalCountdownTimer_Elapsed(object sender, EventArgs e)
         {
             if(countdown > 0)
             {

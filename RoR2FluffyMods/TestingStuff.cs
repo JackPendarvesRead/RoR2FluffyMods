@@ -13,10 +13,32 @@ using BepInEx.Configuration;
 namespace RoR2FluffyMods
 {
     [BepInDependency("com.bepis.r2api")]
+    [BepInPlugin("com.FluffyMods.event", "event", "0.0.0")]
+    public class Blerp : BaseUnityPlugin
+    {
+        const string modver = "0.0.0";
+
+        public void Awake()
+        {
+            RoR2.GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
+            RoR2.GlobalEventManager.onServerDamageDealt += GlobalEventManager_onServerDamageDealt;
+        }
+
+        private void GlobalEventManager_onServerDamageDealt(DamageReport obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void GlobalEventManager_onCharacterDeathGlobal(DamageReport obj)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.AAAAA", "AAAAA", "0.0.0")]
     public class TestingStuff : BaseUnityPlugin
     {
-
         public void Awake()
         {
             IL.EntityStates.Huntress.ArrowRain.OnEnter += ArrowRain_OnEnter;

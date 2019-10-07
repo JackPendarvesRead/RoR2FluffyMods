@@ -37,6 +37,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OnHold", "OnHold", "{AA4E1C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BepConfigManagerTest", "BepConfigManagerTest\BepConfigManagerTest.csproj", "{D5427034-4923-42AF-9654-E9A7F5A52838}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChronobaubleFix", "ChronobaubleFix\ChronobaubleFix.csproj", "{048CDBF6-EDE7-46F5-AED9-0522A40F0671}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{D5427034-4923-42AF-9654-E9A7F5A52838}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5427034-4923-42AF-9654-E9A7F5A52838}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5427034-4923-42AF-9654-E9A7F5A52838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{048CDBF6-EDE7-46F5-AED9-0522A40F0671}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{048CDBF6-EDE7-46F5-AED9-0522A40F0671}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{048CDBF6-EDE7-46F5-AED9-0522A40F0671}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{048CDBF6-EDE7-46F5-AED9-0522A40F0671}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
