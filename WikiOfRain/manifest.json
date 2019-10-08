@@ -1,8 +1,8 @@
 {
-  "name": "ChronobaubleFix",
+  "name": "WikiOfRain",
   "version_number": "1.0.0",
-  "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/blob/BepinexUpdate/ChronobaubleFix/ChronobaubleFix.cs",
-  "description": "Make chronobauble a usable item. Increase number of slow stacks given. Stacks also decrease attack speed of enemy.",
+  "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/BepinexUpdate/WikiOfRain",
+  "description": "Get more smarter whilst you play! Every stage the game will read a random wikipedia article for you and send it to you in chat",
   "dependencies": [
     "tristanmcpherson-R2API-2.1.15",
     "bbepis-BepInExPack-2.0.0"

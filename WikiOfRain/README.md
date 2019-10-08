@@ -1,31 +1,26 @@
-# ChronobaubleFix
+# WikiOfRain
 
-One of the most complained about items in the game is Chronobauble. 
+Do you want to be more smarter like I are? Now you can be smart like me by reading wikipedia whilst you play.
 
-"IT'S USELESS!", "IT SHOULDN'T BE A GREEN ITEM!", "SUCH A WASTE!". All things you might commonly hear people say about Chronobauble, well not anymore.
+This mod will read a random wikipedia page and play it back to you in chat one sentence at a time on a timer.
 
-With ChronobaubleFix the chronobauble slow debuff can now stack. For each chronobauble stack in your inventory you will be able to give enemies five debuff stacks. Each debuff stack will further reduce movement speed and attack speed of the enemy. 
+This is an early version of this mod which hasn't had extensive testing so it is quite likely you will find some weirdness, please do let me know if you find any such weirdness.
 
-As mentioned above this also buffs Chronobauble to also decrease attack speed of the enemy. In testing I found this to be a huge buff to the item and made it well worth picking up a few. It was so good that I actually halved my initial calculation for how much reduction it gives.
-
-I hope you can give this item another chance and have some fun with Chronobauble in its new found glory.
+Happy learnings!
 
 Enjoy,
 Thanks
 
 ## Configuration
 
-This mod was written for Bepinex#150+ which is as yet unreleased. Therefore there is no configuration in this build until the new bepinex build is released. If you desperately want a build with configuration if you contact me on the RoR2Modding discord I will send it to you, you will need latest build of Bepinex (not on thunderstore) though for this to work.
-
-Once the new Bepinex build arrives you will be able to configure:
-- debuff slow coefficient
-- maximum number of debuff stacks per item stack
+This mod was written for Bepinex#150+ which is as yet unreleased. Therefore there is no configuration in this build until the new bepinex build is released. 
 
 ## Installation:
 
 Requires intallation of Bepinex and R2API. 
 
-Place `Chronobauble.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
+Place `WikiOfRain` folder inside of "/Risk of Rain 2/Bepinex/Plugins/"
+This folder should contain `WikiOfRain.dll`, `WebHtmlParser.dll` and `HtmlAgilityPack.dll`
 
 ## Contact
 
