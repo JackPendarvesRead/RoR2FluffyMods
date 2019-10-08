@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BepConfigManagerTest", "Bep
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChronobaubleFix", "ChronobaubleFix\ChronobaubleFix.csproj", "{048CDBF6-EDE7-46F5-AED9-0522A40F0671}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiOfRain", "WikiOfRain\WikiOfRain.csproj", "{F381E982-3B2B-4067-86DD-CF0F4E3518BC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,10 @@ Global
 		{048CDBF6-EDE7-46F5-AED9-0522A40F0671}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{048CDBF6-EDE7-46F5-AED9-0522A40F0671}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{048CDBF6-EDE7-46F5-AED9-0522A40F0671}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F381E982-3B2B-4067-86DD-CF0F4E3518BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F381E982-3B2B-4067-86DD-CF0F4E3518BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F381E982-3B2B-4067-86DD-CF0F4E3518BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F381E982-3B2B-4067-86DD-CF0F4E3518BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -122,6 +128,7 @@ Global
 		{B810F50E-BC5F-4C14-B032-6A786DB7269C} = {7CF587FF-DFEC-4C4B-9988-87FF40089DB6}
 		{B17B6827-B9E5-450A-A40B-737729F7E931} = {7CF587FF-DFEC-4C4B-9988-87FF40089DB6}
 		{D5427034-4923-42AF-9654-E9A7F5A52838} = {8D25F199-8273-465B-A1C5-C979D8BA650E}
+		{048CDBF6-EDE7-46F5-AED9-0522A40F0671} = {7CF587FF-DFEC-4C4B-9988-87FF40089DB6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EDF5086C-311C-441D-8063-82C062301BD1}
