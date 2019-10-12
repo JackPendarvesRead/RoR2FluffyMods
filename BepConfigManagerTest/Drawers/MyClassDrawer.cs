@@ -1,4 +1,5 @@
-﻿using BepInEx.Configuration;
+﻿using BepConfigManagerTest.Infrastructure;
+using BepInEx.Configuration;
 using ConfigurationManager;
 using System;
 using System.Collections.Generic;
@@ -7,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace BepConfigManagerTest
+namespace BepConfigManagerTest.Drawers
 {
-    class MyClassDrawer
+    public class MyClassDrawer : IDrawer
     {
-        public Action<SettingEntryBase> Create()
+        public Action<SettingEntryBase> Draw()
         {
             return (seb) =>
             {

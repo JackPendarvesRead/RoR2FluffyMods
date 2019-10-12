@@ -29,16 +29,26 @@ namespace RiskOfCatFacts
                 true,
                 new ConfigDescription("Enable/Disable receiving CatFacts"));
 
-
-            random = new System.Random();
-
-            timer = new Timer();
-            timer.Elapsed += Timer_Elapsed;
-
             Chat.onChatChanged += Chat_onChatChanged;
-            On.RoR2.Run.BeginStage += Run_BeginStage;
-            On.RoR2.Run.BeginGameOver += Run_BeginGameOver;
+            RoR2.Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
+            RoR2.Run.onRunStartGlobal += Run_onRunStartGlobal;
             On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
+        }
+
+        private void Run_onRunStartGlobal(Run obj)
+        {
+            if (CatFactsEnabled.Value)
+            {
+                timer = new Timer();
+                timer.Elapsed += Timer_Elapsed;
+                timer.Interval = interval;
+                timer.Start();
+            }
+        }
+
+        private void Run_onRunDestroyGlobal(Run obj)
+        {
+            Stop();
         }
 
         private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
@@ -50,13 +60,7 @@ namespace RiskOfCatFacts
                 SendCatFact();
             }            
             orig(self, damageReport);
-        }
-
-        private void Run_BeginGameOver(On.RoR2.Run.orig_BeginGameOver orig, Run self, GameResultType gameResultType)
-        {
-            Stop();
-            orig(self, gameResultType);
-        }
+        }       
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -68,18 +72,7 @@ namespace RiskOfCatFacts
             {
                 Stop();
             }
-        }
-
-        private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
-        {
-            if (CatFactsEnabled.Value
-                && !timer.Enabled)
-            {
-                timer.Interval = interval;
-                timer.Start();
-            }
-            orig(self);
-        }        
+        }            
 
         private void SendCatFact()
         {
@@ -87,7 +80,7 @@ namespace RiskOfCatFacts
             Message.SendColoured(CatFacts.Facts[index], Colours.LightBlue, "CatFact");
         }
 
-        private void Unsubscribe()
+        private void FakeUnsubscribe()
         {
             Message.SendColoured("Command not recognised.", Colours.Red);
             Message.SendColoured("Thank you for subscribing to CatFacts! We will double your fact rate free of charge!", Colours.Green);
@@ -106,7 +99,7 @@ namespace RiskOfCatFacts
         private void Stop()
         {
             interval = 60 * 1000;
-            timer.Stop();
+            timer.Dispose();
         }
 
         private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
@@ -133,7 +126,7 @@ namespace RiskOfCatFacts
                             break;
                             
                         case "dog":
-                            Unsubscribe();
+                            FakeUnsubscribe();
                             break;
 
                         case "unsubscribe":
@@ -146,13 +139,12 @@ namespace RiskOfCatFacts
                         case "stop":
                         case "undo":
                         case "please":
-                            Unsubscribe();
+                            FakeUnsubscribe();
                             break;
 
                         case "seriously please actually stop this is enough":
                             Stop();
-                            break;
-                            
+                            break;                            
                     }
                 }
             }

@@ -1,9 +1,9 @@
 ﻿using BepInEx;
-using System;
-using System.Collections.Generic;
 using BepInEx.Configuration;
 using UnityEngine;
 using ConfigurationManager;
+using BepConfigManagerTest.Infrastructure;
+using BepConfigManagerTest.Drawers;
 
 namespace BepConfigManagerTest
 {
@@ -41,7 +41,7 @@ namespace BepConfigManagerTest
                 new ConfigDescription(
                     "My Description",
                     null,
-                    new MyClassDrawer().Create()                
+                    new MyClassDrawer().Draw()                
                 ));
         }
 

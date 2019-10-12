@@ -1,4 +1,5 @@
-﻿using ConfigurationManager;
+﻿using BepConfigManagerTest.Infrastructure;
+using ConfigurationManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace BepConfigManagerTest
+namespace BepConfigManagerTest.Drawers
 {
-    class HarbDrawer
+    class MacroDrawer : IDrawer
     {
-        public Action<SettingEntryBase> Create()
+        public Action<SettingEntryBase> Draw()
         {
             return (seb) =>
             {

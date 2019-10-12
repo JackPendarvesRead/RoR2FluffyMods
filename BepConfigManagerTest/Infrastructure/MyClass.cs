@@ -7,8 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace BepConfigManagerTest
-{
+namespace BepConfigManagerTest.Infrastructure
+{ 
     [System.Serializable]
     public struct MyClass
     {
