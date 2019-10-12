@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace BepConfigManagerTest
 {
-    enum TestEnum
+    public static class Special
     {
-        Something,
-        SomethingElse,
-        Silly
+        public static char Delimiter = '\0';
     }
 }

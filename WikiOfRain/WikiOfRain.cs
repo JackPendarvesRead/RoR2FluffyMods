@@ -33,9 +33,16 @@ namespace WikiOfRain
             RoR2.Run.OnServerGameOver += Run_OnServerGameOver;
         }
 
+        private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
+        {
+            orig(self);
+            controller = new WikipediaMessageController(randomWikiUrl, Interval.Value);
+            controller.Start();
+        }
+
         private void Run_AdvanceStage(On.RoR2.Run.orig_AdvanceStage orig, Run self, SceneDef nextScene)
         {
-            orig(self, nextScene);
+            orig(self, nextScene);            
             controller.Stop();
         }
 
@@ -47,13 +54,6 @@ namespace WikiOfRain
         private void Run_onRunDestroyGlobal(Run obj)
         {
             controller.Stop();
-        }
-
-        private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
-        {
-            orig(self);
-            controller = new WikipediaMessageController(randomWikiUrl, Interval.Value);
-            controller.Start();
         }
     }
 }
