@@ -10,5 +10,5 @@ namespace BepConfigManagerTest.Drawers
     public interface IDrawer
     {
         Action<SettingEntryBase> Draw();
-    }
+    }  
 }

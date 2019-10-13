@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace BepConfigManagerTest.Infrastructure
 {
     class Macro
     {
-        public string Value { get; set; }
+        public string MacroString { get; set; }
+        public int RepeatNumber { get; set; }
         public BepInEx.Configuration.KeyboardShortcut KeyboardShortcut { get; set; }
 
         public static TypeConverter GetTypeConvert()
@@ -18,18 +20,35 @@ namespace BepConfigManagerTest.Infrastructure
             {
                 ConvertToString = (obj, type) =>
                 {
-                    var macro = (Macro)obj;
-                    var kb = macro.KeyboardShortcut.Serialize();
-                    return macro.Value + "\0" + kb;
+                    try
+                    {
+                        var macro = (Macro)obj;
+                        var kb = macro.KeyboardShortcut.Serialize();
+                        return macro.MacroString + Special.Delimiter + macro.RepeatNumber.ToString() + Special.Delimiter + kb;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError(ex);
+                        throw;
+                    }
                 },
                 ConvertToObject = (s, type) =>
                 {
-                    var split = s.Split('\0');
-                    return new Macro
+                    try
                     {
-                        Value = split[0],
-                        KeyboardShortcut = BepInEx.Configuration.KeyboardShortcut.Deserialize(split[1])
-                    };
+                        var split = s.Split(Special.Delimiter);
+                        return new Macro
+                        {
+                            MacroString = split[0],
+                            RepeatNumber = Int32.Parse(split[1]),
+                            KeyboardShortcut = BepInEx.Configuration.KeyboardShortcut.Deserialize(split[2])
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError(ex);
+                        throw;
+                    }
                 }
             };
         }

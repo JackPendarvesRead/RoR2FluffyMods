@@ -11,45 +11,68 @@ namespace BepConfigManagerTest
     [BepInPlugin("com.FluffyMods.ConfigManagerTest", "ConfigManagerTest", "0.0.0")]
     public class ConfigManagerTest : BaseUnityPlugin
     {
-        private static ConfigEntry<MyClass> MacroConfig;
-        private static ConfigEntry<BepInEx.Configuration.KeyboardShortcut> kbs;
+        private static ConfigEntry<Macro> Macro01;
+        private static ConfigEntry<Macro> Macro02;
+        private static ConfigEntry<Macro> Macro03;
+        //private static ConfigEntry<BepInEx.Configuration.KeyboardShortcut> kbs;
 
         public ConfigManagerTest()
         {
             TomlTypeConverter.AddConverter(typeof(MyClass), MyClass.GetTypeConverter());
-            //ConfigurationManager.ConfigurationManager.RegisterCustomSettingDrawer(typeof(Macro), HarbDrawer.Create());
+            TomlTypeConverter.AddConverter(typeof(Macro), Macro.GetTypeConvert());
+            ConfigurationManager.ConfigurationManager.RegisterCustomSettingDrawer(typeof(Macro), new MacroDrawer().Draw());
         }
 
         public void Awake()
         {
-            kbs = Config.AddSetting<BepInEx.Configuration.KeyboardShortcut>(
-               "keyboard",
-               "Key",
-               new BepInEx.Configuration.KeyboardShortcut(KeyCode.U),
-               new ConfigDescription(
-                   "My Description"));
+            const string macroSection = "Macroes";
 
-            MacroConfig = Config.AddSetting<MyClass>(
-                 "Custom",
-                 "Key",
-                 new MyClass
+            Macro01 = Config.AddSetting<Macro>(
+                 macroSection,
+                 "Macro 1",
+                 new Macro
                  {
-                     MyString = "DefaultString",
-                     MyInt = 100,
-                     kbs = new BepInEx.Configuration.KeyboardShortcut(KeyCode.A)
+                     MacroString = "",
+                     RepeatNumber = 1,
+                     KeyboardShortcut = new BepInEx.Configuration.KeyboardShortcut(KeyCode.None)
                 },
-                new ConfigDescription(
-                    "My Description",
-                    null,
-                    new MyClassDrawer().Draw()                
-                ));
-        }
+                new ConfigDescription("Description of Macro1")
+                );
 
+            Macro02 = Config.AddSetting<Macro>(
+                 macroSection,
+                 "Macro 2",
+                 new Macro
+                 {
+                     MacroString = "",
+                     RepeatNumber = 1,
+                     KeyboardShortcut = new BepInEx.Configuration.KeyboardShortcut(KeyCode.None)
+                 },
+                new ConfigDescription("Description of Macro2")
+                );
 
+            Macro03 = Config.AddSetting<Macro>(
+                 macroSection,
+                 "Macro 3",
+                 new Macro
+                 {
+                     MacroString = "",
+                     RepeatNumber = 1,
+                     KeyboardShortcut = new BepInEx.Configuration.KeyboardShortcut(KeyCode.None)
+                 },
+                new ConfigDescription("Description of Macro3")
+                );
 
-        private void DoSomeStuff(SettingEntryBase seb)
-        {
-            GUILayout.Label("THIS IS A LABEL", GUILayout.ExpandWidth(true));
-        }        
+            //new ConfigButton(this).AddButtonConfig("Button", "button", "Button", () =>
+            //{
+            //    var x = new MyClass
+            //    {
+            //        kbs = new BepInEx.Configuration.KeyboardShortcut(KeyCode.Z),
+            //        MyInt = 2000,
+            //        MyString = "You pushed da button"
+            //    };
+            //    MacroConfig.Value = x;
+            //});
+        }    
     }
 }

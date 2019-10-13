@@ -143,7 +143,8 @@ namespace BepConfigManagerTest.Drawers
 
                 if (GUILayout.Button("Clear", GUILayout.ExpandWidth(false)))
                 {
-                    seb.Set(BepInEx.Configuration.KeyboardShortcut.Empty);
+                    myClass.kbs = BepInEx.Configuration.KeyboardShortcut.Empty;
+                    seb.Set(myClass);
                     edittingKbs = false;
                 }
             }

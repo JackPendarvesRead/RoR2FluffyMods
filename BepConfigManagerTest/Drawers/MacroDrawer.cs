@@ -16,64 +16,154 @@ namespace BepConfigManagerTest.Drawers
         {
             return (seb) =>
             {
-                var macro = (Macro)seb.Get();
-                var before = seb.ObjToStr(macro);
-                DrawStringBox(seb, macro);
-                DrawKeyboardShortcut(seb, macro);                
+                GUILayout.BeginVertical();
+                DrawStringBox(seb);
+                DrawIntBox(seb);
+                DrawKeyboardShortcut(seb);
+                GUILayout.Label("_____________________________________"); //I know this is ugly but its a temp solution
+                GUILayout.EndVertical();
             };
         }
 
-        private void DrawStringBox(SettingEntryBase seb, Macro macro)
+        
+        private Texture2D GetBackground()
         {
-            if(seb.ObjToStr != null
-                && seb.StrToObj != null)
+            var background = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+            background.SetPixel(0, 0, Color.black);
+            background.Apply();
+            return background;
+        }
+        private void DrawStringBox(SettingEntryBase seb)
+        {
+            var style = new GUIStyle
             {
-                var text = macro.Value;
-                var result = GUILayout.TextField(text, GUILayout.Width(180.0f), GUILayout.Height(80.0f));
-                if (result != text)
+                normal = new GUIStyleState { textColor = Color.white, background = GetBackground() },
+                wordWrap = true                
+            };
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("MacroString");
+            var macro = (Macro)seb.Get();
+            var text = macro.MacroString;
+            var result = GUILayout.TextField(text, GUILayout.ExpandWidth(true), GUILayout.ExpandHeight(true));
+            if (result != text)
+            {
+                try
                 {
-                    macro.Value = result;
+                    macro.MacroString = result;
                     seb.Set(macro);
                 }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
             }
+            GUILayout.EndHorizontal();
         }
 
-        private bool edit = false;
-        private readonly IEnumerable<KeyCode> _keysToCheck = BepInEx.Configuration.KeyboardShortcut.AllKeyCodes.Except(new[] { KeyCode.Mouse0 }).ToArray();
-        private void DrawKeyboardShortcut(SettingEntryBase seb, Macro macro)
+        private void DrawIntBox(SettingEntryBase seb)
         {
-            if (!edit)
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("RepeatCount");
+            var macro = (Macro)seb.Get();
+            var repeatCount = macro.RepeatNumber.ToString();
+            var result = GUILayout.TextField(repeatCount, GUILayout.ExpandWidth(true));
+            if (result != repeatCount)
             {
-                edit = GUILayout.Button(macro.KeyboardShortcut.ToString(), GUILayout.ExpandWidth(true));
-            }             
-            if (edit)
-            {
-                GUILayout.Label("Press a key", GUILayout.ExpandWidth(true));
-                GUIUtility.keyboardControl = -1;
-
-                foreach (var key in _keysToCheck)
+                try
                 {
+                    macro.RepeatNumber = Int32.Parse(result);
+                    seb.Set(macro);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }
+            }
+            GUILayout.EndHorizontal();
+        }
 
-                    if (Input.GetKeyDown(key))
+        private static readonly IEnumerable<KeyCode> _keysToCheck =
+            BepInEx.Configuration.KeyboardShortcut
+            .AllKeyCodes
+            .Except(new[] { KeyCode.Mouse0, KeyCode.None })
+            .ToArray();
+
+        private List<KeyCode> keyCodeList = new List<KeyCode>();
+        private bool edittingKbs = false;
+        private void DrawKeyboardShortcut(SettingEntryBase seb)
+        {
+            GUILayout.BeginHorizontal();
+            var macro = (Macro)seb.Get();
+            if (edittingKbs)
+            {
+                GUIUtility.keyboardControl = -1;
+                Event e = Event.current;
+                if (e.isKey
+                    && _keysToCheck.Contains(e.keyCode)
+                    && !keyCodeList.Contains(e.keyCode))
+                {
+                    keyCodeList.Add(e.keyCode);
+                }
+
+                if (keyCodeList.Count > 0)
+                {
+                    var sb = new StringBuilder();
+                    foreach (var code in keyCodeList)
                     {
-                        macro.KeyboardShortcut = new BepInEx.Configuration.KeyboardShortcut(key);
-                        seb.Set(macro);
-                        //macro.KeyboardShortcut = new BepInEx.Configuration.KeyboardShortcut(key, _keysToCheck.Where(Input.GetKey).ToArray());
-                        break;
+                        sb.Append(code.ToString());
+                        if (keyCodeList.Last() != code)
+                        {
+                            sb.Append(" + ");
+                        }
                     }
-                }                
+                    GUILayout.Label(sb.ToString(), GUILayout.ExpandWidth(true));
+                }
+                else
+                {
+                    GUILayout.Label("Press any key combination", GUILayout.ExpandWidth(true));
+                }
+
+                if (GUILayout.Button("OK", GUILayout.ExpandWidth(false)))
+                {
+                    if (keyCodeList.Count > 0)
+                    {
+                        if (keyCodeList.Count > 1)
+                        {
+                            macro.KeyboardShortcut = new BepInEx.Configuration.KeyboardShortcut(keyCodeList[0], keyCodeList.Skip(1).ToArray());
+                        }
+                        else
+                        {
+                            macro.KeyboardShortcut = new BepInEx.Configuration.KeyboardShortcut(keyCodeList[0]);
+                        }
+                        seb.Set(macro);
+                    }
+                    keyCodeList.Clear();
+                    edittingKbs = false;
+                }
+
                 if (GUILayout.Button("Cancel", GUILayout.ExpandWidth(false)))
                 {
-                     edit = false;
+                    keyCodeList.Clear();
+                    edittingKbs = false;
                 }
             }
             else
-            {               
+            {
+                GUILayout.Label("Shortcut: ");
+                if (GUILayout.Button(macro.KeyboardShortcut.ToString(), GUILayout.ExpandWidth(true)))
+                {
+                    edittingKbs = true;
+                }
+
                 if (GUILayout.Button("Clear", GUILayout.ExpandWidth(false)))
                 {
                     macro.KeyboardShortcut = BepInEx.Configuration.KeyboardShortcut.Empty;
+                    seb.Set(macro);
+                    edittingKbs = false;
                 }
             }
+            GUILayout.EndHorizontal();
         }
     }
 }
