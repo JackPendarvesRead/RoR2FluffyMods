@@ -14,10 +14,10 @@ namespace InfusionStackFix
     [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.3.0")]
     public class InfusionStackFix : BaseUnityPlugin
     {
-        private ConfigWrapper<int> MaxHpPerInfusionStack;
-        private ConfigWrapper<int> MaxHealthGainPerKill;
-        private ConfigWrapper<bool> TurretReceivesBonusFromEngineer;
-        private ConfigWrapper<bool> LegacyInfusion;
+        private ConfigEntry<int> MaxHpPerInfusionStack;
+        private ConfigEntry<int> MaxHealthGainPerKill;
+        private ConfigEntry<bool> TurretReceivesBonusFromEngineer;
+        private ConfigEntry<bool> LegacyInfusion;
 
         public void Awake()
         {
@@ -25,32 +25,39 @@ namespace InfusionStackFix
             const string infusionSectionName = "Infusion";
             const string engineerSectionName = "Engineer";
 
-            MaxHpPerInfusionStack = Config.Wrap<int>(                
-                infusionSectionName, 
-                nameof(MaxHpPerInfusionStack),
-                "Set the maximum health that each infusion gives you. (Unlimited if LegacyInfusion enabled)",
-                100
+            MaxHpPerInfusionStack = Config.AddSetting<int>(
+                new ConfigDefinition(infusionSectionName, nameof(MaxHpPerInfusionStack)),
+                100,
+                new ConfigDescription(
+                    "Set the maximum health that each infusion gives you",
+                    new AcceptableValueRange<int>(1, 1000)
+                    )
                 );
 
-            MaxHealthGainPerKill = Config.Wrap<int>(
-                infusionSectionName, 
-                nameof(MaxHealthGainPerKill),
-                "Set the maximum value for health gain per kill. Set value to 0 for default mod behaviour (i.e. not limited, max=infusionStacks)",
-                0                                  
+            MaxHealthGainPerKill = Config.AddSetting<int>(
+                new ConfigDefinition(infusionSectionName, nameof(MaxHealthGainPerKill)),
+                0,
+                new ConfigDescription(
+                    "Set the maximum value for health gain per kill. Set value to 0 for default mod behaviour (i.e. not limited, max=infusionStacks)",
+                    null,
+                    ConfigTags.Advanced
+                    )
                 );
 
-            LegacyInfusion = Config.Wrap<bool>(
-               infusionSectionName,
-               nameof(LegacyInfusion),
-               "If enabled there is no maximum for infusion bonus (overrides MaxHpPerInfusionStack)",
-               false
-               );
+            LegacyInfusion = Config.AddSetting<bool>(
+                new ConfigDefinition(infusionSectionName, nameof(LegacyInfusion)),
+                true,
+                new ConfigDescription(
+                    "If enabled there is no maximum for infusion bonus (overrides MaxHpPerInfusionStack)"
+                    )
+                );
 
-            TurretReceivesBonusFromEngineer = Config.Wrap<bool>(
-                engineerSectionName, 
-                nameof(TurretReceivesBonusFromEngineer),
-                "If enabled then turrets will receive the current infusion bonus of the Engineer on creation",
-                true
+            TurretReceivesBonusFromEngineer = Config.AddSetting<bool>(
+                new ConfigDefinition(engineerSectionName, nameof(TurretReceivesBonusFromEngineer)),
+                true,
+                new ConfigDescription(
+                    "If enabled then turrets will receive the current infusion bonus of the Engineer on creation"
+                    )
                 );
             #endregion
 
