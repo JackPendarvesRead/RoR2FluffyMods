@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiOfRain", "WikiOfRain\Wi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deprecated", "Deprecated", "{729620EE-FE2B-42A6-AAC3-564727994F2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluffyLabsTest", "FluffyLabsTest\FluffyLabsTest.csproj", "{95D3CB51-F382-4A4B-9D75-3C4BDA56F6D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,6 +115,10 @@ Global
 		{F381E982-3B2B-4067-86DD-CF0F4E3518BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F381E982-3B2B-4067-86DD-CF0F4E3518BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F381E982-3B2B-4067-86DD-CF0F4E3518BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95D3CB51-F382-4A4B-9D75-3C4BDA56F6D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95D3CB51-F382-4A4B-9D75-3C4BDA56F6D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95D3CB51-F382-4A4B-9D75-3C4BDA56F6D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95D3CB51-F382-4A4B-9D75-3C4BDA56F6D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -132,6 +138,7 @@ Global
 		{D5427034-4923-42AF-9654-E9A7F5A52838} = {8D25F199-8273-465B-A1C5-C979D8BA650E}
 		{048CDBF6-EDE7-46F5-AED9-0522A40F0671} = {7CF587FF-DFEC-4C4B-9988-87FF40089DB6}
 		{F381E982-3B2B-4067-86DD-CF0F4E3518BC} = {7CF587FF-DFEC-4C4B-9988-87FF40089DB6}
+		{95D3CB51-F382-4A4B-9D75-3C4BDA56F6D1} = {8D25F199-8273-465B-A1C5-C979D8BA650E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EDF5086C-311C-441D-8063-82C062301BD1}
