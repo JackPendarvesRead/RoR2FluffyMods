@@ -138,9 +138,10 @@ namespace TheMightyBoop
         private void BoopPresetButtons(SettingEntryBase entry)
         {
             GUILayout.Label(BoopValues.Value, GUILayout.ExpandWidth(true));
-            bool PressDefaultButton()
+            GUILayout.BeginVertical();
+            bool PressVanillaButton()
             {
-                return GUILayout.Button("DEFAULT", GUILayout.ExpandWidth(true));
+                return GUILayout.Button("VANILLA", GUILayout.ExpandWidth(true));
             }
             bool PressRecommendedButton()
             {
@@ -150,14 +151,14 @@ namespace TheMightyBoop
             {
                 return GUILayout.Button("SILLY", GUILayout.ExpandWidth(true));
             }
-            if (PressDefaultButton())
+            if (PressVanillaButton())
             {
                 AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceDefault;
                 GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceDefault;
                 MaxDistance.Value = BoopConstants.MaxDistanceDefault;
                 LiftVelocity.Value = BoopConstants.LiftVelocityDefault;
-                Debug.Log("Set default values for configurations.");
-                BoopValues.Value = "Default";
+                Debug.Log("Set Vanilla values for configurations.");
+                BoopValues.Value = "Vanilla";
             }
             if (PressRecommendedButton())
             {
@@ -177,6 +178,7 @@ namespace TheMightyBoop
                 Debug.Log("Set silly values for configurations.");
                 BoopValues.Value = "Silly";
             }
+            GUILayout.EndVertical();
         }
     }
 }

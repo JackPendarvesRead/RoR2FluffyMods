@@ -14,7 +14,7 @@ namespace BepConfigManagerTest.Infrastructure
         public int RepeatNumber { get; set; }
         public BepInEx.Configuration.KeyboardShortcut KeyboardShortcut { get; set; }
 
-        public static TypeConverter GetTypeConvert()
+        public static TypeConverter GetTypeConverter()
         {
             return new TypeConverter
             {

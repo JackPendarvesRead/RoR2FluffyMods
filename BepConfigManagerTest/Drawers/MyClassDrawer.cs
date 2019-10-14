@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace BepConfigManagerTest.Drawers
 {
-    public class MyClassDrawer : IDrawer
+    public class MyClassDrawer
     {
         public Action<SettingEntryBase> Draw()
         {

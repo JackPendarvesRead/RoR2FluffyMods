@@ -107,9 +107,13 @@
     <Compile Include="ConfigManagerTest.cs" />
     <Compile Include="ConfigurationButtonMaker.cs" />
     <Compile Include="ConfigButtonDrawer.cs" />
-    <Compile Include="Drawers\IDrawer.cs" />
+    <Compile Include="Drawers\ConditionalFieldDrawer.cs" />
+    <Compile Include="Drawers\ConditionalIntDrawer.cs" />
+    <Compile Include="Drawers\GenericConditionalDrawer.cs" />
     <Compile Include="Drawers\MyClassDrawer.cs" />
     <Compile Include="Drawers\MacroDrawer.cs" />
+    <Compile Include="Infrastructure\ConditionalInt.cs" />
+    <Compile Include="Infrastructure\GenericConditional.cs" />
     <Compile Include="Infrastructure\Macro.cs" />
     <Compile Include="Infrastructure\MyClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
