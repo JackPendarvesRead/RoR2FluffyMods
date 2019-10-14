@@ -15,7 +15,7 @@ namespace PocketMoney
     public class TestingStuff : BaseUnityPlugin
     {
         private static ConfigEntry<uint> StageFlatMoney { get; set; }
-        private static ConfigEntry<uint> StageWeightedMoney { get; set; }
+        private static ConfigEntry<float> StageWeightedMoney { get; set; }
         private static ConfigEntry<uint> LatestStageToReceiveMoney { get; set; }
 
         public void Awake()
@@ -40,10 +40,10 @@ namespace PocketMoney
                     )
                 );
 
-            StageWeightedMoney = Config.AddSetting<uint>(
+            StageWeightedMoney = Config.AddSetting<float>(
                 moneySection,
                 nameof(StageWeightedMoney),
-                1,
+                1.0f,
                 new ConfigDescription(
                     "The number of small chest worth of money you get at start of each stage (uint)"
                     )
