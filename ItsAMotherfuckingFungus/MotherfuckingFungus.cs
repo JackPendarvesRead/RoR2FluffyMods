@@ -17,6 +17,7 @@ namespace MotherfuckingFungus
 
         public void Awake()
         {            
+            //TODO fix this hook
             On.RoR2.Stage.Start += Stage_Start;
             On.RoR2.PickupDropletController.CreatePickupDroplet += PickupDropletController_CreatePickupDroplet;
             On.RoR2.GenericPickupController.SendPickupMessage += GenericPickupController_SendPickupMessage;

@@ -4,7 +4,6 @@
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/BulletFalloffFix",
   "description": "Makes bullet attacks more effective at a distance by rebalancing falloff damage of bullet attacks (e.g. commando).",
   "dependencies": [
-    "tristanmcpherson-R2API-2.1.16",
     "bbepis-BepInExPack-2.0.0"
   ]
 }

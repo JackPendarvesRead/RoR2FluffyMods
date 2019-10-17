@@ -12,6 +12,8 @@ using BepInEx.Configuration;
 
 namespace ChronobaubleFix
 {
+    // TypeLoadException: Could not resolve type with token 01000025 (from typeref, class/assembly hook_SetBuffCount, )
+
     [BepInPlugin("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "1.0.0")]
     public class ChronobaubleFix : BaseUnityPlugin
     {
@@ -38,9 +40,19 @@ namespace ChronobaubleFix
                     new AcceptableValueRange<int>(0, 20)
                     ));
 
-            On.RoR2.CharacterBody.SetBuffCount += CharacterBody_SetBuffCount;
+            //On.RoR2.CharacterBody.SetBuffCount += CharacterBody_SetBuffCount;
+            On.RoR2.CharacterBody.AddBuff += CharacterBody_AddBuff;
             IL.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
             IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+        }
+
+        private void CharacterBody_AddBuff(On.RoR2.CharacterBody.orig_AddBuff orig, CharacterBody self, BuffIndex buffType)
+        {
+            if (buffType == BuffIndex.Slow60)
+            {
+                BuffCatalog.GetBuffDef(buffType).canStack = true;
+            }
+            orig(self, buffType);
         }
 
         private void GlobalEventManager_OnHitEnemy(ILContext il)

@@ -48,6 +48,7 @@ namespace PocketMoney
                     )
                 );
 
+            //TODO fix this hook
             On.RoR2.Run.BeginStage += Run_BeginStage;
         }
 

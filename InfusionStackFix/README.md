@@ -30,6 +30,10 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v2.0.0
+- Updated to Bepinex5
+- Removed unnecessary R2API dependency
+
 v1.3.0
 - Removed cap on MaxHpPerInfusionStack
 - Added LegacyInfusion bool

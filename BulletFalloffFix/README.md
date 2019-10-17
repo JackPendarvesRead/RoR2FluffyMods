@@ -36,6 +36,7 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 v2.0.0
 - Updated for Bepinex5
+- Removed unnecessary R2API dependency
 
 v1.0.0 
 - Released
