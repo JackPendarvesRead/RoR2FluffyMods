@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using MonoMod.Cil;
 using RoR2;
-using R2API.Utils;
 using UnityEngine;
 using System.Text.RegularExpressions;
 using System.Linq;

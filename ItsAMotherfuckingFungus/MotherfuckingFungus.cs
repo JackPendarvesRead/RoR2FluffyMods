@@ -38,6 +38,7 @@ namespace MotherfuckingFungus
 
         private void PickupDropletController_CreatePickupDroplet(On.RoR2.PickupDropletController.orig_CreatePickupDroplet orig, PickupIndex pickupIndex, Vector3 position, Vector3 velocity)
         {
+            // TODO change pickup indexs to catalogs
             if (IsEngineerInGame && pickupIndex.itemIndex == ItemIndex.Mushroom)
             {
                 Message.SendToAll($"It's a motherfucking fungus!!", Colours.Green);

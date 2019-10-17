@@ -3,7 +3,6 @@ using BepInEx.Configuration;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using R2API.Utils;
 using RoR2;
 using System;
 using UnityEngine;
