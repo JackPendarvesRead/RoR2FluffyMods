@@ -12,14 +12,11 @@ using BepInEx.Configuration;
 
 namespace FluffyLabsTest
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.FluffyLabsTest", "FluffyLabsTest", "0.0.0")]
     public class FluffyLabsTest : BaseUnityPlugin
     {
         public void Awake()
         {
-        }
-
-       
+        }       
     }   
 }

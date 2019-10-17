@@ -12,7 +12,6 @@ using BepInEx.Configuration;
 
 namespace ChronobaubleFix
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "1.0.0")]
     public class ChronobaubleFix : BaseUnityPlugin
     {

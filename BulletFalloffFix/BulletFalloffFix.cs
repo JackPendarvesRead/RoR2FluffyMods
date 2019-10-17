@@ -13,14 +13,12 @@ using UnityEngine;
 
 namespace BulletFalloffFix
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.BulletFalloffFix", "BulletFalloffFix", "2.0.0")]
     public class BulletFalloffFix : BaseUnityPlugin
     {
         private static ConfigEntry<float> FallOffStartDistance;
         private static ConfigEntry<float> FallOffEndDistance;
         private static ConfigEntry<string> FalloffPreset;
-
 
         public void Awake()
         {

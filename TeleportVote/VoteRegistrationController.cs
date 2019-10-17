@@ -26,8 +26,9 @@ namespace TeleportVote
         private int VotesNeeded
         {
             get
-            {   
-                return RoR2.Run.instance.livingPlayerCount < TeleportVote.MaximumVotes.Value ? RoR2.Run.instance.livingPlayerCount : TeleportVote.MaximumVotes.Value;
+            {
+                return 0;
+                //return RoR2.Run.instance.livingPlayerCount < TeleportVote.MaximumVotes.Value ? RoR2.Run.instance.livingPlayerCount : TeleportVote.MaximumVotes.Value;
             }
         }
 

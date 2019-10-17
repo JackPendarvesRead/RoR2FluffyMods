@@ -10,7 +10,6 @@ using BepInEx.Configuration;
 
 namespace RiskOfCatFacts
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.RiskOfCatFacts", "RiskOfCatFacts", "1.1.0")]
     public class RiskOfCatFacts : BaseUnityPlugin
     {

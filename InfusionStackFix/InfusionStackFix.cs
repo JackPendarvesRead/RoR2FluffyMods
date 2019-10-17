@@ -9,7 +9,6 @@ using UnityEngine;
 
 namespace InfusionStackFix
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.3.0")]
     public class InfusionStackFix : BaseUnityPlugin
     {

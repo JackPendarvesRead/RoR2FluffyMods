@@ -8,7 +8,6 @@ using System;
 
 namespace BepConfigManagerTest
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.ConfigManagerTest", "ConfigManagerTest", "0.0.0")]
     public class ConfigManagerTest : BaseUnityPlugin
     {

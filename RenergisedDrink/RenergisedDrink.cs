@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace RenergisedDrink
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.ReEnergisedDrink", "ReEnergisedDrink", "0.0.0")]
     public class BulletFalloffFix : BaseUnityPlugin
     {

@@ -10,7 +10,6 @@ using System.Linq;
 
 namespace PocketMoney
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.PocketMoney", "PocketMoney", "2.0.0")]
     public class TestingStuff : BaseUnityPlugin
     {
