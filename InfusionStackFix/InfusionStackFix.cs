@@ -14,11 +14,9 @@ namespace InfusionStackFix
     [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.3.0")]
     public class InfusionStackFix : BaseUnityPlugin
     {
-        private ConfigEntry<Conditional<int>> MaximumHealthPerInfusion;
-        //private ConfigEntry<int> MaxHpPerInfusionStack;
+        private ConditionalConfigEntry<int> MaximumHealthPerInfusion;
         private ConfigEntry<int> MaxHealthGainPerKill;
         private ConfigEntry<bool> TurretReceivesBonusFromEngineer;
-        //private ConfigEntry<bool> LegacyInfusion;
 
         public void Awake()
         {
@@ -27,7 +25,12 @@ namespace InfusionStackFix
             const string engineerSectionName = "Engineer";
 
             var conditionalUtil = new ConditionalUtil(this);
-            MaximumHealthPerInfusion = conditionalUtil.AddConditionalConfig<int>(infusionSectionName, nameof(MaximumHealthPerInfusion), 100, true, new ConfigDescription("Maximum health gained per infusion. Disable for no limit."));
+            MaximumHealthPerInfusion = conditionalUtil.AddConditionalConfig<int>(
+                infusionSectionName, 
+                nameof(MaximumHealthPerInfusion), 
+                100, 
+                true, 
+                new ConfigDescription("Maximum health gained per infusion. Disable for no limit."));
 
             MaxHealthGainPerKill = Config.AddSetting<int>(
                 new ConfigDefinition(infusionSectionName, nameof(MaxHealthGainPerKill)),
@@ -70,9 +73,9 @@ namespace InfusionStackFix
         
         private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint value)
         {
-            if (MaximumHealthPerInfusion.Value.Condition)
+            if (MaximumHealthPerInfusion.Condition)
             {
-                var maxInfusionBonus = self.GetItemCount(ItemIndex.Infusion) * MaximumHealthPerInfusion.Value.Value;
+                var maxInfusionBonus = self.GetItemCount(ItemIndex.Infusion) * MaximumHealthPerInfusion.Value;
                 if (self.infusionBonus >= maxInfusionBonus)
                 {
                     return;
@@ -99,7 +102,7 @@ namespace InfusionStackFix
                 );
             c.Index += 1;
             c.Remove();
-            c.Emit(OpCodes.Ldc_I4, MaximumHealthPerInfusion.Value.Value);
+            c.Emit(OpCodes.Ldc_I4, MaximumHealthPerInfusion.Value);
 
             //Method to replace 1hp being added per infusion kill
             c.GotoNext(
@@ -113,11 +116,11 @@ namespace InfusionStackFix
             c.Emit(OpCodes.Ldloc, (short)14);  //Inventory
             c.EmitDelegate<Func<int, Inventory, int>>((infusionCount, inventory) =>
             {
-                if (!MaximumHealthPerInfusion.Value.Condition)
+                if (!MaximumHealthPerInfusion.Condition)
                 {
                     return infusionCount;
                 }
-                var maximumBonus = infusionCount * MaximumHealthPerInfusion.Value.Value;
+                var maximumBonus = infusionCount * MaximumHealthPerInfusion.Value;
                 var currentBonus = (int)inventory.infusionBonus;
                 var hpUntilMaximum = maximumBonus - currentBonus;
                 var maximumOrbGain = GetMaximumOrbValue(infusionCount);
