@@ -11,6 +11,7 @@ This mod also fixed a minor "exploit" where you can get more health stacks from 
 Enjoy,
 Thanks
 
+## New features
 
 Update 1.1.0: Added new improved functionality for Engineers who use infusion. Engineer turrets now have a configuration which when enabled will allow turrets to start with the current bonus that the Engineer who deployed it currently has. E.g. if an Engineer currently has +100 life from an infusion whenver the engineer deploys a turret that turret will also start with +100 life.
 

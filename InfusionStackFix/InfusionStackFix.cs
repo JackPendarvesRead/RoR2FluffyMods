@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace InfusionStackFix
 {
-    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "1.3.0")]
+    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "2.0.0")]
     public class InfusionStackFix : BaseUnityPlugin
     {
         private ConditionalConfigEntry<int> MaximumHealthPerInfusion;

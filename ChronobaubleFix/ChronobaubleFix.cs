@@ -16,7 +16,7 @@ namespace ChronobaubleFix
     //BetterBalance
 
 
-    [BepInPlugin("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "1.0.0")]
+    [BepInPlugin("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "2.0.0")]
     public class ChronobaubleFix : BaseUnityPlugin
     {
         private static ConfigEntry<float> SlowScalingCoefficient;

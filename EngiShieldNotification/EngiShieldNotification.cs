@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace EngiShieldNotification
 {
-    [BepInPlugin("com.FluffyMods.EngiShieldNotification", "EngiShieldNotification", "1.1.1")]
+    [BepInPlugin("com.FluffyMods.EngiShieldNotification", "EngiShieldNotification", "2.0.0")]
     public class EngiShieldNotification : BaseUnityPlugin
     {
         #region FieldsEtc

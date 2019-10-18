@@ -4,7 +4,6 @@
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/RiskOfCatFacts",
   "description": "Thank you for subscribing to Cat Facts!",
   "dependencies": [
-    "tristanmcpherson-R2API-2.1.15",
     "bbepis-BepInExPack-2.0.0"
   ]
 }
