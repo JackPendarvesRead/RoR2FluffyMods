@@ -34,7 +34,7 @@ namespace RenergisedDrink
                 0.3f,
                 new ConfigDescription(
                     "Number determines scaling adding sprint speed per Energy Drink (default=0.2f, recommended=0.3f)",
-                    new AcceptableValueRange<float>(0f, 1f)
+                    new AcceptableValueRange<float>(0f, 2f)
                     )
                 );
 

@@ -37,7 +37,7 @@ namespace PocketMoney
                 nameof(StageFlatMoney),
                 0,
                 new ConfigDescription(
-                    "The flat amount of extra money the player should receive at beginning of each stage (uint)"
+                    "The flat amount of extra money the player should receive at beginning of each stage"
                     )
                 );
 
@@ -46,7 +46,7 @@ namespace PocketMoney
                 nameof(StageWeightedMoney),
                 1.0f,
                 new ConfigDescription(
-                    "The number of small chest worth of money you get at start of each stage (uint)"
+                    "The equivalent number of small chest worth of money you get at start of each stage"
                     )
                 );
 
