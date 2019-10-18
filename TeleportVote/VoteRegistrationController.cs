@@ -27,14 +27,15 @@ namespace TeleportVote
         {
             get
             {
-                return 0;
-                //return RoR2.Run.instance.livingPlayerCount < TeleportVote.MaximumVotes.Value ? RoR2.Run.instance.livingPlayerCount : TeleportVote.MaximumVotes.Value;
+                return RoR2.Run.instance.livingPlayerCount < TeleportVote.MaximumVotes.Value 
+                    ? RoR2.Run.instance.livingPlayerCount 
+                    : TeleportVote.MaximumVotes.Value;
             }
         }
 
         private List<NetworkUserId> RegisteredPlayers { get; set; } = new List<NetworkUserId>();
 
-        public event EventHandler PlayerRegistered;
+        //public event EventHandler PlayerRegistered;
 
         public void RegisterPlayer(NetworkUser netUser)
         {
@@ -58,21 +59,21 @@ namespace TeleportVote
             RegisteredPlayers.Clear();
             PlayersCanVote = true;
         }
-    }  
-
-    internal class PlayerRegisteredEventArgs : EventArgs
-    {
-        public PlayerRegisteredEventArgs(NetworkUser registeredPlayer, bool ready, int numberOfRegisteredPlayers, int numberOfVotesNeeded)
-        {
-            RegisteredPlayer = registeredPlayer;
-            Ready = ready;
-            NumberOfRegisteredPlayers = numberOfRegisteredPlayers;
-            NumberOfVotesNeeded = numberOfVotesNeeded;
-        }
-
-        public NetworkUser RegisteredPlayer { get; }
-        public bool Ready { get; }
-        public int NumberOfRegisteredPlayers { get; }
-        public int NumberOfVotesNeeded { get; }
     }
+
+    //internal class PlayerRegisteredEventArgs : EventArgs
+    //{
+    //    public PlayerRegisteredEventArgs(NetworkUser registeredPlayer, bool ready, int numberOfRegisteredPlayers, int numberOfVotesNeeded)
+    //    {
+    //        RegisteredPlayer = registeredPlayer;
+    //        Ready = ready;
+    //        NumberOfRegisteredPlayers = numberOfRegisteredPlayers;
+    //        NumberOfVotesNeeded = numberOfVotesNeeded;
+    //    }
+
+    //    public NetworkUser RegisteredPlayer { get; }
+    //    public bool Ready { get; }
+    //    public int NumberOfRegisteredPlayers { get; }
+    //    public int NumberOfVotesNeeded { get; }
+    //}
 }
