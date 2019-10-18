@@ -12,6 +12,10 @@ using BepInEx.Configuration;
 
 namespace ChronobaubleFix
 {
+    //Mods that this mod clashes with...
+    //BetterBalance
+
+
     [BepInPlugin("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "1.0.0")]
     public class ChronobaubleFix : BaseUnityPlugin
     {
