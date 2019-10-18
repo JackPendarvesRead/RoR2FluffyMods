@@ -35,22 +35,13 @@ namespace TeleportVote
 
         private List<NetworkUserId> RegisteredPlayers { get; set; } = new List<NetworkUserId>();
 
-        //public event EventHandler PlayerRegistered;
-
         public void RegisterPlayer(NetworkUser netUser)
         {
             var netId = netUser.Network_id;
             if (PlayersCanVote && !RegisteredPlayers.Contains(netId))
             {
                 RegisteredPlayers.Add(netId);
-                if (VotesReady)
-                {
-                    return;
-                }
-                else
-                {
-                    Message.SendColoured($"{RegisteredPlayers.Count}/{VotesNeeded} players are ready", Colours.Green);
-                }
+                Message.SendColoured($"{RegisteredPlayers.Count}/{VotesNeeded} players are ready", Colours.Green);
             }
         }
 
@@ -60,20 +51,4 @@ namespace TeleportVote
             PlayersCanVote = true;
         }
     }
-
-    //internal class PlayerRegisteredEventArgs : EventArgs
-    //{
-    //    public PlayerRegisteredEventArgs(NetworkUser registeredPlayer, bool ready, int numberOfRegisteredPlayers, int numberOfVotesNeeded)
-    //    {
-    //        RegisteredPlayer = registeredPlayer;
-    //        Ready = ready;
-    //        NumberOfRegisteredPlayers = numberOfRegisteredPlayers;
-    //        NumberOfVotesNeeded = numberOfVotesNeeded;
-    //    }
-
-    //    public NetworkUser RegisteredPlayer { get; }
-    //    public bool Ready { get; }
-    //    public int NumberOfRegisteredPlayers { get; }
-    //    public int NumberOfVotesNeeded { get; }
-    //}
 }
