@@ -9,6 +9,8 @@ namespace TeleportVote
 {
     internal class TimerController
     {
+        public bool TimerRestrictionsLifted { get; set; } = false;
+
         private PausableTimer mainTimer;
         private readonly int mainTimerInterval = 15;
 
@@ -18,30 +20,41 @@ namespace TeleportVote
         private PausableTimer finalCountdownTimer;
         private readonly int finalCountdownTimerInterval = 1;
 
+        private bool timerRunning = false;
         public void Start()
         {
-            mainTimer = new PausableTimer(mainTimerInterval, true);
-            mainTimer.Elapsed += MainTimer_Elapsed;
+            if (!timerRunning)
+            {
+                TimerRestrictionsLifted = false;
 
-            lockAgainTimer = new PausableTimer(lockAgainTimerInterval, true);
-            lockAgainTimer.Elapsed += LockAgainTimer_Elapsed;
+                timerRunning = true;
+                mainTimer = new PausableTimer(mainTimerInterval, true);
+                mainTimer.Elapsed += MainTimer_Elapsed;
 
-            finalCountdownTimer = new PausableTimer(finalCountdownTimerInterval, true);
-            finalCountdownTimer.Elapsed += FinalCountdownTimer_Elapsed;
+                lockAgainTimer = new PausableTimer(lockAgainTimerInterval, true);
+                lockAgainTimer.Elapsed += LockAgainTimer_Elapsed;
 
-            mainTimer.Start();
-            Message.SendColoured("Timer started. Restrictions will be lifted in 60s.", Colours.LightBlue);
+                finalCountdownTimer = new PausableTimer(finalCountdownTimerInterval, true);
+                finalCountdownTimer.Elapsed += FinalCountdownTimer_Elapsed;
+
+                mainTimer.Start();
+                Message.SendColoured("Timer started. Restriction will be lifted in 60s", Colours.LightBlue);
+            }           
         }       
 
         public void Stop()
         {
-            mainTimer.Stop();
+            TimerRestrictionsLifted = false;
+
+            timerRunning = false;
+
+            mainTimer?.Dispose();
             mainLoop = 0;
 
-            lockAgainTimer.Stop();
+            lockAgainTimer?.Dispose();
             lockedAgainLoop = 0;
 
-            finalCountdownTimer.Stop();
+            finalCountdownTimer?.Dispose();
             countdown = 5;
         }
 
@@ -57,9 +70,11 @@ namespace TeleportVote
             }
             else
             {
-                mainTimer.Stop();
+                TimerRestrictionsLifted = true;
+                mainTimer.Dispose();
                 mainLoop = 0;
                 lockAgainTimer.Start();
+                Message.SendColoured($"Restriction lifted. Restriction reinstated in 30s", Colours.Green);
             }
         }
 
@@ -67,15 +82,18 @@ namespace TeleportVote
         private void LockAgainTimer_Elapsed(object sender, EventArgs e)
         {
             var time = (lockedAgainLoop + 1) * lockAgainTimerInterval;
-            var timeRemaining = 25 - time;
-            if(timeRemaining > 0)
+            var timeRemaining = 30 - time;
+            if(timeRemaining > 5)
             {
                 lockedAgainLoop++;
-                Message.SendColoured($"Restrictions will be reinstated in {timeRemaining}s", Colours.Yellow);
+                if(timeRemaining % 10 == 0)
+                {
+                    Message.SendColoured($"Restrictions will be reinstated in {timeRemaining}s", Colours.Yellow);
+                }
             }
             else
             {
-                lockAgainTimer.Stop();
+                lockAgainTimer.Dispose();
                 lockedAgainLoop = 0;
                 finalCountdownTimer.Start();
             }
@@ -86,8 +104,8 @@ namespace TeleportVote
         {
             if(countdown > 0)
             {
+                Message.SendColoured($"{countdown}...", Colours.Orange);
                 countdown--;
-                Message.SendColoured($"{countdown}...", Colours.Red);
             }
             else
             {

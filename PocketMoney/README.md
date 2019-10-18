@@ -29,8 +29,11 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 ## Changelog:
 v 2.0.0
 - Updated for Bepinex5
+- Removed unnecessary dependency on R2API
+- Added MMHOOK dependency
 - Removed obsolete console commands
 - Added new configuration to allow you to choose a maximum stage in which you wish to receive bonus
+- Changed StageWeightedMoney configuration to accept a float value
 
 v1.1.2
 - Updated R2API dependency string

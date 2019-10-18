@@ -14,21 +14,30 @@ using FluffyLabsConfigManagerTools.Infrastructure;
 
 namespace FluffyLabsTest
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.FluffyLabsTest", "FluffyLabsTest", "0.0.0")]
     public class FluffyLabsTest : BaseUnityPlugin
     {
-        private ConfigEntry<Macro> MyMacro1;
-        private ConfigEntry<Macro> MyMacro2;
-        private ConfigEntry<Macro> MyMacro3;
-       
+        private ConditionalConfigEntry<int> ConditionalConf;
+        private MacroConfigEntry MacroConf;
+
         public void Awake()
-        {            
-            const string macroSectionName = "Macro";
-            var macroUtil = new MacroUtil(this);
-            MyMacro1 = macroUtil.AddMacroConfig(macroSectionName, "macro 1", "description", false);
-            MyMacro2 = macroUtil.AddMacroConfig(macroSectionName, "macro 2", "description", false);
-            MyMacro3 = macroUtil.AddMacroConfig(macroSectionName, "macro 3", "description", true);
+        {
+            var cUtil = new ConditionalUtil(this);
+            ConditionalConf = cUtil.AddConditionalConfig<int>("con", "con", 5, true, new ConfigDescription("desc"));
+
+            var bUtil = new ButtonUtil(this);
+            bUtil.AddButtonConfig("Button", "button", "description", GetDic());
+
+            var mUtil = new MacroUtil(this);
+            MacroConf = mUtil.AddMacroConfig("Macro", "Macro", "Description", false);
+        }
+        
+        private Dictionary<string, Action> GetDic()
+        {
+            return new Dictionary<string, Action>
+            {
+                { "button", () => { Debug.Log("Button action"); } }
+            };
         }
     }   
 }

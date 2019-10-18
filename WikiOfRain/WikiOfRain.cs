@@ -4,7 +4,6 @@ using RoR2;
 
 namespace WikiOfRain
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.WikiOfRain", "WikiOfRain", "1.0.0")]
     public class MotherfuckingFungus : BaseUnityPlugin
     {

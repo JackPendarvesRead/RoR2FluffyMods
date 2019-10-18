@@ -1,6 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using ConfigurationManager;
+using FluffyLabsConfigManagerTools.Util;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using RoR2;
@@ -13,7 +13,6 @@ using UnityEngine;
 
 namespace BulletFalloffFix
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.BulletFalloffFix", "BulletFalloffFix", "2.0.0")]
     public class BulletFalloffFix : BaseUnityPlugin
     {
@@ -21,20 +20,13 @@ namespace BulletFalloffFix
         private static ConfigEntry<float> FallOffEndDistance;
         private static ConfigEntry<string> FalloffPreset;
 
-
         public void Awake()
         {
             const string falloffDistanceSection = "Falloff Distance";
             const string presetSection = "Presets";
 
-            FalloffPreset = Config.AddSetting<string>(
-                new ConfigDefinition(presetSection, "Falloff Values"),
-                "",
-                new ConfigDescription(
-                    "",
-                    null,
-                    new Action<SettingEntryBase>(SetFalloffPresets)
-                    ));
+            var buttonUtil = new ButtonUtil(this);
+            buttonUtil.AddButtonConfig(presetSection, "Buttons", "", GetButtonDic());
 
             FallOffStartDistance = Config.AddSetting<float>(
                 new ConfigDefinition(falloffDistanceSection, nameof(FallOffStartDistance)),
@@ -69,29 +61,26 @@ namespace BulletFalloffFix
             c.Emit(OpCodes.Ldc_R4, FallOffStartDistance.Value);
         }
 
-        private void SetFalloffPresets(SettingEntryBase entry)
+
+        private Dictionary<string, Action> GetButtonDic()
         {
-            GUILayout.Label(FalloffPreset.Value, GUILayout.ExpandWidth(true));
-            bool PressDefaultButton()
+            return new Dictionary<string, Action>
             {
-                return GUILayout.Button("DEFAULT", GUILayout.ExpandWidth(true));
-            }
-            bool PressRecommendedButton()
-            {
-                return GUILayout.Button("RECOMMENDED", GUILayout.ExpandWidth(true));
-            }
-            if (PressDefaultButton())
-            {
-                FallOffStartDistance.Value = BulletFalloffConstantValues.DefaultStart;
-                FallOffEndDistance.Value = BulletFalloffConstantValues.DefaultEnd;
-                Debug.Log("Default falloff values set");
-            }
-            if (PressRecommendedButton())
-            {
-                FallOffStartDistance.Value = BulletFalloffConstantValues.RecommendedStart;
-                FallOffEndDistance.Value = BulletFalloffConstantValues.RecommendedEnd;
-                Debug.Log("Recommended falloff values set");
-            }
+                { "Vanilla", SetVanillaConfig },
+                { "Recommended", SetRecommenedConfig}
+            };
         }
+        private void SetVanillaConfig()
+        {
+            FallOffStartDistance.Value = BulletFalloffConstantValues.DefaultStart;
+            FallOffEndDistance.Value = BulletFalloffConstantValues.DefaultEnd;
+            Debug.Log("Default falloff values set");
+        }
+        private void SetRecommenedConfig()
+        {
+            FallOffStartDistance.Value = BulletFalloffConstantValues.RecommendedStart;
+            FallOffEndDistance.Value = BulletFalloffConstantValues.RecommendedEnd;
+            Debug.Log("Recommended falloff values set");
+        }        
     }
 }

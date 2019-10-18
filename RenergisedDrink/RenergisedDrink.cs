@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 
 namespace RenergisedDrink
 {
-    [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.ReEnergisedDrink", "ReEnergisedDrink", "0.0.0")]
+    [BepInPlugin("com.FluffyMods.ReEnergisedDrink", "ReEnergisedDrink", "1.0.0")]
     public class BulletFalloffFix : BaseUnityPlugin
     {
         private static ConfigEntry<float> EnergyDrinkBoost;
@@ -35,7 +34,7 @@ namespace RenergisedDrink
                 0.3f,
                 new ConfigDescription(
                     "Number determines scaling adding sprint speed per Energy Drink (default=0.2f, recommended=0.3f)",
-                    new AcceptableValueRange<float>(0f, 1f)
+                    new AcceptableValueRange<float>(0f, 2f)
                     )
                 );
 

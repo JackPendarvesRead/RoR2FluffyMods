@@ -26,6 +26,12 @@ namespace TheMightyBoop
         public static float MaxDistanceSilly => 500f;
         public static float LiftVelocitySilly => 50f;
 
+        //Ludicrous speed
+        public static float AirKnockBackDistanceLudicrous => 100f;
+        public static float GroundKnockBackDistanceLudicrous => 10f;
+        public static float MaxDistanceLudicrous => 1000f;
+        public static float LiftVelocityLudicrous => 100f;
+
         //Maximum value set to avoid users inputting absolutely ridiculous numbers
         public static float MaximumBoop => 1000f;
     }

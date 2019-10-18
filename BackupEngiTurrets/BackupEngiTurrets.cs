@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace BackupEngiTurrets
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.BackupEngiTurrets", "BackupEngiTurrets", "3.0.0")]
     public class BackupEngiTurrets : BaseUnityPlugin
     {

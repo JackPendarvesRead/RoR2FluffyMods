@@ -1,7 +1,6 @@
 ﻿using BepInEx;
 using MonoMod.Cil;
 using RoR2;
-using R2API.Utils;
 using UnityEngine;
 using System.Text.RegularExpressions;
 using System.Linq;
@@ -11,15 +10,14 @@ using BepInEx.Configuration;
 
 namespace RiskOfCatFacts
 {
-    [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.RiskOfCatFacts", "RiskOfCatFacts", "1.1.0")]
+    [BepInPlugin("com.FluffyMods.RiskOfCatFacts", "RiskOfCatFacts", "2.0.0")]
     public class RiskOfCatFacts : BaseUnityPlugin
     {
-        private System.Random random;
+        private System.Random random = new System.Random();
         private Timer timer;
         private double interval = 60 * 1000;
 
-        private static ConfigEntry<bool> CatFactsEnabled { get; set; }
+        private ConfigEntry<bool> CatFactsEnabled;
 
         public void Awake()
         {
@@ -29,20 +27,29 @@ namespace RiskOfCatFacts
                 true,
                 new ConfigDescription("Enable/Disable receiving CatFacts"));
 
-            Chat.onChatChanged += Chat_onChatChanged;
+            //Chat.onChatChanged += Chat_onChatChanged;
             RoR2.Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
             RoR2.Run.onRunStartGlobal += Run_onRunStartGlobal;
             On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
+            On.RoR2.Run.BeginStage += Run_BeginStage;
+        }
+
+        private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
+        {
+            if (CatFactsEnabled.Value
+                && self.stageClearCount > 0
+                && timer == null)
+            {
+                Start();
+            }
+            orig(self);
         }
 
         private void Run_onRunStartGlobal(Run obj)
         {
             if (CatFactsEnabled.Value)
             {
-                timer = new Timer();
-                timer.Elapsed += Timer_Elapsed;
-                timer.Interval = interval;
-                timer.Start();
+                Start();
             }
         }
 
@@ -96,10 +103,25 @@ namespace RiskOfCatFacts
             }            
         }
 
+        private void Start()
+        {
+            timer = new Timer
+            {
+                Interval = interval,
+                AutoReset = true,
+                Enabled = false
+            };                
+            timer.Elapsed += Timer_Elapsed;
+            timer.Start();
+        }
+
         private void Stop()
         {
             interval = 60 * 1000;
-            timer.Dispose();
+            if(timer != null)
+            {
+                timer.Dispose();
+            }
         }
 
         private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");

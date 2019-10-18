@@ -7,28 +7,29 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Linq;
+using FluffyLabsConfigManagerTools.Util;
+using FluffyLabsConfigManagerTools.Infrastructure;
 
 namespace PocketMoney
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.PocketMoney", "PocketMoney", "2.0.0")]
     public class TestingStuff : BaseUnityPlugin
     {
-        private static ConfigEntry<uint> StageFlatMoney { get; set; }
-        private static ConfigEntry<float> StageWeightedMoney { get; set; }
-        private static ConfigEntry<uint> LatestStageToReceiveMoney { get; set; }
+        private ConditionalConfigEntry<uint> LatestStageToReceiveMoney;
+        private ConfigEntry<uint> StageFlatMoney;
+        private ConfigEntry<float> StageWeightedMoney;
 
         public void Awake()
         {
             const string moneySection = "Money";
 
-            LatestStageToReceiveMoney = Config.AddSetting<uint>(
+            var conUtil = new ConditionalUtil(this);
+            LatestStageToReceiveMoney = conUtil.AddConditionalConfig<uint>(
                 moneySection,
                 nameof(LatestStageToReceiveMoney),
-                0,
-                new ConfigDescription(
-                    "The latest stage you wish to receive a bonus on. Set to 0 to set no limit."
-                    )
+                4,
+                false,
+                new ConfigDescription("Enable to set a latest stage you wish to receive a bonus on. E.g. set this to 4 and you will receive bonus for first 4 rounds and then none after.")
                 );
 
             StageFlatMoney = Config.AddSetting<uint>(
@@ -36,7 +37,7 @@ namespace PocketMoney
                 nameof(StageFlatMoney),
                 0,
                 new ConfigDescription(
-                    "The flat amount of extra money the player should receive at beginning of each stage (uint)"
+                    "The flat amount of extra money the player should receive at beginning of each stage"
                     )
                 );
 
@@ -45,7 +46,7 @@ namespace PocketMoney
                 nameof(StageWeightedMoney),
                 1.0f,
                 new ConfigDescription(
-                    "The number of small chest worth of money you get at start of each stage (uint)"
+                    "The equivalent number of small chest worth of money you get at start of each stage"
                     )
                 );
 
@@ -56,7 +57,8 @@ namespace PocketMoney
         {
             orig(self);
 
-            if(LatestStageToReceiveMoney.Value > RoR2.Run.instance.stageClearCount)
+            if(LatestStageToReceiveMoney.Condition
+                && LatestStageToReceiveMoney.Value > RoR2.Run.instance.stageClearCount)
             {
                 return;
             }

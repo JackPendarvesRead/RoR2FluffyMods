@@ -9,12 +9,10 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using BepInEx.Configuration;
 using UnityEngine;
-using ConfigurationManager;
+using FluffyLabsConfigManagerTools.Util;
 
 namespace TheMightyBoop
 {
-
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "2.0.0")]
     public class TheMightyBoop : BaseUnityPlugin
     {
@@ -23,22 +21,15 @@ namespace TheMightyBoop
         private static ConfigEntry<float> GroundKnockBackDistance;
         private static ConfigEntry<float> LiftVelocity;
         private static ConfigEntry<float> MaxDistance;
-        private static ConfigEntry<string> BoopValues;
 
         public void Awake()
         {  
             #region ConfigSetup
-            
-
             const string fireSonicBoomSection = "FireSonicBoom";
             const string clayBruiserSection = "ClayBruiser";
-            const string presetSection = "Presets";
-            
-            BoopValues = Config.AddSetting<string>(
-                new ConfigDefinition(presetSection, nameof(BoopValues)),
-                "",
-                new ConfigDescription("", null, new Action<SettingEntryBase>(BoopPresetButtons))
-                );
+
+            var buttonUtil = new ButtonUtil(this);
+            buttonUtil.AddButtonConfig("Presets", "Preset", "Select preset configurations with buttons", GetButtonDictionary());
 
             ClayBruiserIsMighty = Config.AddSetting<bool>(
                 new ConfigDefinition(clayBruiserSection, nameof(ClayBruiserIsMighty)), 
@@ -135,50 +126,52 @@ namespace TheMightyBoop
             }
         }
 
-        private void BoopPresetButtons(SettingEntryBase entry)
+
+        private Dictionary<string, Action> GetButtonDictionary()
         {
-            GUILayout.Label(BoopValues.Value, GUILayout.ExpandWidth(true));
-            GUILayout.BeginVertical();
-            bool PressVanillaButton()
+            return new Dictionary<string, Action>
             {
-                return GUILayout.Button("VANILLA", GUILayout.ExpandWidth(true));
-            }
-            bool PressRecommendedButton()
-            {
-                return GUILayout.Button("RECOMMENDED", GUILayout.ExpandWidth(true));
-            }
-            bool PressSillyButton()
-            {
-                return GUILayout.Button("SILLY", GUILayout.ExpandWidth(true));
-            }
-            if (PressVanillaButton())
-            {
-                AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceDefault;
-                GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceDefault;
-                MaxDistance.Value = BoopConstants.MaxDistanceDefault;
-                LiftVelocity.Value = BoopConstants.LiftVelocityDefault;
-                Debug.Log("Set Vanilla values for configurations.");
-                BoopValues.Value = "Vanilla";
-            }
-            if (PressRecommendedButton())
-            {
-                AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceRecommended;
-                GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceRecommended;
-                MaxDistance.Value = BoopConstants.MaxDistanceRecommended;
-                LiftVelocity.Value = BoopConstants.LiftVelocityRecommended;
-                Debug.Log("Set recommended values for configurations.");
-                BoopValues.Value = "Recommended";
-            }
-            if (PressSillyButton())
-            {
-                AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceSilly;
-                GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceSilly;
-                MaxDistance.Value = BoopConstants.MaxDistanceSilly;
-                LiftVelocity.Value = BoopConstants.LiftVelocitySilly;
-                Debug.Log("Set silly values for configurations.");
-                BoopValues.Value = "Silly";
-            }
-            GUILayout.EndVertical();
+                { "Vanilla", SetVanillaConfig },
+                { "Recommended", SetRecommendedConfig },
+                { "Silly", SetSillyConfig },
+                { "Ludicrous", SetLudicrousConfig }
+            };
         }
+
+        private void SetVanillaConfig()
+        {
+            AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceDefault;
+            GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceDefault;
+            MaxDistance.Value = BoopConstants.MaxDistanceDefault;
+            LiftVelocity.Value = BoopConstants.LiftVelocityDefault;
+            Debug.Log("Set default values for configurations.");
+        }
+
+        private void SetRecommendedConfig()
+        {
+            AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceRecommended;
+            GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceRecommended;
+            MaxDistance.Value = BoopConstants.MaxDistanceRecommended;
+            LiftVelocity.Value = BoopConstants.LiftVelocityRecommended;
+            Debug.Log("Set recommended values for configurations.");
+        }
+
+        private void SetSillyConfig()
+        {
+            AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceSilly;
+            GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceSilly;
+            MaxDistance.Value = BoopConstants.MaxDistanceSilly;
+            LiftVelocity.Value = BoopConstants.LiftVelocitySilly;
+            Debug.Log("Set silly values for configurations.");
+        }
+
+        private void SetLudicrousConfig()
+        {
+            AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceLudicrous;
+            GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceLudicrous;
+            MaxDistance.Value = BoopConstants.MaxDistanceLudicrous;
+            LiftVelocity.Value = BoopConstants.LiftVelocityLudicrous;
+            Debug.Log("Set LUDICROUS values for configurations.");
+        }        
     }
 }

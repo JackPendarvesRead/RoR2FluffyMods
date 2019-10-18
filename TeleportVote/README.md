@@ -46,6 +46,12 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog
 
+v2.0.0
+- Updated for bepinex 5
+- Removed R2API dependency
+- Timer restriction reinstating no longer deletes your vote
+- Big rewrite to all Timer logics
+
 v1.0.3
 - Updated R2API dependency string
 - Updated mod information

@@ -8,13 +8,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using R2API.Utils;
 using BepInEx.Configuration;
 
 namespace ChronobaubleFix
 {
-    [BepInDependency("com.bepis.r2api")]
-    [BepInPlugin("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "1.0.0")]
+    //Mods that this mod clashes with...
+    //BetterBalance
+
+
+    [BepInPlugin("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "2.0.0")]
     public class ChronobaubleFix : BaseUnityPlugin
     {
         private static ConfigEntry<float> SlowScalingCoefficient;
@@ -22,7 +24,7 @@ namespace ChronobaubleFix
 
         public void Awake()
         {
-            const string chronobaubleSection = "Chronobauble";
+            const string chronobaubleSection = "Chronobauble";            
 
             SlowScalingCoefficient = Config.AddSetting<float>(
                 new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
@@ -34,15 +36,24 @@ namespace ChronobaubleFix
 
             DebuffStacksPerItemStack = Config.AddSetting<int>(
                 new ConfigDefinition(chronobaubleSection, nameof(DebuffStacksPerItemStack)),
-                5,
+                3,
                 new ConfigDescription(
                     "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
                     new AcceptableValueRange<int>(0, 20)
                     ));
 
-            On.RoR2.CharacterBody.SetBuffCount += CharacterBody_SetBuffCount;
+            On.RoR2.CharacterBody.AddBuff += CharacterBody_AddBuff;
             IL.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
             IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+        }
+
+        private void CharacterBody_AddBuff(On.RoR2.CharacterBody.orig_AddBuff orig, CharacterBody self, BuffIndex buffType)
+        {
+            if (buffType == BuffIndex.Slow60)
+            {
+                BuffCatalog.GetBuffDef(buffType).canStack = true;
+            }
+            orig(self, buffType);
         }
 
         private void GlobalEventManager_OnHitEnemy(ILContext il)

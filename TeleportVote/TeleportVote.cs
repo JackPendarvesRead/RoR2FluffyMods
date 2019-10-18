@@ -9,26 +9,27 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using BepInEx.Configuration;
+using FluffyLabsConfigManagerTools.Infrastructure;
+using FluffyLabsConfigManagerTools.Util;
 
 namespace TeleportVote
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.TeleportVote", "TeleportVote", "2.0.0")]
     public class TeleportVote : BaseUnityPlugin
     {
-        private VoteRegistrationController VoteController { get; set; } = new VoteRegistrationController();
-        private TimerController TimerController { get; set; } = new TimerController();
-        
-        public static ConfigEntry<bool> VotesEnabled { get; set; }
-        public static ConfigEntry<int> MaximumVotes { get; set; }
-        //public static ConfigEntry<int> TimerNotificationInterval { get; set; }
-        //public static ConfigEntry<int> TimeUntilVoteOverride { get; set; }
+        private VoteRegistrationController VoteController { get; set; }
+        private TimerController TimerController { get; set; }
+
+        public static ConfigEntry<bool> VotesEnabled;
+        public static ConditionalConfigEntry<int> MaximumVotes;
 
         public void Awake()
-        {            
+        {
+            VoteController = new VoteRegistrationController();
+            TimerController = new TimerController();
+
             #region ConfigSetup
             const string votesSection = "Votes";
-            //const string timerSection = "Timer";
 
             VotesEnabled = Config.AddSetting<bool>(
                 votesSection,
@@ -38,35 +39,15 @@ namespace TeleportVote
                     "Enable/Disable voting"
                     ));
 
-            MaximumVotes = Config.AddSetting<int>(
+            var cUtil = new ConditionalUtil(this);
+            MaximumVotes = cUtil.AddConditionalConfig<int>(
                 votesSection,
                 "Maximum Votes",
                 4,
+                false,
                 new ConfigDescription(
-                    "Set maximum number of votes needed to continue (regardless of player count). Set to 0 for no limit.",
-                    new AcceptableValueRange<int>(0, 16),
-                    ConfigTags.Advanced
+                    "Enable to set maximum number of votes needed to continue (regardless of player count)."
                     ));
-
-            //TimerNotificationInterval = Config.AddSetting<int>(
-            //   timerSection,
-            //   "Timer Interval",
-            //   15,
-            //   new ConfigDescription(
-            //       "Time between chat notifications and reminders",
-            //       new AcceptableValueList<int>(15, 30),
-            //       ConfigTags.Advanced
-            //       ));
-
-            //TimeUntilVoteOverride = Config.AddSetting<int>(
-            //   timerSection,
-            //   "Timer Limit",
-            //   60,
-            //   new ConfigDescription(
-            //       "Time after first vote until lock is overriden and you can use teleporter",
-            //       new AcceptableValueList<int>(30, 60, 90, 120),
-            //       ConfigTags.Advanced
-            //       ));
             #endregion
 
             #region HookRegistration
@@ -75,7 +56,10 @@ namespace TeleportVote
             On.RoR2.TeleporterInteraction.OnStateChanged += TeleporterInteraction_OnStateChanged;
             On.RoR2.Interactor.PerformInteraction += Interactor_PerformInteraction;
             On.RoR2.PlayerCharacterMasterController.OnBodyDeath += PlayerCharacterMasterController_OnBodyDeath;
-            VoteController.PlayerRegistered += VoteController_PlayerRegistered;
+
+            //Internal events
+            //VoteController.PlayerRegistered += VoteController_PlayerRegistered;
+            //TimerController.OnTeleporterChangeState += TimerController_OnTeleporterChangeState;
 
             //Chat Ready Command - type "r" to set yourself as ready
             Chat.onChatChanged += Chat_onChatChanged;
@@ -84,16 +68,10 @@ namespace TeleportVote
             IL.RoR2.GlobalEventManager.OnInteractionBegin += GlobalEventManager_OnInteractionBegin;
 
             //Cleanup Hooks - Needed to avoid bugs where list persists from one run to another
-            On.RoR2.Run.BeginGameOver += Run_BeginGameOver;
+            RoR2.Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
             On.RoR2.Run.BeginStage += Run_BeginStage;
             On.RoR2.Run.EndStage += Run_EndStage;
             #endregion
-        }
-
-        private void VoteController_PlayerRegistered(object sender, EventArgs e)
-        {
-            var args = (PlayerRegisteredEventArgs)e;
-            Message.SendColoured($"{args.NumberOfRegisteredPlayers}/{args.NumberOfVotesNeeded} players ready.", Colours.Green);
         }
 
         #region ControllerTidyUp  
@@ -103,11 +81,9 @@ namespace TeleportVote
             TimerController.Stop();
         }
 
-        private void PlayerCharacterMasterController_OnBodyDeath(On.RoR2.PlayerCharacterMasterController.orig_OnBodyDeath orig, PlayerCharacterMasterController self)
+        private void Run_onRunDestroyGlobal(Run obj)
         {
             StopAll();
-            Message.SendColoured("Player died. Reinstating restriction.", Colours.Red);
-            orig(self);
         }
 
         private void Run_EndStage(On.RoR2.Run.orig_EndStage orig, Run self)
@@ -121,43 +97,62 @@ namespace TeleportVote
             StopAll();
             orig(self);
         }
-
-        private void Run_BeginGameOver(On.RoR2.Run.orig_BeginGameOver orig, Run self, GameResultType gameResultType)
-        {
-            if (self.isGameOverServer)
-            {
-                StopAll();                
-            }
-            orig(self, gameResultType);
-        }
         #endregion
 
-        #region VoteRegisterMethods
+        #region MainInteractionMethods
         private void TeleporterInteraction_OnInteractionBegin(On.RoR2.TeleporterInteraction.orig_OnInteractionBegin orig, TeleporterInteraction self, Interactor activator)
         {
-            VoteController.RegisterPlayer(GetNetworkUserFromInteractor(activator));
-            if (VoteController.VotesReady)
+            if (VotesEnabled.Value)
             {
-                StopAll();
+                VoteController.RegisterPlayer(GetNetworkUserFromInteractor(activator));
+                if (VoteController.VotesReady
+                    || TimerController.TimerRestrictionsLifted)
+                {
+                    StopAll();
+                    orig(self, activator);
+                }
+                else
+                {
+                    TimerController.Start();
+                } 
+            }
+            else
+            {
                 orig(self, activator);
             }
         }
 
         private void Interactor_PerformInteraction(On.RoR2.Interactor.orig_PerformInteraction orig, Interactor self, GameObject interactableObject)
-        { 
-            if (InteractableObjectNames.IsRestictedInteractableObject(interactableObject.name))
+        {
+            if (VotesEnabled.Value
+                && InteractableObjectNames.IsRestictedInteractableObject(interactableObject.name))
             {
                 VoteController.RegisterPlayer(GetNetworkUserFromInteractor(self));
-                if (VoteController.VotesReady)
+                if (VoteController.VotesReady
+                    || TimerController.TimerRestrictionsLifted)
                 {
                     StopAll();
                     orig(self, interactableObject);
+                }
+                else
+                {
+                    TimerController.Start();
                 }
             }
             else
             {
                 orig(self, interactableObject);
             }
+        }
+
+        private void PlayerCharacterMasterController_OnBodyDeath(On.RoR2.PlayerCharacterMasterController.orig_OnBodyDeath orig, PlayerCharacterMasterController self)
+        {
+            if (VotesEnabled.Value)
+            {
+                Message.SendColoured("Player died. Reinstating restriction.", Colours.Red);
+                StopAll();
+            }           
+            orig(self);
         }
 
         private void TeleporterInteraction_OnStateChanged(On.RoR2.TeleporterInteraction.orig_OnStateChanged orig, TeleporterInteraction self, int oldActivationState, int newActivationState)
@@ -183,7 +178,7 @@ namespace TeleportVote
                     break;
             }
             orig(self, oldActivationState, newActivationState);
-        }      
+        }
 
         private NetworkUser GetNetworkUserFromInteractor(Interactor interactor)
         {
@@ -197,33 +192,39 @@ namespace TeleportVote
         {
             try
             {
-                var chatLog = Chat.readOnlyLog;
-                var match = ParseChatLog.Match(chatLog.Last());
-                var playerName = match.Groups["name"].Value.Trim();
-                var message = match.Groups["message"].Value.Trim();
-                Logger.LogDebug($"Chatlog={chatLog.Last()}, RMName={playerName}, RMMessage={message}");
-                if (!string.IsNullOrWhiteSpace(playerName))
+
+                if(VotesEnabled.Value
+                    && VoteController.PlayersCanVote)
                 {
-                    switch (message.ToLower())
+                    var chatLog = Chat.readOnlyLog;
+                    var match = ParseChatLog.Match(chatLog.Last());
+                    var playerName = match.Groups["name"].Value.Trim();
+                    var message = match.Groups["message"].Value.Trim();
+                    Logger.LogDebug($"Chatlog={chatLog.Last()}, RMName={playerName}, RMMessage={message}");
+                    if (!string.IsNullOrWhiteSpace(playerName))
                     {
-                        case "ready":
-                        case "rdy":
-                        case "r":
-                        case "y":
-                        case "go":
-                            var netUser = RoR2.NetworkUser.readOnlyInstancesList
-                                .Where(x => x.userName.Trim() == playerName)
-                                .FirstOrDefault();
-                            if (netUser.GetCurrentBody().healthComponent.alive)
-                            {
-                                VoteController.RegisterPlayer(netUser);
-                            }
-                            break;
+                        switch (message.ToLower())
+                        {
+                            case "ready":
+                            case "rdy":
+                            case "r":
+                            case "y":
+                            case "go":
+                                var netUser = RoR2.NetworkUser.readOnlyInstancesList
+                                    .Where(x => x.userName.Trim() == playerName)
+                                    .FirstOrDefault();
+                                if (netUser.GetCurrentBody().healthComponent.alive)
+                                {
+                                    VoteController.RegisterPlayer(netUser);
+                                }
+                                break;
+                        }
                     }
-                }                
+                }
+                
             }
             catch (Exception ex)
-            {                
+            {
                 Logger.LogError(ex);
             }
         }
@@ -239,21 +240,20 @@ namespace TeleportVote
             ILLabel returnLabel = il.DefineLabel();
             var c = new ILCursor(il);
             c.GotoNext(
-                x => x.MatchLdloc(2),                                       // Item Count
-                x => x.MatchLdcI4(0),                                       // 0
-                x => x.MatchBle(out ILLabel a),                             // <=
-                x => x.MatchLdarg(2),                                       // interactable
-                x => x.MatchCastclass(out TypeReference typeReference),     // Monobehaviour type
-                x => x.MatchCall(out MethodReference methodReference),      // FireworksLogic true/false logic
-                x => x.MatchBrfalse(out ILLabel b));                        // Transfers control to a target instruction if value is false, a null reference, or zero.
+                x => x.MatchLdloc(2),               // Item Count
+                x => x.MatchLdcI4(0),               // 0
+                x => x.MatchBle(out ILLabel a));    // Transfers control to a target instruction if value is false, a null reference, or zero.
 
             c.Emit(OpCodes.Ldarg_2);
             c.EmitDelegate<Func<MonoBehaviour, bool>>((interactableThing) =>
             {
-                if (interactableThing.name == InteractableObjectNames.Teleporter) { return true; }
-                else { return false; }
+                if (interactableThing.name == InteractableObjectNames.Teleporter)
+                {
+                    return true;
+                }
+                return false;
             });
-            c.Emit(OpCodes.Brtrue, returnLabel); 
+            c.Emit(OpCodes.Brtrue, returnLabel);
             c.GotoNext(x => x.MatchRet());
             c.MarkLabel(returnLabel);
         }

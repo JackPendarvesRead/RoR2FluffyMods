@@ -10,7 +10,6 @@ using UnityEngine;
 
 namespace MeteorPunishment
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.MeteorPunishment", "MeteorPunishment", "1.0.1")]
     public class MeteorPunishment : BaseUnityPlugin
     {
@@ -18,13 +17,7 @@ namespace MeteorPunishment
         private static bool CustomTarget = false;
 
         public void Awake()
-        {
-            On.RoR2.Console.Awake += (orig, self) =>
-            {
-                CommandHelper.RegisterCommands(self);
-                orig(self);
-            };
-
+        { 
             On.RoR2.EquipmentSlot.Execute += EquipmentSlot_Execute;
             IL.RoR2.MeteorStormController.MeteorWave.GetNextMeteor += MeteorWave_GetNextMeteor;
         }

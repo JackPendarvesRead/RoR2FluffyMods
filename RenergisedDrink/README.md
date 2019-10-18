@@ -23,5 +23,5 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
-v0.0.0 
-- "Early access" release
+v1.0.0 
+- Release

@@ -8,13 +8,10 @@ using Mono.Cecil.Cil;
 using System.Linq;
 using System.Reflection;
 using System;
-using R2API;
-using R2API.Utils;
 using System.Collections.Generic;
 
 namespace RiskOfVampirism
 {
-    [BepInDependency("com.bepis.r2api")]
     [BepInPlugin("com.FluffyMods.RiskOfVampirism", "RiskOfVampirism", "1.0.1")]
     public class RiskOfVampirism : BaseUnityPlugin
     {      
@@ -43,13 +40,7 @@ namespace RiskOfVampirism
                "<bool> Set to true to be a vampire",
                true);
             #endregion
-
-            On.RoR2.Console.Awake += (orig, self) =>
-            {
-                CommandHelper.RegisterCommands(self);
-                orig(self);
-            };
-
+            
             On.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
             On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;

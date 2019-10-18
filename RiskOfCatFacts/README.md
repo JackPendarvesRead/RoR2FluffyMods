@@ -32,6 +32,7 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 v2.0.0
 - Updated for bepinex5
 - Added configuration to enable/disable receiving CatFacts
+- Fixed some sloppy disposing of timer
 
 v1.1.0
 - Added unsubscribe feature
