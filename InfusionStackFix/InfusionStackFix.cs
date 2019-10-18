@@ -15,7 +15,7 @@ namespace InfusionStackFix
     public class InfusionStackFix : BaseUnityPlugin
     {
         private ConditionalConfigEntry<int> MaximumHealthPerInfusion;
-        private ConfigEntry<int> MaxHealthGainPerKill;
+        private ConditionalConfigEntry<int> MaxHealthGainPerKill;
         private ConfigEntry<bool> TurretReceivesBonusFromEngineer;
 
         public void Awake()
@@ -31,19 +31,20 @@ namespace InfusionStackFix
                 100, 
                 true, 
                 new ConfigDescription("Maximum health gained per infusion. Disable for no limit."));
-
-            MaxHealthGainPerKill = Config.AddSetting<int>(
-                new ConfigDefinition(infusionSectionName, nameof(MaxHealthGainPerKill)),
-                0,
+                                 
+            MaxHealthGainPerKill = conditionalUtil.AddConditionalConfig<int>(
+                infusionSectionName, 
+                nameof(MaxHealthGainPerKill),
+                5,
+                false,
                 new ConfigDescription(
-                    "Set the maximum value for health gain per kill. Set value to 0 for default mod behaviour (i.e. not limited, max=infusionStacks)",
-                    null,
-                    ConfigTags.Advanced
+                    "Enable to set the maximum value for health gain per kill."
                     )
                 );
 
             TurretReceivesBonusFromEngineer = Config.AddSetting<bool>(
-                new ConfigDefinition(engineerSectionName, nameof(TurretReceivesBonusFromEngineer)),
+                engineerSectionName, 
+                nameof(TurretReceivesBonusFromEngineer),
                 true,
                 new ConfigDescription(
                     "If enabled then turrets will receive the current infusion bonus of the Engineer on creation"
@@ -138,9 +139,10 @@ namespace InfusionStackFix
 
         private int GetMaximumOrbValue(int infusionCount)
         {
-            if(MaxHealthGainPerKill.Value > 0)
+            if(MaxHealthGainPerKill.Condition
+                && infusionCount > MaxHealthGainPerKill.Value)
             {
-                return infusionCount < MaxHealthGainPerKill.Value ? infusionCount : MaxHealthGainPerKill.Value;
+                return MaxHealthGainPerKill.Value;
             }
             return infusionCount;
         }
