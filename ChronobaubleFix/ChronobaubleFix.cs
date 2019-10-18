@@ -12,8 +12,6 @@ using BepInEx.Configuration;
 
 namespace ChronobaubleFix
 {
-    // TypeLoadException: Could not resolve type with token 01000025 (from typeref, class/assembly hook_SetBuffCount, )
-
     [BepInPlugin("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "1.0.0")]
     public class ChronobaubleFix : BaseUnityPlugin
     {
@@ -22,7 +20,7 @@ namespace ChronobaubleFix
 
         public void Awake()
         {
-            const string chronobaubleSection = "Chronobauble";
+            const string chronobaubleSection = "Chronobauble";            
 
             SlowScalingCoefficient = Config.AddSetting<float>(
                 new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
@@ -34,13 +32,12 @@ namespace ChronobaubleFix
 
             DebuffStacksPerItemStack = Config.AddSetting<int>(
                 new ConfigDefinition(chronobaubleSection, nameof(DebuffStacksPerItemStack)),
-                5,
+                3,
                 new ConfigDescription(
                     "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
                     new AcceptableValueRange<int>(0, 20)
                     ));
 
-            //On.RoR2.CharacterBody.SetBuffCount += CharacterBody_SetBuffCount;
             On.RoR2.CharacterBody.AddBuff += CharacterBody_AddBuff;
             IL.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
             IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
