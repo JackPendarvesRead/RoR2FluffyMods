@@ -171,7 +171,7 @@ namespace TheMightyBoop
             GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceLudicrous;
             MaxDistance.Value = BoopConstants.MaxDistanceLudicrous;
             LiftVelocity.Value = BoopConstants.LiftVelocityLudicrous;
-            Debug.Log("Set silly values for configurations.");
+            Debug.Log("Set LUDICROUS values for configurations.");
         }        
     }
 }
