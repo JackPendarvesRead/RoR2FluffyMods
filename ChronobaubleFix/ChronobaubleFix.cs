@@ -42,9 +42,40 @@ namespace ChronobaubleFix
                     new AcceptableValueRange<int>(0, 20)
                     ));
 
-            On.RoR2.CharacterBody.AddBuff += CharacterBody_AddBuff;
-            IL.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
-            IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+            RoR2.Run.onRunStartGlobal += (run) =>
+            {
+                if(RoR2.NetworkUser.readOnlyInstancesList.Count == 1)
+                {
+                    On.RoR2.CharacterBody.AddBuff += CharacterBody_AddBuff;
+                    IL.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
+                    IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+                    hooksEnabled = true;
+                    Debug.Log("Subscribing to hooks");
+                }
+                else
+                {
+                    Debug.Log("Not subscribing to hooks");
+                }
+            };
+            RoR2.Run.onRunDestroyGlobal += (run) =>
+            {
+                if (hooksEnabled)
+                {                    
+                    On.RoR2.CharacterBody.AddBuff -= CharacterBody_AddBuff;
+                    IL.RoR2.GlobalEventManager.OnHitEnemy -= GlobalEventManager_OnHitEnemy;
+                    IL.RoR2.CharacterBody.RecalculateStats -= CharacterBody_RecalculateStats;
+                    hooksEnabled = false;
+                    Debug.Log("Unsubscibing hooks");
+                }               
+            };
+
+            
+        }
+        private bool hooksEnabled = false;
+
+        private void Run_onRunStartGlobal(Run obj)
+        {
+            throw new NotImplementedException();
         }
 
         private void CharacterBody_AddBuff(On.RoR2.CharacterBody.orig_AddBuff orig, CharacterBody self, BuffIndex buffType)
