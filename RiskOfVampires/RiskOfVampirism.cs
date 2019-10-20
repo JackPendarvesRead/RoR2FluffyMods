@@ -18,6 +18,7 @@ namespace RiskOfVampirism
         private static ConfigEntry<float> Leech { get; set; }
         private static ConfigEntry<int> DecayTime { get; set; }
         private static ConfigEntry<int> DegenerationThreshold { get; set; }
+        private static ConfigEntry<bool> GainsMaximumHealth { get; set; }
         private static ConfigEntry<bool> IsVampire { get; set; }
 
         public void Awake()
@@ -45,6 +46,12 @@ namespace RiskOfVampirism
                 5,
                 "You will not degenerate below this threshold number");
 
+            GainsMaximumHealth = Config.AddSetting<bool>(
+               "Vampire",
+               "GainMaximumHealth",
+               true,
+               "Enable to gain +1 base max health for each kill you make");
+
             IsVampire = Config.AddSetting<bool>(
                "Vampire",
                "IsAVampire",
@@ -61,26 +68,27 @@ namespace RiskOfVampirism
         // GAIN MAX HEALTH ON KILL METHOD
         private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
         {
-            var attacker = damageReport.damageInfo.attacker.GetComponent<CharacterBody>();
-            var player = GetPlayer(attacker);
-            if (player != null && IsVampire.Value)
+            if(IsVampire.Value && GainsMaximumHealth.Value)
             {
-                attacker.baseMaxHealth += 1;
-            }
+                var attacker = damageReport.damageInfo.attacker.GetComponent<CharacterBody>();
+                var player = GetPlayer(attacker);
+                if (player != null)
+                {
+                    attacker.baseMaxHealth += 1;
+                }
+            }            
             orig(self, damageReport);
         }        
 
         // LIFESTEAL METHOD
         private void GlobalEventManager_OnHitEnemy(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
         {
-            if (!damageInfo.procChainMask.HasProc(ProcType.HealOnHit))
+            if (IsVampire.Value && !damageInfo.procChainMask.HasProc(ProcType.HealOnHit))
             {
                 var attacker = damageInfo.attacker.GetComponent<CharacterBody>();
                 var healthComponent = attacker.GetComponent<HealthComponent>();
                 var player = GetPlayer(attacker);
-                if (player != null 
-                    && IsVampire.Value
-                    && (bool)((UnityEngine.Object)healthComponent))
+                if (player != null && (bool)((UnityEngine.Object)healthComponent))
                 {                    
                     var procChainMask = damageInfo.procChainMask;
                     procChainMask.AddProc(ProcType.HealOnHit);
@@ -123,23 +131,20 @@ namespace RiskOfVampirism
         private void CharacterBody_FixedUpdate(On.RoR2.CharacterBody.orig_FixedUpdate orig, CharacterBody self)
         {
             orig(self);
-            var player = GetPlayer(self);
-            if (player != null)
-            {
+            if (IsVampire.Value && GetPlayer(self) != null)
+            {                
                 var health = self.healthComponent.health;
-                if (degenerating
-                    && self.healthComponent.health <= DegenerationThreshold.Value)
+                if (degenerating && health <= DegenerationThreshold.Value)
                 {
                     degenerating = false;
                     self.RecalculateStats();
                 }
-                if (!degenerating
-                    && self.healthComponent.health > DegenerationThreshold.Value)
+                if (!degenerating && health > DegenerationThreshold.Value)
                 {
                     degenerating = true;
                     self.RecalculateStats();
-                }
-            }
+                }                
+            }           
         }
 
         private NetworkUser GetPlayer(CharacterBody body)
