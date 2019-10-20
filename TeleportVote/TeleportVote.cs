@@ -39,7 +39,7 @@ namespace TeleportVote
                     "Enable/Disable voting"
                     ));
 
-            var cUtil = new ConditionalUtil(this);
+            var cUtil = new ConditionalUtil(this.Config);
             MaximumVotes = cUtil.AddConditionalConfig<int>(
                 votesSection,
                 "Maximum Votes",

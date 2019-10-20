@@ -28,7 +28,7 @@ namespace TheMightyBoop
             const string fireSonicBoomSection = "FireSonicBoom";
             const string clayBruiserSection = "ClayBruiser";
 
-            var buttonUtil = new ButtonUtil(this);
+            var buttonUtil = new ButtonUtil(this.Config);
             buttonUtil.AddButtonConfig("Presets", "Preset", "Select preset configurations with buttons", GetButtonDictionary());
 
             ClayBruiserIsMighty = Config.AddSetting<bool>(

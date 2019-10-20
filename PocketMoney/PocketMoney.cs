@@ -23,7 +23,7 @@ namespace PocketMoney
         {
             const string moneySection = "Money";
 
-            var conUtil = new ConditionalUtil(this);
+            var conUtil = new ConditionalUtil(this.Config);
             LatestStageToReceiveMoney = conUtil.AddConditionalConfig<uint>(
                 moneySection,
                 nameof(LatestStageToReceiveMoney),

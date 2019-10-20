@@ -24,7 +24,7 @@ namespace InfusionStackFix
             const string infusionSectionName = "Infusion";
             const string engineerSectionName = "Engineer";
 
-            var conditionalUtil = new ConditionalUtil(this);
+            var conditionalUtil = new ConditionalUtil(this.Config);
             MaximumHealthPerInfusion = conditionalUtil.AddConditionalConfig<int>(
                 infusionSectionName, 
                 nameof(MaximumHealthPerInfusion), 

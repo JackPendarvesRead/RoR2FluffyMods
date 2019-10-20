@@ -22,21 +22,26 @@ namespace FluffyLabsTest
 
         public void Awake()
         {
-            var cUtil = new ConditionalUtil(this);
+            Config.AddSetting<string>("", "", "test");
+
+            var cUtil = new ConditionalUtil(this.Config);
             ConditionalConf = cUtil.AddConditionalConfig<int>("con", "con", 5, true, new ConfigDescription("desc"));
 
-            var bUtil = new ButtonUtil(this);
-            bUtil.AddButtonConfig("Button", "button", "description", GetDic());
+            var bUtil = new ButtonUtil(this.Config);
+            bUtil.AddButtonConfig("Button", "Button 1", "description", GetDic(), false);
+            bUtil.AddButtonConfig("Button", "Button 2", "description", GetDic(), true);
 
-            var mUtil = new MacroUtil(this);
-            MacroConf = mUtil.AddMacroConfig("Macro", "Macro", "Description", false);
+            var mUtil = new MacroUtil(this.Config);
+            MacroConf = mUtil.AddMacroConfig("Macro", "Macro", "Description");
         }
         
         private Dictionary<string, Action> GetDic()
         {
             return new Dictionary<string, Action>
             {
-                { "button", () => { Debug.Log("Button action"); } }
+                { "button 1", () => { Debug.Log("Button action 1"); } },
+                { "button 2", () => { Debug.Log("Button action 2"); } },
+                { "button 3", () => { Debug.Log("Button action 3"); } }
             };
         }
     }   

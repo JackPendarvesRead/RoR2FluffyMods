@@ -18,14 +18,13 @@ namespace BulletFalloffFix
     {
         private static ConfigEntry<float> FallOffStartDistance;
         private static ConfigEntry<float> FallOffEndDistance;
-        private static ConfigEntry<string> FalloffPreset;
 
         public void Awake()
         {
             const string falloffDistanceSection = "Falloff Distance";
             const string presetSection = "Presets";
 
-            var buttonUtil = new ButtonUtil(this);
+            var buttonUtil = new ButtonUtil(this.Config);
             buttonUtil.AddButtonConfig(presetSection, "Buttons", "", GetButtonDic());
 
             FallOffStartDistance = Config.AddSetting<float>(
