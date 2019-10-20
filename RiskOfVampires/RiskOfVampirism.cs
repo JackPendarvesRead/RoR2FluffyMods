@@ -14,14 +14,15 @@ namespace RiskOfVampirism
 {
     [BepInPlugin("com.FluffyMods.RiskOfVampirism", "RiskOfVampirism", "2.0.0")]
     public class RiskOfVampirism : BaseUnityPlugin
-    {      
-        private static ConfigEntry<float> Leech { get; set; }
-        private static ConfigEntry<int> DecayTime { get; set; }
-        private static ConfigEntry<int> DegenerationThreshold { get; set; }
-        private static ConfigEntry<bool> GainsMaximumHealth { get; set; }
-        private static ConfigEntry<bool> IsVampire { get; set; }
+    {
+        private ConfigEntry<float> Leech;
+        private ConfigEntry<int> DecayTime;
+        private ConfigEntry<int> DegenerationThreshold;
+        private ConfigEntry<bool> GainsMaximumHealth;
+        private ConfigEntry<bool> IsVampire;
+        private List<ConfigEntry<float>> SurvivorCoefficients;
 
-        public void Awake()
+        public void Start()
         {
             #region ConfigSetup
             const string statsSection = "Stats";
@@ -29,7 +30,7 @@ namespace RiskOfVampirism
             Leech = Config.AddSetting<float>(
                 statsSection,
                 "%LifeLeech",
-                0.15f,
+                0.08f,
                 new ConfigDescription(
                     "The amount leech given to vampires (% damage)",
                     new AcceptableValueRange<float>(0, 1)));
@@ -37,13 +38,13 @@ namespace RiskOfVampirism
             DecayTime = Config.AddSetting<int>(
                 statsSection,
                 "HealthDecayTime",
-                60,
+                45,
                 "The time(s) for player to degenerate health to zero");
 
             DegenerationThreshold = Config.AddSetting<int>(
                 statsSection,
                 "DegenerationThreshold",
-                5,
+                1,
                 "You will not degenerate below this threshold number");
 
             GainsMaximumHealth = Config.AddSetting<bool>(
@@ -57,12 +58,35 @@ namespace RiskOfVampirism
                "IsAVampire",
                true,
                "Set to true to be a vampire");
+
+            SurvivorCoefficients = GetSurvivorConfigEntries().ToList();
             #endregion
 
             On.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
             On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             On.RoR2.CharacterBody.FixedUpdate += CharacterBody_FixedUpdate;
             IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+        }
+
+        private IEnumerable<ConfigEntry<float>> GetSurvivorConfigEntries()
+        {
+            var survivors = RoR2.SurvivorCatalog.allSurvivorDefs;
+            foreach(var survivor in survivors)
+            {
+                if(string.IsNullOrWhiteSpace(survivor.name))
+                {
+                    continue;
+                }
+
+                yield return Config.AddSetting<float>(
+                    "SurvivorSpecificConfig",
+                    survivor.name,
+                    1.0f,
+                    new ConfigDescription(
+                        $"Lifesteal coefficient specific for {survivor.ToString()}. i.e. multiply lifesteal by this number if you are playing this survivor",
+                        new AcceptableValueRange<float>(0, 2)
+                        ));
+            }
         }
 
         // GAIN MAX HEALTH ON KILL METHOD
@@ -93,10 +117,8 @@ namespace RiskOfVampirism
                     var procChainMask = damageInfo.procChainMask;
                     procChainMask.AddProc(ProcType.HealOnHit);
 
-                    // var survivorCoefficient = GetSurvivorCoefficient(attacker); 
-                    // var num = (double)healthComponent.Heal((5 * damageInfo.procCoefficient + attacker.level / 2) * survivorCoefficient, procChainMask, true); 
-                    
-                    var num = (double)healthComponent.Heal(damageInfo.damage * Leech.Value, procChainMask, true);                    
+                    var survivorCoefficient = GetSurvivorCoefficient(attacker); 
+                    var num = (double)healthComponent.Heal(damageInfo.damage * Leech.Value * survivorCoefficient, procChainMask, true);                    
                 }                             
             }
             orig(self, damageInfo, victim);
@@ -154,24 +176,12 @@ namespace RiskOfVampirism
                 .FirstOrDefault();
         }
 
-        //private float GetSurvivorCoefficient(CharacterBody body)
-        //{
-        //    Debug.Log($"VAMPIRE BODY = {body.name}");
-        //    if (body.name.ToLower().StartsWith(SurvivorIndex.Commando.ToString().ToLower())
-        //        || body.name.ToLower().StartsWith(SurvivorIndex.Toolbot.ToString().ToLower()))
-        //    {
-        //        Debug.Log("RETURN 0.5f");
-        //        return 0.5f;
-        //    }
-        //    if (body.name.ToLower().StartsWith(SurvivorIndex.Engi.ToString().ToLower())
-        //        || body.name.ToLower().StartsWith(SurvivorIndex.Mage.ToString().ToLower())
-        //        || body.name.ToLower().StartsWith(SurvivorIndex.Treebot.ToString().ToLower()))
-        //    {
-        //        Debug.Log("RETURN 3f");
-        //        return 3f;
-        //    }
-        //    Debug.Log("RETURN 1f");
-        //    return 1f;
-        //}
+
+        private float GetSurvivorCoefficient(CharacterBody body)
+        {
+            return (from s in SurvivorCoefficients
+                    where body.name.StartsWith(s.Definition.Key)
+                    select s.Value).FirstOrDefault();
+        }
     }
 }
