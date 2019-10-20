@@ -99,8 +99,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BodyStrings.cs" />
-    <Compile Include="old.cs" />
     <Compile Include="RiskOfVampirism.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
