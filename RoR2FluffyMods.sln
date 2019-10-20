@@ -47,6 +47,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReadyToUpload", "ReadyToUpl
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Uploaded", "Uploaded", "{BE4EDDFA-9681-4074-8141-ED2B004AAB32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MacroCommands", "MacroCommands\MacroCommands.csproj", "{71158916-80D4-4497-A8B4-35230FC96C1C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,10 @@ Global
 		{95D3CB51-F382-4A4B-9D75-3C4BDA56F6D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95D3CB51-F382-4A4B-9D75-3C4BDA56F6D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95D3CB51-F382-4A4B-9D75-3C4BDA56F6D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71158916-80D4-4497-A8B4-35230FC96C1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71158916-80D4-4497-A8B4-35230FC96C1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71158916-80D4-4497-A8B4-35230FC96C1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71158916-80D4-4497-A8B4-35230FC96C1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,6 +144,7 @@ Global
 		{048CDBF6-EDE7-46F5-AED9-0522A40F0671} = {73648A4C-B16B-4607-9239-734FDEE9DC4A}
 		{F381E982-3B2B-4067-86DD-CF0F4E3518BC} = {AA4E1C34-B3F3-47C5-9A0C-18B0E72155D2}
 		{95D3CB51-F382-4A4B-9D75-3C4BDA56F6D1} = {8D25F199-8273-465B-A1C5-C979D8BA650E}
+		{71158916-80D4-4497-A8B4-35230FC96C1C} = {1FC39F4E-0F1D-4AEF-9BA4-16FF855A5949}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EDF5086C-311C-441D-8063-82C062301BD1}

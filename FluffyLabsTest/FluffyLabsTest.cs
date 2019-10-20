@@ -17,22 +17,21 @@ namespace FluffyLabsTest
     [BepInPlugin("com.FluffyMods.FluffyLabsTest", "FluffyLabsTest", "0.0.0")]
     public class FluffyLabsTest : BaseUnityPlugin
     {
-        private ConditionalConfigEntry<int> ConditionalConf;
-        private MacroConfigEntry MacroConf;
+        private ConditionalConfigEntry<float> ConditionalConf;
+        private ConfigEntry<float> floatCon;
+        private ConfigEntry<double> dubCon;
+        private ConfigEntry<int> intCon;
 
         public void Awake()
         {
-            Config.AddSetting<string>("", "", "test");
+            const string testSection = "TESTTEST";
+            floatCon = Config.AddSetting<float>(testSection, "float", 5f, new ConfigDescription("", new AcceptableValueRange<float>(0,20)));
+            dubCon = Config.AddSetting<double>(testSection, "double", 8.0, new ConfigDescription("", new AcceptableValueRange<double>(0, 20)));
+            intCon = Config.AddSetting<int>(testSection, "int", 2, new ConfigDescription("", new AcceptableValueRange<int>(0, 20)));
 
             var cUtil = new ConditionalUtil(this.Config);
-            ConditionalConf = cUtil.AddConditionalConfig<int>("con", "con", 5, true, new ConfigDescription("desc"));
+            ConditionalConf = cUtil.AddConditionalConfig<float>("con", "con", 5f, true, new ConfigDescription("desc"));
 
-            var bUtil = new ButtonUtil(this.Config);
-            bUtil.AddButtonConfig("Button", "Button 1", "description", GetDic(), false);
-            bUtil.AddButtonConfig("Button", "Button 2", "description", GetDic(), true);
-
-            var mUtil = new MacroUtil(this.Config);
-            MacroConf = mUtil.AddMacroConfig("Macro", "Macro", "Description");
         }
         
         private Dictionary<string, Action> GetDic()
