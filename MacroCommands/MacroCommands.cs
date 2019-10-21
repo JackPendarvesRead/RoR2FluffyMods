@@ -2,8 +2,10 @@
 using FluffyLabsConfigManagerTools.Infrastructure;
 using FluffyLabsConfigManagerTools.Util;
 using RoR2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace MacroCommands
@@ -21,13 +23,10 @@ namespace MacroCommands
         public void Update()
         {
             foreach (var macro in Macros.Where(m => m.KeyboardShortcut.MainKey != KeyCode.None))
-            {                
-                if (Input.GetKeyDown(macro.KeyboardShortcut.MainKey))
+            {
+                if (macro.KeyboardShortcut.IsUp())
                 {
-                    for(var i = 0; i < macro.RepeatCount; i++)
-                    {
-                        ExecuteMacro(macro);
-                    }
+                    ExecuteMacro(macro);
                 }
             }
         }
@@ -36,26 +35,36 @@ namespace MacroCommands
         private IEnumerable<MacroConfigEntry> GetMacros()
         {
             const string macroSection = "Macros";
-            var c = new MacroUtil(this.Config);
+            var mUtil = new MacroUtil(this.Config);
             for (var i = 0; i < n; i++)
             {
                 var number = (i + 1).ToString("00");
-                yield return c.AddMacroConfig(macroSection, $"Macro {number}", $"This is macro {number}");
+                yield return mUtil.AddMacroConfig(macroSection, $"Macro {number}", $"This is macro {number}");
             }
         }
 
         private void ExecuteMacro(MacroConfigEntry macro)
         {
-            var nu = GetNetworkUser();
-            var commands = GetCommands(macro.MacroString);
-            foreach(var command in commands)
-            {                
-                var cmd = GetCommandFromString(command);
-                if (!string.IsNullOrWhiteSpace(cmd.Name))
+            try
+            {
+                var nu = GetNetworkUser();
+                var commands = GetCommands(macro.MacroString);
+                for (var i = 0; i < macro.RepeatCount; i++)
                 {
-                    Debug.Log($"Running command: {command.Trim()}");
-                    Console.instance.RunClientCmd(nu, cmd.Name, cmd.Args);
+                    foreach (var command in commands)
+                    {
+                        var cmd = GetCommandFromString(command);
+                        if (!string.IsNullOrWhiteSpace(cmd.Name))
+                        {
+                            RoR2.Console.instance.RunClientCmd(nu, cmd.Name, cmd.Args);
+                        }
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex);
+                Debug.Log("ERROR IN MACRO");
             }
         }
 
