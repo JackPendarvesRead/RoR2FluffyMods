@@ -18,49 +18,26 @@ namespace MacroCommands
         public void Start()
         {            
             Macros = GetMacros().ToList();
-            var bUtil = new ButtonUtil(this.Config);
-            bUtil.AddButtonConfig("Advanced", 
-                "Add Macro", 
-                "Press this button to add additional macro ConfigEntry", 
-                GetButtonDictionary(),
-                false,
-                new ConfigurationManagerAttributes { HideDefaultButton = true, IsAdvanced = true });
-        }
-
-        private Dictionary<string, Action> GetButtonDictionary()
-        {
-            return new Dictionary<string, Action>
-            {
-                { "Add", AddNewMacro }
-            };
-        }
+        }      
 
         private const string macroSection = "Macros";
-        private readonly int n = 5;
         private IEnumerable<MacroConfigEntry> GetMacros()
         {
             var mUtil = new MacroUtil(this.Config);
-            for (var i = 0; i < n; i++)
+            for (var i = 0; i < 10; i++)
             {
                 var number = (i + 1).ToString("00");
-                yield return mUtil.AddMacroConfig(macroSection, $"Macro {number}", "Type Macro into the black box. Commands are seperated by ';'");
+                if(i < 5)
+                {
+                    yield return mUtil.AddMacroConfig(macroSection, $"Macro {number}", "Type Macro into the black box. Commands are seperated by ';'");
+                }
+                else
+                {
+                    yield return mUtil.AddMacroConfig(macroSection, $"Macro {number}", "Type Macro into the black box. Commands are seperated by ';'", 
+                        new ConfigurationManagerAttributes { IsAdvanced = true, HideDefaultButton = true });
+                }
             }
-        }
-
-        private void AddNewMacro()
-        {
-            if(Macros.Count < 100)
-            {
-                var mUtil = new MacroUtil(this.Config);
-                var number = (Macros.Count + 1).ToString("00");
-                var macro = mUtil.AddMacroConfig
-                    (macroSection, 
-                    $"Macro {number}", 
-                    "Type Macro into the black box. Commands are seperated by ';'", 
-                    new ConfigurationManagerAttributes { IsAdvanced = true, HideDefaultButton = true });
-                Macros.Add(macro);
-            }
-        }
+        }     
 
         public void Update()
         {

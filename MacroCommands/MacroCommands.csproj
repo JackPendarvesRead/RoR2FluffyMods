@@ -80,6 +80,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddRemove.cs" />
     <Compile Include="MacroCommands.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="MacroController.cs" />
