@@ -20,18 +20,7 @@ namespace MacroCommands
             Macros = GetMacros().ToList();            
         }
 
-        public void Update()
-        {
-            foreach (var macro in Macros.Where(m => m.KeyboardShortcut.MainKey != KeyCode.None))
-            {
-                if (macro.KeyboardShortcut.IsUp())
-                {
-                    ExecuteMacro(macro);
-                }
-            }
-        }
-
-        int n = 5;
+        private readonly int n = 5;
         private IEnumerable<MacroConfigEntry> GetMacros()
         {
             const string macroSection = "Macros";
@@ -40,6 +29,17 @@ namespace MacroCommands
             {
                 var number = (i + 1).ToString("00");
                 yield return mUtil.AddMacroConfig(macroSection, $"Macro {number}", $"This is macro {number}");
+            }
+        }
+
+        public void Update()
+        {
+            foreach (var macro in Macros.Where(m => m.KeyboardShortcut.MainKey != KeyCode.None))
+            {
+                if (macro.KeyboardShortcut.IsUp())
+                {
+                    ExecuteMacro(macro);
+                }
             }
         }
 
@@ -75,7 +75,7 @@ namespace MacroCommands
 
         private NetworkUser GetNetworkUser()
         {
-            return RoR2.NetworkUser.readOnlyInstancesList[0];
+            return RoR2.LocalUserManager.GetFirstLocalUser().currentNetworkUser;
         }
 
         private Command GetCommandFromString(string commandString)
