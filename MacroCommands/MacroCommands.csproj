@@ -82,6 +82,7 @@
   <ItemGroup>
     <Compile Include="MacroCommands.cs" />
     <Compile Include="Command.cs" />
+    <Compile Include="MacroController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

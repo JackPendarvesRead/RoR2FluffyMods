@@ -16,19 +16,49 @@ namespace MacroCommands
         private List<MacroConfigEntry> Macros;
 
         public void Start()
-        {
-            Macros = GetMacros().ToList();            
+        {            
+            Macros = GetMacros().ToList();
+            var bUtil = new ButtonUtil(this.Config);
+            bUtil.AddButtonConfig("Advanced", 
+                "Add Macro", 
+                "Press this button to add additional macro ConfigEntry", 
+                GetButtonDictionary(),
+                false,
+                new ConfigurationManagerAttributes { HideDefaultButton = true, IsAdvanced = true });
         }
 
+        private Dictionary<string, Action> GetButtonDictionary()
+        {
+            return new Dictionary<string, Action>
+            {
+                { "Add", AddNewMacro }
+            };
+        }
+
+        private const string macroSection = "Macros";
         private readonly int n = 5;
         private IEnumerable<MacroConfigEntry> GetMacros()
         {
-            const string macroSection = "Macros";
             var mUtil = new MacroUtil(this.Config);
             for (var i = 0; i < n; i++)
             {
                 var number = (i + 1).ToString("00");
-                yield return mUtil.AddMacroConfig(macroSection, $"Macro {number}", $"This is macro {number}");
+                yield return mUtil.AddMacroConfig(macroSection, $"Macro {number}", "Type Macro into the black box. Commands are seperated by ';'");
+            }
+        }
+
+        private void AddNewMacro()
+        {
+            if(Macros.Count < 100)
+            {
+                var mUtil = new MacroUtil(this.Config);
+                var number = (Macros.Count + 1).ToString("00");
+                var macro = mUtil.AddMacroConfig
+                    (macroSection, 
+                    $"Macro {number}", 
+                    "Type Macro into the black box. Commands are seperated by ';'", 
+                    new ConfigurationManagerAttributes { IsAdvanced = true, HideDefaultButton = true });
+                Macros.Add(macro);
             }
         }
 
@@ -38,56 +68,9 @@ namespace MacroCommands
             {
                 if (macro.KeyboardShortcut.IsUp())
                 {
-                    ExecuteMacro(macro);
+                    new MacroController().ExecuteMacro(macro);
                 }
             }
-        }
-
-        private void ExecuteMacro(MacroConfigEntry macro)
-        {
-            try
-            {
-                var nu = GetNetworkUser();
-                var commands = GetCommandArray(macro.MacroString);
-                for (var i = 0; i < macro.RepeatCount; i++)
-                {
-                    foreach (var command in commands)
-                    {
-                        var cmd = GetCommandFromString(command);
-                        if (!string.IsNullOrWhiteSpace(cmd.Name))
-                        {
-                            RoR2.Console.instance.RunClientCmd(nu, cmd.Name, cmd.Args);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
-                Debug.Log("ERROR IN MACRO");
-            }
-        }
-
-        private string[] GetCommandArray(string macroCommandString)
-        {
-            return macroCommandString.Split(';');
-        }
-
-        private NetworkUser GetNetworkUser()
-        {
-            return RoR2.LocalUserManager.GetFirstLocalUser().currentNetworkUser;
-        }
-
-        private Command GetCommandFromString(string commandString)
-        {
-            var split = commandString.Trim().Split(' ');
-            var name = split[0];
-            var args = split.Skip(1).ToArray<string>();
-            return new Command
-            {
-                Name = name,
-                Args = args
-            };
-        }
+        }        
     }
 }
