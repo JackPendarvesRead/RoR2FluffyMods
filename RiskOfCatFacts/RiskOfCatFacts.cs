@@ -27,9 +27,8 @@ namespace RiskOfCatFacts
                 true,
                 new ConfigDescription("Enable/Disable receiving CatFacts"));
 
-            //Chat.onChatChanged += Chat_onChatChanged;
+            Chat.onChatChanged += Chat_onChatChanged;
             RoR2.Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
-            RoR2.Run.onRunStartGlobal += Run_onRunStartGlobal;
             On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             On.RoR2.Run.BeginStage += Run_BeginStage;
         }
@@ -43,14 +42,6 @@ namespace RiskOfCatFacts
                 Start();
             }
             orig(self);
-        }
-
-        private void Run_onRunStartGlobal(Run obj)
-        {
-            if (CatFactsEnabled.Value)
-            {
-                Start();
-            }
         }
 
         private void Run_onRunDestroyGlobal(Run obj)
