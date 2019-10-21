@@ -48,7 +48,7 @@ namespace MacroCommands
             try
             {
                 var nu = GetNetworkUser();
-                var commands = GetCommands(macro.MacroString);
+                var commands = GetCommandArray(macro.MacroString);
                 for (var i = 0; i < macro.RepeatCount; i++)
                 {
                     foreach (var command in commands)
@@ -68,7 +68,7 @@ namespace MacroCommands
             }
         }
 
-        private string[] GetCommands(string macroCommandString)
+        private string[] GetCommandArray(string macroCommandString)
         {
             return macroCommandString.Split(';');
         }
