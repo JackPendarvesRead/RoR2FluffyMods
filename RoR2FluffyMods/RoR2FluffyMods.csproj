@@ -113,6 +113,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHelper.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="UsefulStuff.cs" />
     <Compile Include="TestingStuff.cs" />
