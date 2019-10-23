@@ -12,10 +12,6 @@ using BepInEx.Configuration;
 
 namespace ChronobaubleFix
 {
-    //Mods that this mod clashes with...
-    //BetterBalance
-
-
     [BepInPlugin("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "2.0.0")]
     public class ChronobaubleFix : BaseUnityPlugin
     {
@@ -42,9 +38,10 @@ namespace ChronobaubleFix
                     new AcceptableValueRange<int>(0, 20)
                     ));
 
-            RoR2.Run.onRunStartGlobal += (run) =>
+            On.RoR2.Run.BeginStage += (orig, self) =>
             {
-                if(RoR2.NetworkUser.readOnlyInstancesList.Count == 1)
+                if (RoR2.NetworkUser.readOnlyInstancesList.Count == 1
+                && self.stageClearCount == 0)
                 {
                     On.RoR2.CharacterBody.AddBuff += CharacterBody_AddBuff;
                     IL.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
@@ -57,6 +54,7 @@ namespace ChronobaubleFix
                     Debug.Log("Not subscribing to hooks");
                 }
             };
+
             RoR2.Run.onRunDestroyGlobal += (run) =>
             {
                 if (hooksEnabled)
