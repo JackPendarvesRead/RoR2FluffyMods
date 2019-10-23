@@ -1,3 +1,7 @@
+# NOTE: THIS IS A BETA RELEASE
+
+You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
+
 # BulletFalloffFix
 
 The main reason for making this was I felt that commando should be more effective at a distance. I found that by just slightly buffing the falloff distance (i.e. you can shoot longer range without losing damage) this fixed everything and I did not need to make any further buffs to commando.
@@ -37,6 +41,7 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 v2.0.0
 - Updated for Bepinex5
 - Removed unnecessary R2API dependency
+- Early Thunderstore release
 
 v1.0.0 
 - Released
