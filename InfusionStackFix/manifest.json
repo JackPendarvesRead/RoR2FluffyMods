@@ -4,6 +4,5 @@
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/InfusionStackFix",
   "description": "Infusions give you 1hp/kill/stack. E.g. 5 infusions gives you 5hp per kill. Can also configure maximum value.",
   "dependencies": [
-    "bbepis-BepInExPack-2.0.0"
   ]
 }

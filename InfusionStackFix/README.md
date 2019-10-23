@@ -1,3 +1,7 @@
+# NOTE: THIS IS A BETA RELEASE
+
+You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
+
 # InfusionStackFix
 
 Changes the way infusion stacks are given. This mod will give you +1 max hp per infusion per kill.
@@ -34,6 +38,7 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 v2.0.0
 - Updated to Bepinex5
 - Removed unnecessary R2API dependency
+- Early release awaiting BepInExPack
 
 v1.3.0
 - Removed cap on MaxHpPerInfusionStack
