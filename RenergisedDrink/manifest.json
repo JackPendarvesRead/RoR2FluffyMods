@@ -4,6 +4,5 @@
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/renergiseddrink",
   "description": "[Early Access Mod] Rebalances Energy Drink so that it is not always better to pick hoof over energy drink",
   "dependencies": [
-    "bbepis-BepInExPack-2.0.0"
   ]
 }
