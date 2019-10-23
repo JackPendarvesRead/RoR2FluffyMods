@@ -1,3 +1,7 @@
+# NOTE: THIS IS A BETA RELEASE
+
+You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
+
 # TeleportVote
 
 If you are like me and you are tired of waiting around awkwardly asking if everyone is ready to go, wasting time when you could be charging the teleporter, then this is the mod for you.
@@ -51,6 +55,7 @@ v2.0.0
 - Removed R2API dependency
 - Timer restriction reinstating no longer deletes your vote
 - Big rewrite to all Timer logics
+- Early release awaiting BepInPack
 
 v1.0.3
 - Updated R2API dependency string
