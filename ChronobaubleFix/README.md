@@ -1,3 +1,7 @@
+# NOTE: THIS IS A BETA RELEASE
+
+You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
+
 # ChronobaubleFix
 
 One of the most complained about items in the game is Chronobauble. 
@@ -27,6 +31,10 @@ Requires intallation of Bepinex and R2API.
 
 Place `Chronobauble.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
+## Known Issues
+
+This does not work in multiplayer. It causes some unintended de-sync between non-host players. As a temporary solution to this issue I have added logic in which the hooks will only be subscribed to if you are playing alone.
+
 ## Contact
 
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
@@ -36,6 +44,8 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 v2.0.0
 - Updated to Bepinex5
 - Removed unnecessary R2API dependency
+- Early release
+- Added logic for single player only (temp fix)
 
 v1.0.0
 - Released
