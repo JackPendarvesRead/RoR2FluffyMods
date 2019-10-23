@@ -11,6 +11,7 @@ using UnityEngine;
 
 namespace InfusionStackFix
 {
+    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
     [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "2.0.0")]
     public class InfusionStackFix : BaseUnityPlugin
     {

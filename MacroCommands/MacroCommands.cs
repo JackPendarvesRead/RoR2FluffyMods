@@ -10,6 +10,7 @@ using UnityEngine;
 
 namespace MacroCommands
 {
+    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
     [BepInPlugin("com.FluffyMods.MacroCommands", "MacroCommands", "0.0.1")]
     public class MacroCommands : BaseUnityPlugin
     {

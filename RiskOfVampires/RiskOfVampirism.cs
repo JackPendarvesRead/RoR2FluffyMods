@@ -12,6 +12,7 @@ using System.Collections.Generic;
 
 namespace RiskOfVampirism
 {
+    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
     [BepInPlugin("com.FluffyMods.RiskOfVampirism", "RiskOfVampirism", "2.0.0")]
     public class RiskOfVampirism : BaseUnityPlugin
     {
