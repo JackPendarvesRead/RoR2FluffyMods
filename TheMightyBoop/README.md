@@ -1,3 +1,7 @@
+# NOTE: THIS IS A BETA RELEASE
+
+You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
+
 # TheMightyBoop
 
 Have you ever wanted to launch your enemies into space? Well now you can! Look no further than TheMightyBoop.
@@ -21,24 +25,7 @@ Thanks
 
 ## Console Commands:
 
-`boop_get`: returns values that are currently set in configuration
-
-`boop_set_default`: sets configuration to game base values
-
-`boop_set_recommended`: sets configuration to our recommended values
-
-`boop_set`: sets the configuration value of a govem configuration. Takes two arguements. args\[0\]=WrapperName, args\[1\]=Value(float)
-
-Wrapper arguements: 
-`airknockbackdistance` / `air` / `a`
-`groundknockbackdistance` / `ground` / `g`
-`liftvelocity` / `lift` / `l`
-`maxdistance` / `distance` / `d`
-
-E.g. To set MaxDistance to 100 you can type into the console `boop_set d 100`
-
-`boop_mightyclay`: sets whether Clay Templar enemies are mighty. If true Clay Templar inherit the values set for Rex. Accepted arguments: `true`, `t`, `1`, `false`, `f`, `0`
-
+As of v2.0.0 console commands are gone. Use Configuration Manager instead.
 
 ## Installation:
 
@@ -57,6 +44,7 @@ v2.0.0
 - Removed obsolete commands
 - Added ConfigurationManager presets
 - Renamed variables for more readable code
+- Early release awaiting BepInPack
 
 v1.1.1
 - Updated R2API dependency string
