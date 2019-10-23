@@ -16,15 +16,7 @@ Thanks
 
 ## Console Commands:
 
-`falloff_set recommended` sets recommended values
-
-`falloff_set default` sets default values
-
-`falloff_set start {value}` sets start value to {value}
-
-`falloff_set end {value}` sets end value to {value}
-
-NOTE: each command you can just use the first letter of the function if you prefer, e.g. `falloff_set r`
+As of v2.0.0 console commands are gone. Use Configuration Manager instead.
 
 ## Installation:
 
