@@ -1,3 +1,7 @@
+# NOTE: THIS IS A BETA RELEASE
+
+You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
+
 # EngiShieldNotification
 
 A mod that makes an attempt at notifying the player that the Engineer's bubble shield is about to go down. This gives you a three second warning when shield is about to go down and lets you plan accordingly.
@@ -34,6 +38,7 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 v2.0.0
 - Update for Bepinex5
 - Removed now obsolete console commands
+- Early release
 
 v1.1.1
 - Changed maximum volume to be 4
