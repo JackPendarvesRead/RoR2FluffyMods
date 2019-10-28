@@ -32,6 +32,11 @@ namespace EngiShieldNotification
 
         public void Awake()
         {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
             Volume = Config.AddSetting<int>(
                 new ConfigDefinition("BubbleShieldNotificationVolume", nameof(Volume)),
                 3,

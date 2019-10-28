@@ -16,6 +16,14 @@ namespace MacroCommands
     {
         private List<MacroConfigEntry> Macros;
 
+        public void Awake()
+        {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+        }
+
         public void Start()
         {            
             Macros = GetMacros().ToList();

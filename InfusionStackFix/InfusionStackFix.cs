@@ -21,6 +21,11 @@ namespace InfusionStackFix
 
         public void Awake()
         {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
             #region ConfigWrappers
             const string infusionSectionName = "Infusion";
             const string engineerSectionName = "Engineer";

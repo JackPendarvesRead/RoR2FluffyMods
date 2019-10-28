@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,11 @@ namespace RenergisedDrink
 
         public void Awake()
         {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
             EnergyDrinkBoost = Config.AddSetting<float>(
                 "Energy Drink",
                 "Boost",

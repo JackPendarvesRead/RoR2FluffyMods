@@ -21,6 +21,12 @@ namespace BulletFalloffFix
 
         public void Awake()
         {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
+            #region ConfigSetup
             const string falloffDistanceSection = "Falloff Distance";
             const string presetSection = "Presets";
 
@@ -42,6 +48,8 @@ namespace BulletFalloffFix
                     "Set the distance at which damage reaches minimum (default=60, recommended=80)"
                     )
                 );
+            #endregion
+
 
             IL.RoR2.BulletAttack.DefaultHitCallback += BulletAttack_DefaultHitCallback;
         }

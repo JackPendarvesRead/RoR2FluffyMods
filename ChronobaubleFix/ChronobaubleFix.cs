@@ -20,7 +20,13 @@ namespace ChronobaubleFix
 
         public void Awake()
         {
-            const string chronobaubleSection = "Chronobauble";            
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
+            #region ConfigSetup
+            const string chronobaubleSection = "Chronobauble";
 
             SlowScalingCoefficient = Config.AddSetting<float>(
                 new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
@@ -37,9 +43,9 @@ namespace ChronobaubleFix
                     "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
                     new AcceptableValueRange<int>(0, 20)
                     ));
+            #endregion
 
             On.RoR2.Run.BeginStage += Run_BeginStage;
-
             RoR2.Run.onRunStartGlobal += (run) =>
             {
                 if (RoR2.NetworkUser.readOnlyInstancesList.Count == 1)

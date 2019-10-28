@@ -25,6 +25,11 @@ namespace RiskOfVampirism
 
         public void Start()
         {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
             #region ConfigSetup
             const string statsSection = "Stats";
 

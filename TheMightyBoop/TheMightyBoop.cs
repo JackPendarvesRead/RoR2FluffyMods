@@ -24,7 +24,12 @@ namespace TheMightyBoop
         private static ConfigEntry<float> MaxDistance;
 
         public void Awake()
-        {  
+        {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
             #region ConfigSetup
             const string fireSonicBoomSection = "FireSonicBoom";
             const string clayBruiserSection = "ClayBruiser";

@@ -27,6 +27,11 @@ namespace TeleportVote
 
         public void Awake()
         {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
             VoteController = new VoteRegistrationController();
             TimerController = new TimerController();
 

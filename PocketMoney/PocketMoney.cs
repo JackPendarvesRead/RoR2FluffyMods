@@ -22,6 +22,11 @@ namespace PocketMoney
 
         public void Awake()
         {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
             const string moneySection = "Money";
 
             var conUtil = new ConditionalUtil(this.Config);
