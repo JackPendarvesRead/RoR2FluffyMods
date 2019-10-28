@@ -27,14 +27,14 @@ namespace InfusionStackFix
 
             var conditionalUtil = new ConditionalUtil(this.Config);
             MaximumHealthPerInfusion = conditionalUtil.AddConditionalConfig<int>(
-                infusionSectionName, 
-                nameof(MaximumHealthPerInfusion), 
-                100, 
-                true, 
+                infusionSectionName,
+                nameof(MaximumHealthPerInfusion),
+                100,
+                true,
                 new ConfigDescription("Maximum health gained per infusion. Disable for no limit."));
-                                 
+
             MaxHealthGainPerKill = conditionalUtil.AddConditionalConfig<int>(
-                infusionSectionName, 
+                infusionSectionName,
                 nameof(MaxHealthGainPerKill),
                 5,
                 false,
@@ -44,7 +44,7 @@ namespace InfusionStackFix
                 );
 
             TurretReceivesBonusFromEngineer = Config.AddSetting<bool>(
-                engineerSectionName, 
+                engineerSectionName,
                 nameof(TurretReceivesBonusFromEngineer),
                 true,
                 new ConfigDescription(
@@ -71,8 +71,8 @@ namespace InfusionStackFix
                 var turretMaster = deployable.GetComponent<CharacterMaster>();
                 turretMaster.inventory.AddInfusionBonus(ownerMasterBonus);
             }
-        }        
-        
+        }
+
         private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint value)
         {
             if (MaximumHealthPerInfusion.Condition)
@@ -104,7 +104,17 @@ namespace InfusionStackFix
                 );
             c.Index += 1;
             c.Remove();
-            c.Emit(OpCodes.Ldc_I4, MaximumHealthPerInfusion.Value);
+            c.EmitDelegate<Func<int>>(() =>
+            {
+                if (MaxHealthGainPerKill.Condition)
+                {
+                    return MaximumHealthPerInfusion.Value;
+                }
+                else
+                {
+                    return int.MaxValue;
+                }
+            });
 
             //Method to replace 1hp being added per infusion kill
             c.GotoNext(
@@ -140,7 +150,7 @@ namespace InfusionStackFix
 
         private int GetMaximumOrbValue(int infusionCount)
         {
-            if(MaxHealthGainPerKill.Condition
+            if (MaxHealthGainPerKill.Condition
                 && infusionCount > MaxHealthGainPerKill.Value)
             {
                 return MaxHealthGainPerKill.Value;
