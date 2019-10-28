@@ -88,7 +88,6 @@ namespace InfusionStackFix
                     value = hpUntilMaximum;
                 }
             }
-            Debug.Log($"Infusion bonus = {self.infusionBonus}");
             orig(self, value);
         }
 
