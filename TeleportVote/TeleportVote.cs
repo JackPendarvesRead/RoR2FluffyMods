@@ -23,6 +23,7 @@ namespace TeleportVote
 
         public static ConfigEntry<bool> VotesEnabled;
         public static ConditionalConfigEntry<int> MaximumVotes;
+        public static ConfigEntry<bool> EnableTimerCountdown;
 
         public void Awake()
         {
@@ -37,7 +38,15 @@ namespace TeleportVote
                 "Enable Votes",
                 true,
                 new ConfigDescription(
-                    "Enable/Disable voting"
+                    "Disable this to bypass voting (i.e. interact with teleporter etc as normal)"
+                    ));
+
+            EnableTimerCountdown = Config.AddSetting<bool>(
+                votesSection,
+                "Enable Timer Countdown",
+                true,
+                new ConfigDescription(
+                    "Enable/Disable countdown timer to override vote"
                     ));
 
             var cUtil = new ConditionalUtil(this.Config);
@@ -112,7 +121,7 @@ namespace TeleportVote
                     StopAll();
                     orig(self, activator);
                 }
-                else
+                else if (EnableTimerCountdown.Value)
                 {
                     TimerController.Start();
                 } 
@@ -135,7 +144,7 @@ namespace TeleportVote
                     StopAll();
                     orig(self, interactableObject);
                 }
-                else
+                else if (EnableTimerCountdown.Value)
                 {
                     TimerController.Start();
                 }
@@ -193,7 +202,6 @@ namespace TeleportVote
         {
             try
             {
-
                 if(VotesEnabled.Value
                     && VoteController.PlayersCanVote)
                 {
@@ -201,7 +209,7 @@ namespace TeleportVote
                     var match = ParseChatLog.Match(chatLog.Last());
                     var playerName = match.Groups["name"].Value.Trim();
                     var message = match.Groups["message"].Value.Trim();
-                    Logger.LogDebug($"Chatlog={chatLog.Last()}, RMName={playerName}, RMMessage={message}");
+                    //Debug.Log($"Chatlog={chatLog.Last()}, RMName={playerName}, RMMessage={message}");
                     if (!string.IsNullOrWhiteSpace(playerName))
                     {
                         switch (message.ToLower())
@@ -217,6 +225,18 @@ namespace TeleportVote
                                 if (netUser.GetCurrentBody().healthComponent.alive)
                                 {
                                     VoteController.RegisterPlayer(netUser);
+                                }
+                                break;
+
+                            case "force":
+                                var hostName = RoR2.NetworkUser.readOnlyInstancesList
+                                    .Where(nu => nu.isServer)
+                                    .Select(nu => nu.userName)
+                                    .First().Trim();
+                                if(playerName == hostName)
+                                {
+                                    VoteController.HostOverride();
+                                    TimerController.Stop();
                                 }
                                 break;
                         }
