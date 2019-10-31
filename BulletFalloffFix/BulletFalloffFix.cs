@@ -50,7 +50,6 @@ namespace BulletFalloffFix
                 );
             #endregion
 
-
             IL.RoR2.BulletAttack.DefaultHitCallback += BulletAttack_DefaultHitCallback;
         }
 

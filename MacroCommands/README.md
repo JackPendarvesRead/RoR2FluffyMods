@@ -1,7 +1,3 @@
-# NOTE: THIS IS A BETA RELEASE
-
-You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
-
 # MacroCommands
 
 Assign keybinds and chain console commands together to give easy access to frequently used commands.
@@ -38,5 +34,5 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
-v0.0.1 
-- Beta release
+v1.0.0 
+- Release

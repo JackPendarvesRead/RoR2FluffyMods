@@ -11,7 +11,7 @@ using UnityEngine;
 namespace MacroCommands
 {
     [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.MacroCommands", "MacroCommands", "0.0.1")]
+    [BepInPlugin("com.FluffyMods.MacroCommands", "MacroCommands", "1.0.0")]
     public class MacroCommands : BaseUnityPlugin
     {
         private List<MacroConfigEntry> Macros;

@@ -1,7 +1,3 @@
-# NOTE: THIS IS A BETA RELEASE
-
-You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
-
 # ReEnergisedDrink
 
 I recently was made aware that in the current state of the game that after the first energy drink it is strictly better to take goat hoof. That is you actually get more speed sprinting per stack from a goat hoof than another energy drink. This simply will not do.
@@ -24,4 +20,4 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 ## Changelog:
 
 v1.0.0 
-- Early release awaiting BepInPack
+- Release

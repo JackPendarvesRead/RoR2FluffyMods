@@ -1,7 +1,3 @@
-# NOTE: THIS IS A BETA RELEASE
-
-You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
-
 # TeleportVote
 
 If you are like me and you are tired of waiting around awkwardly asking if everyone is ready to go, wasting time when you could be charging the teleporter, then this is the mod for you.
@@ -33,6 +29,8 @@ Accepted chat strings are: "r", "rdy", "ready", "y", "go"
 Note: these are not case sensitive
 Note also: this does not activate the teleporter. You still have to hit the teleporter after everyone is ready!
 
+As host you can also force the restriction to lift by typing `force` into chat. This will make teleporter ready to be used immediately.
+
 ## Installation
 
 Requires intallation of Bepinex and R2API. 
@@ -55,7 +53,8 @@ v2.0.0
 - Removed R2API dependency
 - Timer restriction reinstating no longer deletes your vote
 - Big rewrite to all Timer logics
-- Early release awaiting BepInPack
+- Added extra command for host to force
+- Extra configuration options
 
 v1.0.3
 - Updated R2API dependency string

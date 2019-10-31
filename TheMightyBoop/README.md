@@ -1,7 +1,3 @@
-# NOTE: THIS IS A BETA RELEASE
-
-You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
-
 # TheMightyBoop
 
 Have you ever wanted to launch your enemies into space? Well now you can! Look no further than TheMightyBoop.

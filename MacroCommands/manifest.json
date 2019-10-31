@@ -1,6 +1,6 @@
 {
   "name": "MacroCommands",
-  "version_number": "0.0.1",
+  "version_number": "1.0.0",
   "website_url": "",
   "description": "Assign keybinds and chain console commands together to give easy access to frequently used commands",
   "dependencies": [

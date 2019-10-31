@@ -1,7 +1,3 @@
-# NOTE: THIS IS A BETA RELEASE
-
-You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
-
 # InfusionStackFix
 
 Changes the way infusion stacks are given. This mod will give you +1 max hp per infusion per kill.
