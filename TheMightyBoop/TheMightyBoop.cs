@@ -18,6 +18,7 @@ namespace TheMightyBoop
     public class TheMightyBoop : BaseUnityPlugin
     {
         private ConfigEntry<bool> ClayBruiserIsMighty;
+        private ConfigEntry<bool> RandomDirection;
         private ConfigEntry<float> AirKnockBackDistance;
         private ConfigEntry<float> GroundKnockBackDistance;
         private ConfigEntry<float> IdealDistanceToPlaceTargets;
@@ -47,6 +48,16 @@ namespace TheMightyBoop
                     ConfigTags.Advanced
                     ));
 
+            RandomDirection = Config.AddSetting<bool>(
+                new ConfigDefinition(fireSonicBoomSection, "RandomHorizontalForce"),
+                false,
+                new ConfigDescription(
+                    "When enabled the HorizontalForce becomes a random number between the +/- value (e.g. if force = 500, when random the force becomes any number between -500 to 500)",
+                    null,
+                    ConfigTags.Advanced
+                    ));
+
+
             AirKnockBackDistance = Config.AddSetting<float>(
                 new ConfigDefinition(fireSonicBoomSection, nameof(AirKnockBackDistance)), 
                 BoopConstants.AirKnockBackDistanceRecommended, 
@@ -68,7 +79,7 @@ namespace TheMightyBoop
                     ));
 
             IdealDistanceToPlaceTargets = Config.AddSetting<float>(
-                new ConfigDefinition(fireSonicBoomSection, nameof(IdealDistanceToPlaceTargets)), 
+                new ConfigDefinition(fireSonicBoomSection, "HorizontalForce"), 
                 BoopConstants.IdealDistanceDefault, 
                 new ConfigDescription(
                     "Set the horizontal distance which enemies should be knocked back by the boop (can be set -ve for opposite effect)" +
@@ -111,6 +122,7 @@ namespace TheMightyBoop
             orig(self);
         }
 
+        private System.Random rng = new System.Random();
         private bool useDefaultBoop = false;
         private void FireSonicBoom_OnEnter(On.EntityStates.Treebot.Weapon.FireSonicBoom.orig_OnEnter orig, EntityStates.Treebot.Weapon.FireSonicBoom self)
         {
@@ -130,9 +142,15 @@ namespace TheMightyBoop
                     self.groundKnockbackDistance = GroundKnockBackDistance.Value;
                     self.liftVelocity = LiftVelocity.Value;
                     self.maxDistance = MaxDistance.Value;
-                    self.idealDistanceToPlaceTargets = IdealDistanceToPlaceTargets.Value;
-                }
-                
+                    if (RandomDirection.Value)
+                    {
+                        self.idealDistanceToPlaceTargets = RandomiseFloat(IdealDistanceToPlaceTargets.Value);
+                    }
+                    else
+                    {                        
+                        self.idealDistanceToPlaceTargets = IdealDistanceToPlaceTargets.Value;
+                    }
+                }                
             }
             catch (Exception ex)
             {
@@ -144,6 +162,13 @@ namespace TheMightyBoop
             }
         }
 
+        private float RandomiseFloat(float value)
+        {
+            var rounded = Mathf.Abs(Mathf.RoundToInt(value));
+            var randomValue = rng.Next(-rounded, rounded);
+            return value;
+        }
+
         private Dictionary<string, Action> GetButtonDictionary()
         {
             return new Dictionary<string, Action>
@@ -152,7 +177,7 @@ namespace TheMightyBoop
                 { "Recommended", SetRecommendedConfig },
                 { "Silly", SetSillyConfig },
                 { "Ludicrous", SetLudicrousConfig },
-                { "Negative", SetNegativeConfig }
+                { "TractorBeam", SetTractorBeamConfig }
             };
         }
 
@@ -196,13 +221,13 @@ namespace TheMightyBoop
             Debug.Log("Set LUDICROUS values for configurations.");
         }
 
-        private void SetNegativeConfig()
+        private void SetTractorBeamConfig()
         {
             AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceRecommended;
             GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceRecommended;
-            MaxDistance.Value = BoopConstants.MaxDistanceRecommended;
+            MaxDistance.Value = 90;
             LiftVelocity.Value = BoopConstants.LiftVelocityRecommended;
-            IdealDistanceToPlaceTargets.Value = -1 * BoopConstants.IdealDistanceRecommended;
+            IdealDistanceToPlaceTargets.Value = 5;
             Debug.Log("Set negative values for configurations.");
         }
     }
