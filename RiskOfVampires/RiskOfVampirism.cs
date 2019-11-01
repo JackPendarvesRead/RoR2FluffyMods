@@ -32,6 +32,7 @@ namespace RiskOfVampirism
 
             #region ConfigSetup
             const string statsSection = "Stats";
+            const string vampireSection = "RiskOfVampirsm";
 
             Leech = Config.AddSetting<float>(
                 statsSection,
@@ -54,16 +55,16 @@ namespace RiskOfVampirism
                 "You will not degenerate below this threshold number");
 
             GainsMaximumHealth = Config.AddSetting<bool>(
-               "Vampire",
+               vampireSection,
                "GainMaximumHealth",
                true,
                "Enable to gain +1 base max health for each kill you make");
 
             IsVampire = Config.AddSetting<bool>(
-               "Vampire",
+               vampireSection,
                "IsAVampire",
                true,
-               "Set to true to be a vampire");
+               "Set to true to be a vampire (Enable/Disable the mod)");
 
             SurvivorCoefficients = GetSurvivorConfigEntries().ToList();
             #endregion
@@ -90,7 +91,8 @@ namespace RiskOfVampirism
                     1.0f,
                     new ConfigDescription(
                         $"Lifesteal coefficient specific for {survivor.ToString()}. i.e. multiply lifesteal by this number if you are playing this survivor",
-                        new AcceptableValueRange<float>(0, 2)
+                        new AcceptableValueRange<float>(0, 2),
+                        "Advanced"
                         ));
             }
         }

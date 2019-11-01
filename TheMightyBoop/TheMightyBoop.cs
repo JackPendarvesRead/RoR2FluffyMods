@@ -17,11 +17,12 @@ namespace TheMightyBoop
     [BepInPlugin("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "2.0.0")]
     public class TheMightyBoop : BaseUnityPlugin
     {
-        private static ConfigEntry<bool> ClayBruiserIsMighty;
-        private static ConfigEntry<float> AirKnockBackDistance;
-        private static ConfigEntry<float> GroundKnockBackDistance;
-        private static ConfigEntry<float> LiftVelocity;
-        private static ConfigEntry<float> MaxDistance;
+        private ConfigEntry<bool> ClayBruiserIsMighty;
+        private ConfigEntry<float> AirKnockBackDistance;
+        private ConfigEntry<float> GroundKnockBackDistance;
+        private ConfigEntry<float> IdealDistanceToPlaceTargets;
+        private ConfigEntry<float> LiftVelocity;
+        private ConfigEntry<float> MaxDistance;
 
         public void Awake()
         {
@@ -50,9 +51,9 @@ namespace TheMightyBoop
                 new ConfigDefinition(fireSonicBoomSection, nameof(AirKnockBackDistance)), 
                 BoopConstants.AirKnockBackDistanceRecommended, 
                 new ConfigDescription(
-                    "Set how far you knock yourself back when you boop in mid-air. " +
+                    "Set how far you knock yourself back when you boop in mid-air." +
                     $"(Game default = {BoopConstants.AirKnockBackDistanceDefault},  Recommended = {BoopConstants.AirKnockBackDistanceRecommended})",
-                    new AcceptableValueRange<float>(0, BoopConstants.MaximumBoop),
+                    new AcceptableValueRange<float>(0, 1000),
                     ConfigTags.Advanced
                     ));
 
@@ -60,21 +61,31 @@ namespace TheMightyBoop
                 new ConfigDefinition(fireSonicBoomSection, nameof(GroundKnockBackDistance)),
                 BoopConstants.GroundKnockBackDistanceRecommended,
                 new ConfigDescription(
-                    "Set how far you knock yourself back when you boop whilst on the ground. " +
+                    "Set how far you knock yourself back when you boop whilst on the ground." +
                     $"(Game default = {BoopConstants.GroundKnockBackDistanceDefault}, Recommended = {BoopConstants.GroundKnockBackDistanceRecommended})",
-                    new AcceptableValueRange<float>(0, BoopConstants.MaximumBoop),
+                    new AcceptableValueRange<float>(0, 1000),
+                    ConfigTags.Advanced
+                    ));
+
+            IdealDistanceToPlaceTargets = Config.AddSetting<float>(
+                new ConfigDefinition(fireSonicBoomSection, nameof(IdealDistanceToPlaceTargets)), 
+                BoopConstants.IdealDistanceDefault, 
+                new ConfigDescription(
+                    "Set the horizontal distance which enemies should be knocked back by the boop (can be set -ve for opposite effect)" +
+                    $"(Game default = {BoopConstants.MaxDistanceDefault}, Recommended = {BoopConstants.MaxDistanceRecommended})",
+                    new AcceptableValueRange<float>(-1000, 1000),
                     ConfigTags.Advanced
                     ));
 
             MaxDistance = Config.AddSetting<float>(
-                new ConfigDefinition(fireSonicBoomSection, nameof(MaxDistance)), 
-                BoopConstants.MaxDistanceRecommended, 
-                new ConfigDescription(
-                    "Set the horizontal distance which enemies should be knocked back by the boop. " +
-                    $"(Game default = {BoopConstants.MaxDistanceDefault}, Recommended = {BoopConstants.MaxDistanceRecommended})",
-                    new AcceptableValueRange<float>(0, BoopConstants.MaximumBoop),
-                    ConfigTags.Advanced
-                    ));
+               new ConfigDefinition(fireSonicBoomSection, "BoopRange"),
+               BoopConstants.MaxDistanceRecommended,
+               new ConfigDescription(
+                   "Range at which enemies will be effected by boop" +
+                   $"(Game default = {BoopConstants.MaxDistanceDefault}, Recommended = {BoopConstants.MaxDistanceRecommended})",
+                   new AcceptableValueRange<float>(0, 500),
+                   ConfigTags.Advanced
+                   ));
 
             LiftVelocity = Config.AddSetting<float>(
                 new ConfigDefinition(fireSonicBoomSection, nameof(LiftVelocity)), 
@@ -82,7 +93,7 @@ namespace TheMightyBoop
                 new ConfigDescription(
                 "Set the vertical lift of enemies affected by the boop. " +
                 $"(Game default = {BoopConstants.LiftVelocityDefault}, Recommended = {BoopConstants.LiftVelocityRecommended})",
-                new AcceptableValueRange<float>(0, BoopConstants.MaximumBoop),
+                new AcceptableValueRange<float>(0, 100),
                 ConfigTags.Advanced
                 ));
             #endregion
@@ -119,6 +130,7 @@ namespace TheMightyBoop
                     self.groundKnockbackDistance = GroundKnockBackDistance.Value;
                     self.liftVelocity = LiftVelocity.Value;
                     self.maxDistance = MaxDistance.Value;
+                    self.idealDistanceToPlaceTargets = IdealDistanceToPlaceTargets.Value;
                 }
                 
             }
@@ -132,7 +144,6 @@ namespace TheMightyBoop
             }
         }
 
-
         private Dictionary<string, Action> GetButtonDictionary()
         {
             return new Dictionary<string, Action>
@@ -140,7 +151,8 @@ namespace TheMightyBoop
                 { "Vanilla", SetVanillaConfig },
                 { "Recommended", SetRecommendedConfig },
                 { "Silly", SetSillyConfig },
-                { "Ludicrous", SetLudicrousConfig }
+                { "Ludicrous", SetLudicrousConfig },
+                { "Negative", SetNegativeConfig }
             };
         }
 
@@ -150,6 +162,7 @@ namespace TheMightyBoop
             GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceDefault;
             MaxDistance.Value = BoopConstants.MaxDistanceDefault;
             LiftVelocity.Value = BoopConstants.LiftVelocityDefault;
+            IdealDistanceToPlaceTargets.Value = BoopConstants.IdealDistanceDefault;
             Debug.Log("Set default values for configurations.");
         }
 
@@ -159,6 +172,7 @@ namespace TheMightyBoop
             GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceRecommended;
             MaxDistance.Value = BoopConstants.MaxDistanceRecommended;
             LiftVelocity.Value = BoopConstants.LiftVelocityRecommended;
+            IdealDistanceToPlaceTargets.Value = BoopConstants.IdealDistanceRecommended;
             Debug.Log("Set recommended values for configurations.");
         }
 
@@ -168,6 +182,7 @@ namespace TheMightyBoop
             GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceSilly;
             MaxDistance.Value = BoopConstants.MaxDistanceSilly;
             LiftVelocity.Value = BoopConstants.LiftVelocitySilly;
+            IdealDistanceToPlaceTargets.Value = BoopConstants.IdealDistanceSilly;
             Debug.Log("Set silly values for configurations.");
         }
 
@@ -177,7 +192,18 @@ namespace TheMightyBoop
             GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceLudicrous;
             MaxDistance.Value = BoopConstants.MaxDistanceLudicrous;
             LiftVelocity.Value = BoopConstants.LiftVelocityLudicrous;
+            IdealDistanceToPlaceTargets.Value = BoopConstants.IdealDistanceLudicrous;
             Debug.Log("Set LUDICROUS values for configurations.");
-        }        
+        }
+
+        private void SetNegativeConfig()
+        {
+            AirKnockBackDistance.Value = BoopConstants.AirKnockBackDistanceRecommended;
+            GroundKnockBackDistance.Value = BoopConstants.GroundKnockBackDistanceRecommended;
+            MaxDistance.Value = BoopConstants.MaxDistanceRecommended;
+            LiftVelocity.Value = BoopConstants.LiftVelocityRecommended;
+            IdealDistanceToPlaceTargets.Value = -1 * BoopConstants.IdealDistanceRecommended;
+            Debug.Log("Set negative values for configurations.");
+        }
     }
 }
