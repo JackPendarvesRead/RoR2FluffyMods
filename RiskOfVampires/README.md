@@ -12,7 +12,7 @@ Vampire abilities:
 - Lose all regeneration (including from items e.g. slug)
 - Life degenerates over time
 
-Any survivor class is viable to be a vampire with the exception of engineer which has a very difficult time staying alive seeing as the majority of damage comes from their turrets which do not leech life to you. A future feature for this mod could be to link the turret lifesteal to the main Engineer body.  
+Any survivor class is viable to be a vampire. Try them all, configure the values to your taste. Happy feeding. 
 
 Good luck. BLEH BLEH BLEHHH!
 
@@ -42,6 +42,7 @@ v2.0.0
 - Refactor code
 - Added new configuration options
 - Removed obsolete console commands
+- Added link from turret to engibody to allow lifesteal from turrets
 
 v1.0.1
 - Updated R2API dependency string
