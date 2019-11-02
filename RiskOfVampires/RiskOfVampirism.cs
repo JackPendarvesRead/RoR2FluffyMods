@@ -85,39 +85,20 @@ namespace RiskOfVampirism
 
         }
 
-        private IEnumerable<ConfigEntry<float>> GetSurvivorConfigEntries()
-        {
-            var survivors = RoR2.SurvivorCatalog.allSurvivorDefs;
-            foreach(var survivor in survivors)
-            {
-                if(string.IsNullOrWhiteSpace(survivor.name))
-                {
-                    continue;
-                }
-
-                yield return Config.AddSetting<float>(
-                    "SurvivorSpecificConfig",
-                    survivor.name,
-                    1.0f,
-                    new ConfigDescription(
-                        $"Lifesteal coefficient specific for {survivor.ToString()}. i.e. multiply lifesteal by this number if you are playing this survivor",
-                        new AcceptableValueRange<float>(0, 2),
-                        "Advanced"
-                        ));
-            }
-        }
-
         // GAIN MAX HEALTH ON KILL METHOD
         private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
         {
-            if(IsVampire.Value && GainsMaximumHealth.Value)
+            if (IsVampire.Value && GainsMaximumHealth.Value)
             {
-                var attacker = damageReport.damageInfo.attacker.GetComponent<CharacterBody>();
-                var player = GetPlayer(attacker);
-                if (player != null)
+                var attacker = damageReport.damageInfo.attacker?.GetComponent<CharacterBody>();
+                if (attacker != null)
                 {
-                    attacker.baseMaxHealth += 1;
-                }
+                    var player = GetPlayer(attacker);
+                    if (player != null)
+                    {
+                        attacker.baseMaxHealth += 1;
+                    }
+                }                
             }            
             orig(self, damageReport);
         }        
@@ -208,6 +189,29 @@ namespace RiskOfVampirism
             return (from s in SurvivorCoefficients
                     where body.name.StartsWith(s.Definition.Key)
                     select s.Value).FirstOrDefault();
+        }
+
+
+        private IEnumerable<ConfigEntry<float>> GetSurvivorConfigEntries()
+        {
+            var survivors = RoR2.SurvivorCatalog.allSurvivorDefs;
+            foreach (var survivor in survivors)
+            {
+                if (string.IsNullOrWhiteSpace(survivor.name))
+                {
+                    continue;
+                }
+
+                yield return Config.AddSetting<float>(
+                    "SurvivorSpecificConfig",
+                    survivor.name,
+                    1.0f,
+                    new ConfigDescription(
+                        $"Lifesteal coefficient specific for {survivor.ToString()}. i.e. multiply lifesteal by this number if you are playing this survivor",
+                        new AcceptableValueRange<float>(0, 2),
+                        "Advanced"
+                        ));
+            }
         }
     }
 }
