@@ -73,7 +73,7 @@ namespace RiskOfVampirism
              vampireSection,
              "TurretsTransferLifeToOwner",
              true,
-             "Set to true to be a vampire (Enable/Disable the mod)");
+             "Set to true and turrets will lifesteal for the engineer (i.e. turret damage restores life to main engi body)");
 
             SurvivorCoefficients = GetSurvivorConfigEntries().ToList();
             #endregion
@@ -138,7 +138,8 @@ namespace RiskOfVampirism
                     var num = (double)healthComponent.Heal(damageInfo.damage * Leech.Value * survivorCoefficient, procChainMask, true);                    
                 }
                 //Turrets LifeSteal
-                if(attacker.teamComponent.teamIndex == TeamIndex.Player
+                if(TurretsTransferLifeToOwner.Value
+                    && attacker.teamComponent.teamIndex == TeamIndex.Player
                     && attacker.name.ToLower().Contains("turret"))
                 {
                     var owner = attacker.GetOwnerInformation().OwnerBody;
