@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3CBC7D64-F558-420E-AD70-881103BD8DAC}</ProjectGuid>
+    <ProjectGuid>{3B9028AD-EF1B-4A85-A8A5-A3888716EC3A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RiskOfVampirism</RootNamespace>
-    <AssemblyName>RiskOfVampirism</AssemblyName>
+    <RootNamespace>DeployableOwnerInformation</RootNamespace>
+    <AssemblyName>DeployableOwnerInformation</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -33,43 +33,33 @@
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>..\..\..\libs\RoR2Modding\0Harmony.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\libs\RoR2Modding\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\..\..\libs\RoR2Modding\BepInEx.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Harmony">
       <HintPath>..\..\..\libs\RoR2Modding\BepInEx.Harmony.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="BepInEx.Preloader">
       <HintPath>..\..\..\libs\RoR2Modding\BepInEx.Preloader.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="FluffyLabsConfigManagerTools">
       <HintPath>..\..\FluffyLabsConfigManagerTools\FluffyLabsConfigManagerTools\bin\Release\FluffyLabsConfigManagerTools.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>..\..\..\libs\RoR2Modding\MMHOOK_Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Mono.Cecil">
       <HintPath>..\..\..\libs\RoR2Modding\Mono.Cecil.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="MonoMod.RuntimeDetour">
       <HintPath>..\..\..\libs\RoR2Modding\MonoMod.RuntimeDetour.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="MonoMod.Utils">
       <HintPath>..\..\..\libs\RoR2Modding\MonoMod.Utils.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -81,34 +71,26 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\libs\RoR2Modding\UnityEngine.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\..\..\libs\RoR2Modding\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>..\..\..\libs\RoR2Modding\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.Networking">
       <HintPath>..\..\..\libs\RoR2Modding\UnityEngine.Networking.dll</HintPath>
-      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RiskOfVampirism.cs" />
+    <Compile Include="DeployableToOwnerLink.cs" />
+    <Compile Include="Component\OwnerInformation.cs" />
+    <Compile Include="Extension\OwnerInformationExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="manifest.json" />
     <None Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DeployableToOwnerLink\DeployableOwnerInformation.csproj">
-      <Project>{3b9028ad-ef1b-4a85-a8a5-a3888716ec3a}</Project>
-      <Name>DeployableOwnerInformation</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
