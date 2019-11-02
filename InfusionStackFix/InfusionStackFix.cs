@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using DeployableOwnerInformation.Extension;
 using FluffyLabsConfigManagerTools.Infrastructure;
 using FluffyLabsConfigManagerTools.Util;
 using Mono.Cecil;
@@ -18,6 +19,7 @@ namespace InfusionStackFix
         private ConditionalConfigEntry<int> MaximumHealthPerInfusion;
         private ConditionalConfigEntry<int> MaxHealthGainPerKill;
         private ConfigEntry<bool> TurretReceivesBonusFromEngineer;
+        private ConfigEntry<bool> TurretGivesEngineerLifeOrbs;
 
         public void Awake()
         {
@@ -56,8 +58,17 @@ namespace InfusionStackFix
                     "If enabled then turrets will receive the current infusion bonus of the Engineer on creation"
                     )
                 );
-            #endregion
 
+            TurretGivesEngineerLifeOrbs = Config.AddSetting<bool>(
+                engineerSectionName,
+                nameof(TurretGivesEngineerLifeOrbs),
+                true,
+                new ConfigDescription(
+                    "If enabled the main engineer body will receive an infusion orb whenever a turret he owns makes a kill"
+                    )
+                );
+            #endregion
+                        
             IL.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             On.RoR2.Inventory.AddInfusionBonus += Inventory_AddInfusionBonus;
             On.RoR2.CharacterMaster.AddDeployable += CharacterMaster_AddDeployable;
@@ -132,6 +143,15 @@ namespace InfusionStackFix
             c.Emit(OpCodes.Ldloc, (short)14);  //Inventory
             c.EmitDelegate<Func<int, Inventory, int>>((infusionCount, inventory) =>
             {
+                if (TurretGivesEngineerLifeOrbs.Value)
+                {
+                    var master = inventory.GetComponent<CharacterMaster>();
+                    if (master.name.ToLower().Contains("turret"))
+                    {
+                        master.GetOwnerInformation().OwnerBody.inventory.AddInfusionBonus((uint)infusionCount);
+                    }
+                }
+
                 if (!MaximumHealthPerInfusion.Condition)
                 {
                     return infusionCount;
