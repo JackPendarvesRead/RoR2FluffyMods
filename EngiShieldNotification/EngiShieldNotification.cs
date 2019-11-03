@@ -58,7 +58,7 @@ namespace EngiShieldNotification
             new EngiShieldNotificationController(
                 this, 
                 EnterGameObject, 
-                (double)EntityStates.Engi.EngiBubbleShield.Deployed.lifetime, 
+                EntityStates.Engi.EngiBubbleShield.Deployed.lifetime, 
                 NoticeTime, 
                 Volume.Value
                 ).Start());

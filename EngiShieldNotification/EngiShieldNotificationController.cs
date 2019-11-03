@@ -16,7 +16,7 @@ namespace EngiShieldNotification
         private Timer InitialTimer { get; set; }
         private Timer CountdownTimer { get; set; }
 
-        public EngiShieldNotificationController(EngiShieldNotification parent, GameObject gameObject, double engiShieldLifetime, int noticeTime, int volume)
+        public EngiShieldNotificationController(EngiShieldNotification parent, GameObject gameObject, float engiShieldLifetime, int noticeTime, int volume)
         {
             parent.OnDestroyExitGameObject += Parent_OnExitGameObjectExit;
             this.gameObject = gameObject;
