@@ -127,6 +127,7 @@ namespace RiskOfCatFacts
             Message.SendColoured("Command not recognised.", Colours.Red);
             Message.SendColoured("Thank you for subscribing to CatFacts! We will double your fact rate free of charge!", Colours.Green);
             unsubscribePenalty++;
+            currentTime = interval;
         }
 
         private void FakeUnsubscribe2()
