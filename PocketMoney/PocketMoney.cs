@@ -56,24 +56,23 @@ namespace PocketMoney
                     )
                 );
 
-            On.RoR2.Run.BeginStage += Run_BeginStage;
+            RoR2.SceneDirector.onPostPopulateSceneServer += SceneDirector_onPostPopulateSceneServer;
         }
 
-        private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
+        private void SceneDirector_onPostPopulateSceneServer(SceneDirector obj)
         {
-            orig(self);
-
-            if(LatestStageToReceiveMoney.Condition
-                && LatestStageToReceiveMoney.Value > RoR2.Run.instance.stageClearCount)
+            if (RoR2.Run.instance)
             {
-                return;
-            }
-
-            var difficultyScaledCost = (uint)Mathf.Round(RoR2.Run.instance.GetDifficultyScaledCost(25) * StageWeightedMoney.Value);
-            var pocketMoney = StageFlatMoney.Value + difficultyScaledCost;
-            foreach (var cm in RoR2.PlayerCharacterMasterController.instances)
-            {
-                cm.master.GiveMoney(pocketMoney);
+                var shouldNotReceiveMoney = LatestStageToReceiveMoney.Condition && LatestStageToReceiveMoney.Value > RoR2.Run.instance.stageClearCount;
+                if (!shouldNotReceiveMoney)
+                {
+                    var difficultyScaledCost = (uint)Mathf.Round(RoR2.Run.instance.GetDifficultyScaledCost(25) * StageWeightedMoney.Value);
+                    var pocketMoney = StageFlatMoney.Value + difficultyScaledCost;
+                    foreach (var cm in RoR2.PlayerCharacterMasterController.instances)
+                    {
+                        cm.master.GiveMoney(pocketMoney);
+                    };
+                }
             }
         }
     }
