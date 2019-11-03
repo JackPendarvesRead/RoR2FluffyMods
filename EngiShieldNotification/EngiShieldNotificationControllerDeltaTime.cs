@@ -11,15 +11,33 @@ namespace EngiShieldNotification
 {
     internal class EngiShieldNotificationControllerDeltaTime
     {
-        private readonly GameObject gameObject;
+        internal readonly GameObject gameObject;
         private float currentTime;
+        bool isCountdown;
 
         public EngiShieldNotificationControllerDeltaTime(GameObject gameObject)
         {
             this.gameObject = gameObject;
-            currentTime = 
+            currentTime = EngiShieldNotification.ShieldTime;
+            isCountdown = false;
         }   
 
-
+        public void Update(float time)
+        {
+            currentTime -= time;
+            if(currentTime < 0)
+            {
+                if (isCountdown)
+                {
+                    currentTime = 1.0f;
+                    // play sound
+                }
+                else
+                {
+                    isCountdown = true;
+                    currentTime = 1.0f;
+                }
+            }
+        }
     }
 }

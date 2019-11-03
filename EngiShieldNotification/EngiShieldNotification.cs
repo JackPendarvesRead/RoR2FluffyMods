@@ -12,8 +12,9 @@ namespace EngiShieldNotification
     public class EngiShieldNotification : BaseUnityPlugin
     {
         internal static ConfigEntry<int> NoticeTime { get; set; }
-        internal static ConfigEntry<int> Volume { get; set; }    
-        
+        internal static ConfigEntry<int> Volume { get; set; }
+        public static float ShieldTime => EntityStates.Engi.EngiBubbleShield.Deployed.lifetime - NoticeTime.Value - 1;
+
         internal EngiShieldProvider Provider { get; set; }
 
         public void Awake()

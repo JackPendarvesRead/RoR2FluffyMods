@@ -9,7 +9,8 @@ namespace EngiShieldNotification
 {
     public class EngiShieldProvider
     {
-        private List<EngiShieldNotificationControllerDeltaTime> gameObjects;
+        private List<GameObject> gameObjects;
+        private List<EngiShieldNotificationControllerDeltaTime> timeControllers;
 
         public EngiShieldProvider()
         { 
@@ -21,6 +22,7 @@ namespace EngiShieldNotification
             if (gameObjects.Contains(obj))
             {
                 gameObjects.Add(obj);
+                timeControllers.Add(new EngiShieldNotificationControllerDeltaTime(obj));
             }
         }
 
@@ -29,14 +31,15 @@ namespace EngiShieldNotification
             if (gameObjects.Contains(obj))
             {
                 gameObjects.Remove(obj);
+                timeControllers.Remove(timeControllers.Where(t => t.gameObject == obj).First());
             }
         }
 
         public void Update (float time)
         {
-            foreach(var go in gameObjects)
+            foreach(var tc in timeControllers)
             {
-                
+                tc.Update(time);
             }
         }
     }
