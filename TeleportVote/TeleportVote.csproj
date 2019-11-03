@@ -97,12 +97,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PausableTimer.cs" />
+    <Compile Include="Old\PausableTimer.cs" />
     <Compile Include="StaticStuff\ConfigTags.cs" />
     <Compile Include="StaticStuff\InteractableObjectNames.cs" />
     <Compile Include="StaticStuff\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Old\RestrictionController.cs" />
+    <Compile Include="StaticStuff\TimerConstants.cs" />
     <Compile Include="TeleportVote.cs" />
     <Compile Include="Old\TeleportVoteTimer.cs" />
     <Compile Include="TimerController.cs" />
