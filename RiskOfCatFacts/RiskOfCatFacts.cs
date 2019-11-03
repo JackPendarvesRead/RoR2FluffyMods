@@ -20,7 +20,15 @@ namespace RiskOfCatFacts
         private float currentTime;
         private bool timerRunning = false;
         private float unsubscribePenalty = 1;
-        private float interval => (float)CatFactInterval.Value / unsubscribePenalty;
+
+        private float interval
+        {
+            get
+            {
+                var x = (float)CatFactInterval.Value / unsubscribePenalty;
+                return x > 1 ? x : 1;
+            }
+        }
 
         public void Awake()
         {
@@ -51,26 +59,25 @@ namespace RiskOfCatFacts
             RoR2.Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
             RoR2.GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
             RoR2.SceneDirector.onPostPopulateSceneServer += SceneDirector_onPostPopulateSceneServer;
-        }       
+        }        
 
-        
         public void Update()
         {
             if(timerRunning)
             {
                 if (!CatFactsEnabled.Value)
                 {
-                    Stop();
+                    StopCatFacts();
                 }
                 currentTime -= Time.deltaTime;
                 if(currentTime <= 0)
                 {
-                    currentTime = interval;
+                    SendCatFact();
                 }
             }
         }
 
-        private void Start()
+        private void StartCatFacts()
         {
             if (CatFactsEnabled.Value)
             {
@@ -79,7 +86,7 @@ namespace RiskOfCatFacts
             }            
         }
 
-        private void Stop()
+        private void StopCatFacts()
         {
             timerRunning = false;
             unsubscribePenalty = 1;
@@ -87,12 +94,15 @@ namespace RiskOfCatFacts
 
         private void SceneDirector_onPostPopulateSceneServer(SceneDirector obj)
         {
-            Start();            
+            if (RoR2.Run.instance)
+            {
+                StartCatFacts();
+            }
         }
 
         private void Run_onRunDestroyGlobal(Run obj)
         {
-            Stop();
+            StopCatFacts();
         }
 
         private void GlobalEventManager_onCharacterDeathGlobal(DamageReport obj)
@@ -107,6 +117,7 @@ namespace RiskOfCatFacts
 
         private void SendCatFact()
         {
+            currentTime = interval;
             var index = random.Next(0, CatFacts.Facts.Count);
             Message.SendColoured(CatFacts.Facts[index], Colours.LightBlue, "CatFact");
         }
@@ -165,7 +176,7 @@ namespace RiskOfCatFacts
                             break;
 
                         case "seriously please actually stop this is enough":
-                            Stop();
+                            StopCatFacts();
                             break;                            
                     }
                 }
