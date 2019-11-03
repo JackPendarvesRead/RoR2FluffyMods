@@ -15,7 +15,7 @@ namespace EngiShieldNotification
         internal static ConfigEntry<int> Volume { get; set; }
         public static float ShieldTime => EntityStates.Engi.EngiBubbleShield.Deployed.lifetime - NoticeTime.Value - 1;
 
-        internal EngiShieldProvider Provider { get; set; }
+        internal EngiShieldNotificationProvider Provider { get; set; }
 
         public void Awake()
         {
@@ -42,7 +42,7 @@ namespace EngiShieldNotification
                     new AcceptableValueRange<int>(1, 5)
                     ));
 
-            Provider = new EngiShieldProvider();
+            Provider = new EngiShieldNotificationProvider();
 
             IL.EntityStates.Engi.EngiBubbleShield.Deployed.OnEnter += IL_Deployed_OnEnter;
             IL.EntityStates.Engi.EngiBubbleShield.Deployed.OnExit += IL_Deployed_OnExit;
@@ -62,7 +62,6 @@ namespace EngiShieldNotification
             c.Index -= 1;
             c.EmitDelegate<Func<GameObject, GameObject>>((gameObject) =>
             {
-                Debug.Log("ONENETER");
                 Provider.Add(gameObject);
                 return gameObject;
             });
@@ -77,7 +76,6 @@ namespace EngiShieldNotification
             c.Index -= 1;
             c.EmitDelegate<Func<GameObject, GameObject>>((gameObject) =>
             {
-                Debug.Log("ONEXIT");
                 Provider.Remove(gameObject);
                 return gameObject;
             });

@@ -9,13 +9,13 @@ using UnityEngine;
 
 namespace EngiShieldNotification
 {
-    internal class EngiShieldNotificationControllerDeltaTime
+    internal class EngiShieldNotificationTimer
     {
         internal readonly GameObject gameObject;
         private float currentTime;
         bool isCountdown;
 
-        public EngiShieldNotificationControllerDeltaTime(GameObject gameObject)
+        public EngiShieldNotificationTimer(GameObject gameObject)
         {
             this.gameObject = gameObject;
             currentTime = EngiShieldNotification.ShieldTime;
@@ -25,10 +25,8 @@ namespace EngiShieldNotification
         public void Update(float time)
         {
             currentTime -= time;
-            Debug.Log($"Current time = {currentTime}");
             if(currentTime < 0)
             {
-                Debug.Log("COUNTDOWN DONE!");
                 if (isCountdown)
                 {
                     currentTime = 1.0f;

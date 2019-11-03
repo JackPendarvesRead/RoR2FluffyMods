@@ -7,24 +7,23 @@ using UnityEngine;
 
 namespace EngiShieldNotification
 {
-    public class EngiShieldProvider
+    public class EngiShieldNotificationProvider
     {
         private List<GameObject> gameObjects;
-        private List<EngiShieldNotificationControllerDeltaTime> timeControllers;
+        private List<EngiShieldNotificationTimer> timeControllers;
 
-        public EngiShieldProvider()
+        public EngiShieldNotificationProvider()
         { 
             gameObjects = new List<GameObject>();
-            timeControllers = new List<EngiShieldNotificationControllerDeltaTime>();
+            timeControllers = new List<EngiShieldNotificationTimer>();
         }
 
         public void Add(GameObject obj)
         {
             if (!gameObjects.Contains(obj))
             {
-                Debug.Log("Adding something");
                 gameObjects.Add(obj);
-                timeControllers.Add(new EngiShieldNotificationControllerDeltaTime(obj));
+                timeControllers.Add(new EngiShieldNotificationTimer(obj));
             }
         }
 
@@ -32,7 +31,6 @@ namespace EngiShieldNotification
         {
             if (gameObjects.Contains(obj))
             {
-                Debug.Log("Removing something");
                 gameObjects.Remove(obj);
                 timeControllers.Remove(timeControllers.Where(t => t.gameObject == obj).First());
             }
