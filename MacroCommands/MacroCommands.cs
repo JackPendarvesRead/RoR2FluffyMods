@@ -15,17 +15,13 @@ namespace MacroCommands
     public class MacroCommands : BaseUnityPlugin
     {
         private List<MacroConfigEntry> Macros;
-
-        public void Awake()
+        
+        public void Start()
         {
             if (!RoR2Application.isModded)
             {
                 RoR2Application.isModded = true;
             }
-        }
-
-        public void Start()
-        {            
             Macros = GetMacros().ToList();
         }      
 
@@ -38,11 +34,17 @@ namespace MacroCommands
                 var number = (i + 1).ToString("00");
                 if(i < 5)
                 {
-                    yield return mUtil.AddMacroConfig(macroSection, $"Macro {number}", "Type Macro into the black box. Commands are seperated by ';'");
+                    yield return mUtil.AddMacroConfig(
+                        macroSection, 
+                        $"Macro {number}", 
+                        "Type Macro into the black box. Commands are seperated by ';'");
                 }
                 else
                 {
-                    yield return mUtil.AddMacroConfig(macroSection, $"Macro {number}", "Type Macro into the black box. Commands are seperated by ';'", 
+                    yield return mUtil.AddMacroConfig(
+                        macroSection, 
+                        $"Macro {number}", 
+                        "Type Macro into the black box. Commands are seperated by ';'", 
                         new ConfigurationManagerAttributes { IsAdvanced = true, HideDefaultButton = true });
                 }
             }
