@@ -72,10 +72,6 @@ namespace TeleportVote
             On.RoR2.Interactor.PerformInteraction += Interactor_PerformInteraction;
             On.RoR2.PlayerCharacterMasterController.OnBodyDeath += PlayerCharacterMasterController_OnBodyDeath;
 
-            //Internal events
-            //VoteController.PlayerRegistered += VoteController_PlayerRegistered;
-            //TimerController.OnTeleporterChangeState += TimerController_OnTeleporterChangeState;
-
             //Chat Ready Command - type "r" to set yourself as ready
             Chat.onChatChanged += Chat_onChatChanged;
 
@@ -115,6 +111,12 @@ namespace TeleportVote
         #endregion
 
         #region MainInteractionMethods
+
+        public void Update()
+        {
+            TimerController.Update(Time.deltaTime);
+        }
+
         private void TeleporterInteraction_OnInteractionBegin(On.RoR2.TeleporterInteraction.orig_OnInteractionBegin orig, TeleporterInteraction self, Interactor activator)
         {
             if (VotesEnabled.Value)
