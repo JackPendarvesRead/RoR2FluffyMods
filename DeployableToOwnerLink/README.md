@@ -12,6 +12,10 @@ As with any library or dependency you will need to reference the .dll file in yo
 
 Currently this `OwnerInformation` only contains `CharacterBody OwnerBody`. This can be expanded in the future if the needs arise.
 
+## Why use the dependency?
+
+Why not just write your own link? Well you can, but the point of making this its own plugin as a dependency is so that this shared functionality can be used accross a number of different mods without needing to keep adding components. This just creates one component and that's it, after that any pluging can access it without needing to add anything else.
+
 ## Example code
 
 Below is an example from `RiskOfVampirism` of using this code. The following code allows a lifesteal effect for the Engineer whenever a turret he owns deals damage. This is only made possible by making this link between the turret and the Engineer made by this mod.
