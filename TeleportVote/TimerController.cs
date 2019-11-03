@@ -1,4 +1,5 @@
 ﻿using TeleportVote.StaticStuff;
+using UnityEngine;
 
 namespace TeleportVote
 {
@@ -16,7 +17,7 @@ namespace TeleportVote
         {
             get
             {
-                if(CurrentState == TimerState.RestrictionsLifted)
+                if(currentState == TimerState.RestrictionsLifted)
                 {
                     return true;
                 }
@@ -26,23 +27,23 @@ namespace TeleportVote
                 }
             }
         }
-        public TimerState CurrentState { get; set; }
 
         public TimerController()
         {
-            CurrentState = TimerState.Stopped;
+            currentState = TimerState.Stopped;
         }
 
+        private TimerState currentState;
         private float currentTime;
 
         public void Update(float deltaTime)
         {
-            if(CurrentState != TimerState.Stopped)
+            if(currentState != TimerState.Stopped)
             {
                 currentTime -= deltaTime;
                 if (currentTime < 0)
                 {
-                    switch (CurrentState)
+                    switch (currentState)
                     {
                         case TimerState.InitialCountdown:
                             InitTimerElapsed();
@@ -58,6 +59,7 @@ namespace TeleportVote
 
                         default:
                             Stop();
+                            Debug.LogError("Default switch in TimerController reached. This should never happen. Please let @Fluffatron know if this happens.");
                             break;
                     }
                 }
@@ -66,8 +68,9 @@ namespace TeleportVote
 
         public void Start()
         {
-            if (CurrentState == TimerState.Stopped)
+            if (currentState == TimerState.Stopped)
             {
+                currentState = TimerState.InitialCountdown;
                 currentTime = TimerConstants.InitialTimerInterval;
                 Message.SendColoured("Timer started. Restriction will be lifted in 60s", Colours.LightBlue);
             }           
@@ -75,7 +78,7 @@ namespace TeleportVote
 
         public void Stop()
         {
-            CurrentState = TimerState.Stopped;
+            currentState = TimerState.Stopped;
             mainLoop = 0;
             lockedAgainLoop = 0;
             countdown = 5;
@@ -95,7 +98,7 @@ namespace TeleportVote
             else
             {
                 mainLoop = 0;
-                CurrentState = TimerState.RestrictionsLifted;
+                currentState = TimerState.RestrictionsLifted;
                 currentTime = TimerConstants.RestrictionTimerInterval;
                 Message.SendColoured($"Restriction lifted. Restriction reinstated in {TimerConstants.RestrictionTimer}s", Colours.Green);
             }
@@ -119,7 +122,7 @@ namespace TeleportVote
             {
                 lockedAgainLoop = 0;
                 currentTime = 1;
-                CurrentState = TimerState.FinalCountdown;                
+                currentState = TimerState.FinalCountdown;                
             }
         }
 
@@ -130,6 +133,7 @@ namespace TeleportVote
             {
                 Message.SendColoured($"{countdown}...", Colours.Orange);
                 countdown--;
+                currentTime = 1;
             }
             else
             {
