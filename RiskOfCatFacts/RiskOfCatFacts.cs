@@ -13,35 +13,81 @@ namespace RiskOfCatFacts
     [BepInPlugin("com.FluffyMods.RiskOfCatFacts", "RiskOfCatFacts", "2.0.0")]
     public class RiskOfCatFacts : BaseUnityPlugin
     {
-        private System.Random random = new System.Random();
-        private Timer timer;
-        private double interval = 60 * 1000;
-
         private ConfigEntry<bool> CatFactsEnabled;
+        private ConfigEntry<bool> FactUnsubscribeCommands;
+        private ConfigEntry<int> CatFactInterval;
+        private System.Random random = new System.Random();
+        private float currentTime;
+        private bool timerRunning = false;
+        private float unsubscribePenalty = 1;
+        private float interval => (float)CatFactInterval.Value / unsubscribePenalty;
 
         public void Awake()
         {
+            const string catFactSection = "CatFacts";
+
+            FactUnsubscribeCommands = Config.AddSetting<bool>(
+                catFactSection,
+                "FactUnsubscribeCommands",
+                true,
+                new ConfigDescription("Disable this to stop the fake unsubscribe chat commands"));
+
             CatFactsEnabled = Config.AddSetting<bool>(
-                "CatFacts",
+                catFactSection,
                 "ReceiveCatFacts",
                 true,
                 new ConfigDescription("Enable/Disable receiving CatFacts"));
 
+            CatFactInterval = Config.AddSetting<int>(
+                catFactSection,
+                "CatFactInterval",
+                60,
+                new ConfigDescription(
+                    "The time(s) between receiving CatFacts",               
+                    new AcceptableValueRange<int>(10,120))
+                    );
+
             Chat.onChatChanged += Chat_onChatChanged;
             RoR2.Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
-            On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
-            On.RoR2.Run.BeginStage += Run_BeginStage;
+            RoR2.GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
+            RoR2.SceneDirector.onPostPopulateSceneServer += SceneDirector_onPostPopulateSceneServer;
+        }       
+
+        
+        public void Update()
+        {
+            if(timerRunning)
+            {
+                if (!CatFactsEnabled.Value)
+                {
+                    Stop();
+                }
+                currentTime -= Time.deltaTime;
+                if(currentTime <= 0)
+                {
+                    currentTime = interval;
+                }
+            }
         }
 
-        private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
+        private void Start()
         {
-            if (CatFactsEnabled.Value
-                && self.stageClearCount > 0
-                && timer == null)
+            if (CatFactsEnabled.Value)
             {
-                Start();
-            }
-            orig(self);
+                timerRunning = true;
+                currentTime = interval;
+            }            
+        }
+
+        private void Stop()
+        {
+            timerRunning = false;
+            unsubscribePenalty = 1;
+        }
+
+        private void SceneDirector_onPostPopulateSceneServer(SceneDirector obj)
+        {
+            Start();            
         }
 
         private void Run_onRunDestroyGlobal(Run obj)
@@ -49,28 +95,15 @@ namespace RiskOfCatFacts
             Stop();
         }
 
-        private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
+        private void GlobalEventManager_onCharacterDeathGlobal(DamageReport obj)
         {
             if (CatFactsEnabled.Value
-                && damageReport.victim.body.isChampion)
+                && obj.victim.body.isChampion)
             {
                 Message.Send("Meow meow Me-WOW! You killed a champion! =^o_o^=");
                 SendCatFact();
-            }            
-            orig(self, damageReport);
-        }       
-
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            if (CatFactsEnabled.Value)
-            {
-                SendCatFact();
             }
-            else
-            {
-                Stop();
-            }
-        }            
+        }           
 
         private void SendCatFact()
         {
@@ -82,43 +115,20 @@ namespace RiskOfCatFacts
         {
             Message.SendColoured("Command not recognised.", Colours.Red);
             Message.SendColoured("Thank you for subscribing to CatFacts! We will double your fact rate free of charge!", Colours.Green);
-            HalfTimerTime();
+            unsubscribePenalty++;
         }
 
-        private void HalfTimerTime()
+        private void FakeUnsubscribe2()
         {
-            if(interval > 1)
-            {
-                interval /= 2;
-                timer.Interval = interval;
-            }            
-        }
-
-        private void Start()
-        {
-            timer = new Timer
-            {
-                Interval = interval,
-                AutoReset = true,
-                Enabled = false
-            };                
-            timer.Elapsed += Timer_Elapsed;
-            timer.Start();
-        }
-
-        private void Stop()
-        {
-            interval = 60 * 1000;
-            if(timer != null)
-            {
-                timer.Dispose();
-            }
+            Message.SendColoured("Command not recognised.", Colours.Red);
+            Message.SendColoured("You are already subscribed to CatFacts. Did you mean to increase frequency of facts? Increasing frequency. Type \"NO\" if you wish to undo this action.", Colours.Orange);
         }
 
         private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
         private void Chat_onChatChanged()
         {
-            if (!CatFactsEnabled.Value)
+            if (!CatFactsEnabled.Value
+                || !FactUnsubscribeCommands.Value)
             {
                 return;
             }
@@ -143,8 +153,7 @@ namespace RiskOfCatFacts
                             break;
 
                         case "unsubscribe":
-                            Message.SendColoured("Command not recognised.", Colours.Red);
-                            Message.SendColoured("You are already subscribed to CatFacts. Did you mean to increase frequency of facts? Increasing frequency. Type \"NO\" if you wish to undo this action.", Colours.Orange);
+                            FakeUnsubscribe2();
                             break;
 
                         case "yes":
