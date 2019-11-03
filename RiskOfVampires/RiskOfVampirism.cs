@@ -78,15 +78,49 @@ namespace RiskOfVampirism
             SurvivorCoefficients = GetSurvivorConfigEntries().ToList();
             #endregion
 
-            On.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
-            On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
+            RoR2.GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
+            RoR2.GlobalEventManager.onServerDamageDealt += GlobalEventManager_onServerDamageDealt;
             On.RoR2.CharacterBody.FixedUpdate += CharacterBody_FixedUpdate;
             IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+        }
 
+        // LIFESTEAL METHOD
+        private void GlobalEventManager_onServerDamageDealt(DamageReport damageReport)
+        {
+            var damageInfo = damageReport.damageInfo;
+            if (IsVampire.Value
+                && damageInfo != null
+                && !damageInfo.procChainMask.HasProc(ProcType.HealOnHit))
+            {
+                var attacker = damageInfo.attacker?.GetComponent<CharacterBody>();
+                if(attacker != null)
+                {
+                    var healthComponent = attacker.GetComponent<HealthComponent>();
+                    //PlayerLifesteal
+                    if (GetPlayer(attacker) != null
+                        && (bool)((UnityEngine.Object)healthComponent))
+                    {
+                        var procChainMask = damageInfo.procChainMask;
+                        procChainMask.AddProc(ProcType.HealOnHit);
+                        var survivorCoefficient = GetSurvivorCoefficient(attacker);
+                        var num = (double)healthComponent.Heal(damageInfo.damage * Leech.Value * survivorCoefficient, procChainMask, true);
+                    }
+                    //Turrets LifeSteal
+                    if (TurretsTransferLifeToOwner.Value
+                        && attacker.teamComponent.teamIndex == TeamIndex.Player
+                        && attacker.name.ToLower().Contains("turret"))
+                    {
+                        var owner = attacker.GetOwnerInformation().OwnerBody;
+                        var procChainMask = damageInfo.procChainMask;
+                        procChainMask.AddProc(ProcType.HealOnHit);
+                        var num = (double)owner.healthComponent.Heal(damageInfo.damage * Leech.Value, procChainMask, true);
+                    }
+                }                
+            }
         }
 
         // GAIN MAX HEALTH ON KILL METHOD
-        private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
+        private void GlobalEventManager_onCharacterDeathGlobal(DamageReport damageReport)
         {
             if (IsVampire.Value && GainsMaximumHealth.Value)
             {
@@ -98,38 +132,8 @@ namespace RiskOfVampirism
                     {
                         attacker.baseMaxHealth += 1;
                     }
-                }                
-            }            
-            orig(self, damageReport);
-        }        
-
-        // LIFESTEAL METHOD
-        private void GlobalEventManager_OnHitEnemy(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
-        {
-            if (IsVampire.Value && !damageInfo.procChainMask.HasProc(ProcType.HealOnHit))
-            {
-                var attacker = damageInfo.attacker.GetComponent<CharacterBody>();
-                var healthComponent = attacker.GetComponent<HealthComponent>();
-                //PlayerLifesteal
-                if (GetPlayer(attacker) != null && (bool)((UnityEngine.Object)healthComponent))
-                {                    
-                    var procChainMask = damageInfo.procChainMask;
-                    procChainMask.AddProc(ProcType.HealOnHit);
-                    var survivorCoefficient = GetSurvivorCoefficient(attacker); 
-                    var num = (double)healthComponent.Heal(damageInfo.damage * Leech.Value * survivorCoefficient, procChainMask, true);                    
-                }
-                //Turrets LifeSteal
-                if(TurretsTransferLifeToOwner.Value
-                    && attacker.teamComponent.teamIndex == TeamIndex.Player
-                    && attacker.name.ToLower().Contains("turret"))
-                {
-                    var owner = attacker.GetOwnerInformation().OwnerBody;
-                    var procChainMask = damageInfo.procChainMask;
-                    procChainMask.AddProc(ProcType.HealOnHit);
-                    var num = (double)owner.healthComponent.Heal(damageInfo.damage * Leech.Value, procChainMask, true);
                 }
             }
-            orig(self, damageInfo, victim);
         }
 
         // SET REGEN (HEALTH DECAY) METHOD
@@ -140,8 +144,8 @@ namespace RiskOfVampirism
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Func<float, CharacterBody, float>>((a, body) =>
             {
-                var player = GetPlayer(body);
-                if(player != null && IsVampire.Value)
+                if(IsVampire.Value
+                    && GetPlayer(body) != null)
                 {
                     if (body.healthComponent.health <= DegenerationThreshold.Value)
                     {
