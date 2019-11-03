@@ -19,13 +19,13 @@ namespace RiskOfCatFacts
         private System.Random random = new System.Random();
         private float currentTime;
         private bool timerRunning = false;
-        private float unsubscribePenalty = 1;
+        private float unsubscribePenalty = 0;
 
         private float interval
         {
             get
             {
-                var x = (float)CatFactInterval.Value / unsubscribePenalty;
+                var x = (float)CatFactInterval.Value / Mathf.Pow(2, unsubscribePenalty);
                 return x > 1 ? x : 1;
             }
         }
@@ -89,7 +89,7 @@ namespace RiskOfCatFacts
         private void StopCatFacts()
         {
             timerRunning = false;
-            unsubscribePenalty = 1;
+            unsubscribePenalty = 0;
         }
 
         private void SceneDirector_onPostPopulateSceneServer(SceneDirector obj)
