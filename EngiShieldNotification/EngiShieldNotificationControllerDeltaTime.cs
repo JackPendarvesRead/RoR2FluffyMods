@@ -25,12 +25,21 @@ namespace EngiShieldNotification
         public void Update(float time)
         {
             currentTime -= time;
+            Debug.Log($"Current time = {currentTime}");
             if(currentTime < 0)
             {
+                Debug.Log("COUNTDOWN DONE!");
                 if (isCountdown)
                 {
                     currentTime = 1.0f;
-                    // play sound
+                    var volume = EngiShieldNotification.Volume.Value;
+                    if (volume > 0)
+                    {
+                        for (var i = 0; i < volume; i++)
+                        {
+                            Util.PlaySound(SoundStrings.Default, gameObject);
+                        }
+                    }
                 }
                 else
                 {

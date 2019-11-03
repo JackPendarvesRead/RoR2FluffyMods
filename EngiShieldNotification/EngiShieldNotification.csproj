@@ -98,7 +98,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EngiShieldNotification.cs" />
-    <Compile Include="EngiShieldNotificationController.cs" />
     <Compile Include="EngiShieldNotificationControllerDeltaTime.cs" />
     <Compile Include="EngiShieldProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

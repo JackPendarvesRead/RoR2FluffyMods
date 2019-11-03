@@ -14,13 +14,15 @@ namespace EngiShieldNotification
 
         public EngiShieldProvider()
         { 
-            gameObjects = new List<GameObject>();            
+            gameObjects = new List<GameObject>();
+            timeControllers = new List<EngiShieldNotificationControllerDeltaTime>();
         }
 
         public void Add(GameObject obj)
         {
-            if (gameObjects.Contains(obj))
+            if (!gameObjects.Contains(obj))
             {
+                Debug.Log("Adding something");
                 gameObjects.Add(obj);
                 timeControllers.Add(new EngiShieldNotificationControllerDeltaTime(obj));
             }
@@ -30,6 +32,7 @@ namespace EngiShieldNotification
         {
             if (gameObjects.Contains(obj))
             {
+                Debug.Log("Removing something");
                 gameObjects.Remove(obj);
                 timeControllers.Remove(timeControllers.Where(t => t.gameObject == obj).First());
             }

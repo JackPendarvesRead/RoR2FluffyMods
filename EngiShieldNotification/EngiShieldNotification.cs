@@ -53,7 +53,6 @@ namespace EngiShieldNotification
             Provider.Update(Time.deltaTime);
         }
 
-        #region ILCode
         private void IL_Deployed_OnEnter(ILContext il)
         {
             var c = new ILCursor(il);
@@ -63,6 +62,7 @@ namespace EngiShieldNotification
             c.Index -= 1;
             c.EmitDelegate<Func<GameObject, GameObject>>((gameObject) =>
             {
+                Debug.Log("ONENETER");
                 Provider.Add(gameObject);
                 return gameObject;
             });
@@ -77,10 +77,10 @@ namespace EngiShieldNotification
             c.Index -= 1;
             c.EmitDelegate<Func<GameObject, GameObject>>((gameObject) =>
             {
+                Debug.Log("ONEXIT");
                 Provider.Remove(gameObject);
                 return gameObject;
             });
         }
-        #endregion        
     }
 }
