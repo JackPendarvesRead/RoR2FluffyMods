@@ -22,8 +22,9 @@ namespace TeleportVote
         private TimerController TimerController { get; set; }
 
         public static ConfigEntry<bool> VotesEnabled;
-        public static ConditionalConfigEntry<int> MaximumVotes;
         public static ConfigEntry<bool> EnableTimerCountdown;
+        public static ConfigEntry<bool> ChatCommandCanStartTimer;
+        public static ConditionalConfigEntry<int> MaximumVotes;
 
         public void Awake()
         {
@@ -52,6 +53,16 @@ namespace TeleportVote
                 true,
                 new ConfigDescription(
                     "Enable/Disable countdown timer to override vote"
+                    ));
+
+            ChatCommandCanStartTimer = Config.AddSetting<bool>(
+                votesSection,
+                "ChatCommandCanStartTimer",
+                false,
+                new ConfigDescription(
+                    "When enabled the timer can be started by chat command. If disabled timer only starts on interaction.",
+                    null,
+                    "Advanced"
                     ));
 
             var cUtil = new ConditionalUtil(this.Config);
@@ -232,6 +243,11 @@ namespace TeleportVote
                                 if (netUser.GetCurrentBody().healthComponent.alive)
                                 {
                                     VoteController.RegisterPlayer(netUser);
+                                    if (EnableTimerCountdown.Value
+                                        && ChatCommandCanStartTimer.Value)
+                                    {
+                                        TimerController.Start();
+                                    }
                                 }
                                 break;
 
