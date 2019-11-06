@@ -13,8 +13,7 @@ using DeployableOwnerInformation.Component;
 
 namespace DeployableOwnerInformation
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.DeployableToOwnerLink", "DeployableToOwnerLink", "1.0.0")]
+    [PluginMetadata("com.FluffyMods.DeployableOwnerInformation", "DeployableOwnerInformation", "1.0.0")]
     public class RiskOfVampirism : BaseUnityPlugin
     {
         public void Start()

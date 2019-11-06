@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace EngiShieldNotification
 {
-    [BepInPlugin("com.FluffyMods.EngiShieldNotification", "EngiShieldNotification", "2.0.0")]
+    [PluginMetadata("com.FluffyMods.EngiShieldNotification", "EngiShieldNotification", "2.0.0")]
     public class EngiShieldNotification : BaseUnityPlugin
     {
         internal static ConfigEntry<int> NoticeTime { get; set; }

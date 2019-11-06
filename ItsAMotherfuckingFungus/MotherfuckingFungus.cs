@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace MotherfuckingFungus
 {
-    [BepInPlugin("com.FluffyMods.MotherfuckingFungus", "MotherfuckingFungus", "1.0.2")]
+    [PluginMetadata("com.FluffyMods.MotherfuckingFungus", "MotherfuckingFungus", "1.0.2")]
     public class MotherfuckingFungus : BaseUnityPlugin
     {
         private static bool IsEngineerInGame = false;

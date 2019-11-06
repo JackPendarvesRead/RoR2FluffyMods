@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RenergisedDrink
 {
-    [BepInPlugin("com.FluffyMods.ReEnergisedDrink", "ReEnergisedDrink", "1.0.0")]
+    [PluginMetadata("com.FluffyMods.ReEnergisedDrink", "ReEnergisedDrink", "1.0.0")]
     public class BulletFalloffFix : BaseUnityPlugin
     {
         private static ConfigEntry<float> EnergyDrinkBoost;

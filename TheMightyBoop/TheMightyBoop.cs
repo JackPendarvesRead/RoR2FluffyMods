@@ -14,7 +14,7 @@ using FluffyLabsConfigManagerTools.Util;
 namespace TheMightyBoop
 {
     [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "2.0.0")]
+    [PluginMetadata("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "2.0.0")]
     public class TheMightyBoop : BaseUnityPlugin
     {
         private ConfigEntry<bool> ClayBruiserIsMighty;

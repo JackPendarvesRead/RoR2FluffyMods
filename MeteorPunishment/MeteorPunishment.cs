@@ -10,7 +10,7 @@
 
 //namespace MeteorPunishment
 //{
-//    [BepInPlugin("com.FluffyMods.MeteorPunishment", "MeteorPunishment", "1.0.1")]
+//    [PluginMetadata("com.FluffyMods.MeteorPunishment", "MeteorPunishment", "1.0.1")]
 //    public class MeteorPunishment : BaseUnityPlugin
 //    {
 //        private static CharacterBody PlayerToBePunished;

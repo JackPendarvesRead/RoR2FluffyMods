@@ -12,7 +12,7 @@ using BepInEx.Configuration;
 
 namespace ChronobaubleFix
 {
-    [BepInPlugin("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "2.0.0")]
+    [PluginMetadata("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "2.0.0")]
     public class ChronobaubleFix : BaseUnityPlugin
     {
         private static ConfigEntry<float> SlowScalingCoefficient;

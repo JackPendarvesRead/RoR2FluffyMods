@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RoR2FluffyMods
 {
-    [BepInPlugin("com.TEST.TEST", "TEST", "0.0.0")]
+    [PluginMetadata("com.TEST.TEST", "TEST", "0.0.0")]
     public class TestingStuff : BaseUnityPlugin
     {
         System.Random rng;

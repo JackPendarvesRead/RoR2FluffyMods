@@ -6,7 +6,7 @@
 
 //namespace BackupEngiTurrets
 //{
-//    [BepInPlugin("com.FluffyMods.BackupEngiTurrets", "BackupEngiTurrets", "3.0.0")]
+//    [PluginMetadata("com.FluffyMods.BackupEngiTurrets", "BackupEngiTurrets", "3.0.0")]
 //    public class BackupEngiTurrets : BaseUnityPlugin
 //    {
 //        private static ConfigEntry<bool> TurretStockIncreasesWithBackup;
