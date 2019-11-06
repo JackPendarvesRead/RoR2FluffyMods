@@ -20,7 +20,7 @@ namespace TeleportVote
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "TeleportVote";
-        private const string pluginVersion = "2.0.0";
+        private const string pluginVersion = "3.0.0";
 
         private VoteRegistrationController VoteController { get; set; }
         private TimerController TimerController { get; set; }
