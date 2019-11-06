@@ -16,7 +16,7 @@ namespace RenergisedDrink
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "ReEnergisedDrink";
-        private const string pluginVersion = "1.0.0";
+        private const string pluginVersion = "1.0.1";
 
         private static ConfigEntry<float> EnergyDrinkBoost;
         private static ConfigEntry<float> EnergyDrinkCoefficient;
