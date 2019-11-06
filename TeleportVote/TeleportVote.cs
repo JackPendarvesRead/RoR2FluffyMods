@@ -14,7 +14,7 @@ using FluffyLabsConfigManagerTools.Util;
 
 namespace TeleportVote
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
+    [PluginDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
     [PluginMetadata("com.FluffyMods.TeleportVote", "TeleportVote", "2.0.0")]
     public class TeleportVote : BaseUnityPlugin
     {

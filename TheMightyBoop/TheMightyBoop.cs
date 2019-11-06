@@ -13,7 +13,7 @@ using FluffyLabsConfigManagerTools.Util;
 
 namespace TheMightyBoop
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
+    [PluginDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
     [PluginMetadata("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "2.0.0")]
     public class TheMightyBoop : BaseUnityPlugin
     {

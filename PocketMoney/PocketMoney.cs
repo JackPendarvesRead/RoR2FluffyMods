@@ -12,7 +12,7 @@ using FluffyLabsConfigManagerTools.Infrastructure;
 
 namespace PocketMoney
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
+    [PluginDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
     [PluginMetadata("com.FluffyMods.PocketMoney", "PocketMoney", "2.0.0")]
     public class TestingStuff : BaseUnityPlugin
     {

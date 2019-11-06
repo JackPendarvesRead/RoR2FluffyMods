@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace InfusionStackFix
 {
-    [PluginDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
+    [PluginDependency("com.FluffyMods.DeployableOwnerInformation")]
     [PluginDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
     [PluginMetadata("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "2.0.0")]
     public class InfusionStackFix : BaseUnityPlugin
