@@ -31,6 +31,18 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v3.0.3
+- Updated to Bepinex5 for official release
+
+v3.0.2
+- Fixed configuration section naming issue
+
+v3.0.1
+- Added dependency attribute for DeployableOwnerInformation
+
+v3.0.0
+- Rollback Bepinex5 early release for thunderstore
+
 v2.0.0
 - Updated to Bepinex5
 - Removed unnecessary R2API dependency

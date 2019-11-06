@@ -18,7 +18,7 @@ namespace InfusionStackFix
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "InfusionStackFix";
-        private const string pluginVersion = "2.0.0";
+        private const string pluginVersion = "3.0.3";
 
         private ConditionalConfigEntry<int> MaximumHealthPerInfusion;
         private ConditionalConfigEntry<int> MaxHealthGainPerKill;
