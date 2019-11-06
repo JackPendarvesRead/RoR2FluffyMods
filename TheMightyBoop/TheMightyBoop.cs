@@ -19,7 +19,7 @@ namespace TheMightyBoop
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "TheMightyBoop";
-        private const string pluginVersion = "2.0.0";
+        private const string pluginVersion = "2.1.0";
 
         private ConfigEntry<bool> ClayBruiserIsMighty;
         private ConfigEntry<bool> RandomDirection;
@@ -38,29 +38,24 @@ namespace TheMightyBoop
 
             #region ConfigSetup
             const string fireSonicBoomSection = "FireSonicBoom";
-            const string clayBruiserSection = "ClayBruiser";
+            const string boopModifierSection = "Boop Modifiers";
 
             var buttonUtil = new ButtonUtil(this.Config);
             buttonUtil.AddButtonConfig("Presets", "Preset", "Select preset configurations with buttons", GetButtonDictionary());
 
             ClayBruiserIsMighty = Config.Bind<bool>(
-                new ConfigDefinition(clayBruiserSection, nameof(ClayBruiserIsMighty)), 
+                new ConfigDefinition(boopModifierSection, nameof(ClayBruiserIsMighty)), 
                 false, 
                 new ConfigDescription(
-                    "Set whether the boop of the Clay Templar is mighty like Rex",                
-                    null,
-                    ConfigTags.Advanced
+                    "Set whether the boop of the Clay Templar is mighty like Rex"
                     ));
 
             RandomDirection = Config.Bind<bool>(
-                new ConfigDefinition(fireSonicBoomSection, "RandomHorizontalForce"),
+                new ConfigDefinition(boopModifierSection, "RandomHorizontalForce"),
                 false,
                 new ConfigDescription(
-                    "When enabled the HorizontalForce becomes a random number between the +/- value (e.g. if force = 500, when random the force becomes any number between -500 to 500)",
-                    null,
-                    ConfigTags.Advanced
+                    "When enabled the HorizontalForce becomes a random number between the +/- value (e.g. if force = 500, when random the force becomes any number between -500 to 500)"
                     ));
-
 
             AirKnockBackDistance = Config.Bind<float>(
                 new ConfigDefinition(fireSonicBoomSection, nameof(AirKnockBackDistance)), 
