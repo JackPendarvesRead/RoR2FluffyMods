@@ -12,10 +12,14 @@ using FluffyLabsConfigManagerTools.Infrastructure;
 
 namespace PocketMoney
 {
-    [PluginDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [PluginMetadata("com.FluffyMods.PocketMoney", "PocketMoney", "2.0.0")]
+    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
     public class TestingStuff : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "PocketMoney";
+        private const string pluginVersion = "2.0.0";
+
         private ConditionalConfigEntry<uint> LatestStageToReceiveMoney;
         private ConfigEntry<uint> StageFlatMoney;
         private ConfigEntry<float> StageWeightedMoney;

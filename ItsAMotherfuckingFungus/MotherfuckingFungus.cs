@@ -10,9 +10,13 @@ using System.Linq;
 
 namespace MotherfuckingFungus
 {
-    [PluginMetadata("com.FluffyMods.MotherfuckingFungus", "MotherfuckingFungus", "1.0.2")]
+    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
     public class MotherfuckingFungus : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "MotherfuckingFungus";
+        private const string pluginVersion = "1.0.2";
+
         private static bool IsEngineerInGame = false;
 
         public void Awake()

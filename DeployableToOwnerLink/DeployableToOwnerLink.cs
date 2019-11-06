@@ -13,9 +13,13 @@ using DeployableOwnerInformation.Component;
 
 namespace DeployableOwnerInformation
 {
-    [PluginMetadata("com.FluffyMods.DeployableOwnerInformation", "DeployableOwnerInformation", "1.0.0")]
-    public class RiskOfVampirism : BaseUnityPlugin
+    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    public class DeployableOwnerInformation : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "DeployableOwnerInformation";
+        private const string pluginVersion = "1.0.0";
+
         public void Start()
         {
             if (!RoR2Application.isModded)

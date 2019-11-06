@@ -10,9 +10,13 @@ using BepInEx.Configuration;
 
 namespace RiskOfCatFacts
 {
-    [PluginMetadata("com.FluffyMods.RiskOfCatFacts", "RiskOfCatFacts", "2.0.0")]
+    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
     public class RiskOfCatFacts : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "RiskOfCatFacts";
+        private const string pluginVersion = "2.0.0";
+
         private ConfigEntry<bool> CatFactsEnabled;
         private ConfigEntry<bool> FactUnsubscribeCommands;
         private ConfigEntry<int> CatFactInterval;

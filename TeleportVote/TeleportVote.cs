@@ -14,10 +14,14 @@ using FluffyLabsConfigManagerTools.Util;
 
 namespace TeleportVote
 {
-    [PluginDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [PluginMetadata("com.FluffyMods.TeleportVote", "TeleportVote", "2.0.0")]
+    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
     public class TeleportVote : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "TeleportVote";
+        private const string pluginVersion = "2.0.0";
+
         private VoteRegistrationController VoteController { get; set; }
         private TimerController TimerController { get; set; }
 

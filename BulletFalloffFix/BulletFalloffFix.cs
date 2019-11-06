@@ -13,9 +13,13 @@ using UnityEngine;
 
 namespace BulletFalloffFix
 {
-    [PluginMetadata("com.FluffyMods.BulletFalloffFix", "BulletFalloffFix", "2.0.0")]
+    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
     public class BulletFalloffFix : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "BulletFalloffFix";
+        private const string pluginVersion = "2.0.0";
+
         private static ConfigEntry<float> FallOffStartDistance;
         private static ConfigEntry<float> FallOffEndDistance;
 

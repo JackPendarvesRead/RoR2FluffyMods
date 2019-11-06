@@ -14,10 +14,14 @@ using DeployableOwnerInformation.Extension;
 
 namespace RiskOfVampirism
 {
-    [PluginDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [PluginMetadata("com.FluffyMods.RiskOfVampirism", "RiskOfVampirism", "2.0.0")]
+    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
     public class RiskOfVampirism : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "RiskOfVampirism";
+        private const string pluginVersion = "2.0.0";
+
         private ConfigEntry<float> Leech;
         private ConfigEntry<int> DecayTime;
         private ConfigEntry<int> DegenerationThreshold;

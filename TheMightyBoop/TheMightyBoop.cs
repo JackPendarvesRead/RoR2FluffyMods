@@ -13,10 +13,14 @@ using FluffyLabsConfigManagerTools.Util;
 
 namespace TheMightyBoop
 {
-    [PluginDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [PluginMetadata("com.FluffyMods.TheMightyBoop", "TheMightyBoop", "2.0.0")]
+    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
     public class TheMightyBoop : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "TheMightyBoop";
+        private const string pluginVersion = "2.0.0";
+
         private ConfigEntry<bool> ClayBruiserIsMighty;
         private ConfigEntry<bool> RandomDirection;
         private ConfigEntry<float> AirKnockBackDistance;

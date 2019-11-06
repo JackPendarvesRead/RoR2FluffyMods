@@ -12,9 +12,13 @@ using BepInEx.Configuration;
 
 namespace ChronobaubleFix
 {
-    [PluginMetadata("com.FluffyMods.ChronobaubleFix", "ChronobaubleFix", "2.0.0")]
+    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
     public class ChronobaubleFix : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "ChronobaubleFix";
+        private const string pluginVersion = "2.0.0";
+
         private static ConfigEntry<float> SlowScalingCoefficient;
         private static ConfigEntry<int> DebuffStacksPerItemStack;
 

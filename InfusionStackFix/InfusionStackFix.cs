@@ -8,15 +8,18 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using RoR2;
 using System;
-using UnityEngine;
 
 namespace InfusionStackFix
 {
-    [PluginDependency("com.FluffyMods.DeployableOwnerInformation")]
-    [PluginDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [PluginMetadata("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "2.0.0")]
+    [PluginDependency(DeployableOwnerInformation.DeployableOwnerInformation.PluginGuid)]
+    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
     public class InfusionStackFix : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "InfusionStackFix";
+        private const string pluginVersion = "2.0.0";
+
         private ConditionalConfigEntry<int> MaximumHealthPerInfusion;
         private ConditionalConfigEntry<int> MaxHealthGainPerKill;
         private ConfigEntry<bool> TurretReceivesBonusFromEngineer;
