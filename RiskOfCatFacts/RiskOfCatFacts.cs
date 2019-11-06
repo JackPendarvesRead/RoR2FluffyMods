@@ -15,7 +15,7 @@ namespace RiskOfCatFacts
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "RiskOfCatFacts";
-        private const string pluginVersion = "2.0.0";
+        private const string pluginVersion = "3.0.0";
 
         private ConfigEntry<bool> CatFactsEnabled;
         private ConfigEntry<bool> FactUnsubscribeCommands;
