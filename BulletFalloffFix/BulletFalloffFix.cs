@@ -6,19 +6,17 @@ using MonoMod.Cil;
 using RoR2;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace BulletFalloffFix
 {
+    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
     [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
     public class BulletFalloffFix : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "BulletFalloffFix";
-        private const string pluginVersion = "2.0.0";
+        private const string pluginVersion = "2.0.1";
 
         private static ConfigEntry<float> FallOffStartDistance;
         private static ConfigEntry<float> FallOffEndDistance;
@@ -71,7 +69,6 @@ namespace BulletFalloffFix
             c.Emit(OpCodes.Ldc_R4, FallOffStartDistance.Value);
         }
 
-
         private Dictionary<string, Action> GetButtonDic()
         {
             return new Dictionary<string, Action>
@@ -80,12 +77,14 @@ namespace BulletFalloffFix
                 { "Recommended", SetRecommenedConfig}
             };
         }
+
         private void SetVanillaConfig()
         {
             FallOffStartDistance.Value = BulletFalloffConstantValues.DefaultStart;
             FallOffEndDistance.Value = BulletFalloffConstantValues.DefaultEnd;
             Debug.Log("Default falloff values set");
         }
+
         private void SetRecommenedConfig()
         {
             FallOffStartDistance.Value = BulletFalloffConstantValues.RecommendedStart;
