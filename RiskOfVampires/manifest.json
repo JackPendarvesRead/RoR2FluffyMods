@@ -1,9 +1,10 @@
 {
   "name": "RiskOfVampirism",
-  "version_number": "1.0.1",
+  "version_number": "2.1.0",
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/blob/master/RiskOfVampires/",
   "description": "Power at any price. Become a Vampire with strong lifesteal but you must feed to stay alive...",
   "dependencies": [
+    "bbepis-BepInExPack-2.0.0",
     "JackPendarvesRead-FluffyLabsConfigManagerTools-1.0.1"
   ]
 }

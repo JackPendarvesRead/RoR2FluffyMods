@@ -20,7 +20,7 @@ namespace RiskOfVampirism
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "RiskOfVampirism";
-        private const string pluginVersion = "2.0.0";
+        private const string pluginVersion = "2.1.0";
 
         private ConfigEntry<float> Leech;
         private ConfigEntry<int> DecayTime;
@@ -68,7 +68,7 @@ namespace RiskOfVampirism
                "Enable to gain +1 base max health for each kill you make");
 
             IsVampire = Config.Bind<bool>(
-               vampireSection,
+               "Enable/Disable Mod",
                "IsAVampire",
                true,
                "Set to true to be a vampire (Enable/Disable the mod)");
