@@ -18,7 +18,7 @@ namespace PocketMoney
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "PocketMoney";
-        private const string pluginVersion = "2.0.0";
+        private const string pluginVersion = "2.0.1";
 
         private ConditionalConfigEntry<uint> LatestStageToReceiveMoney;
         private ConfigEntry<uint> StageFlatMoney;
