@@ -16,7 +16,7 @@ namespace MacroCommands
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "MacroCommands";
-        private const string pluginVersion = "1.0.0";
+        private const string pluginVersion = "2.0.0";
 
         private List<MacroConfigEntry> Macros;
         
