@@ -8,12 +8,14 @@ using UnityEngine;
 
 namespace EngiShieldNotification
 {
+    //TODO: Test in multiplayer with multiple engi shields
+
     [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
     public class EngiShieldNotification : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "EngiShieldNotification";
-        private const string pluginVersion = "2.0.0";
+        private const string pluginVersion = "3.0.0";
 
         internal static ConfigEntry<int> NoticeTime { get; set; }
         internal static ConfigEntry<int> Volume { get; set; }
