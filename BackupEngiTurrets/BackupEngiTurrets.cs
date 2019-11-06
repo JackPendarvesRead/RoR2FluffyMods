@@ -14,7 +14,7 @@
 
 //        public void Awake()
 //        {
-//            TurretStockIncreasesWithBackup = Config.AddSetting<bool>(
+//            TurretStockIncreasesWithBackup = Config.Bind<bool>(
 //                                   new ConfigDefinition("Engineer", nameof(TurretStockIncreasesWithBackup)),
 //                                   true,
 //                                   new ConfigDescription(
@@ -22,7 +22,7 @@
 //                                       )
 //                                   );
 
-//            PrimaryIncreasesWitBackup = Config.AddSetting<bool>(
+//            PrimaryIncreasesWitBackup = Config.Bind<bool>(
 //                                   new ConfigDefinition("Mage", nameof(PrimaryIncreasesWitBackup)),
 //                                   false,
 //                                   new ConfigDescription(

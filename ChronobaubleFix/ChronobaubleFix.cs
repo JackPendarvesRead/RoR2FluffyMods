@@ -28,7 +28,7 @@ namespace ChronobaubleFix
             #region ConfigSetup
             const string chronobaubleSection = "Chronobauble";
 
-            SlowScalingCoefficient = Config.AddSetting<float>(
+            SlowScalingCoefficient = Config.Bind<float>(
                 new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
                 0.05f,
                 new ConfigDescription(
@@ -36,7 +36,7 @@ namespace ChronobaubleFix
                     new AcceptableValueRange<float>(0.00f, 0.20f)
                     ));
 
-            DebuffStacksPerItemStack = Config.AddSetting<int>(
+            DebuffStacksPerItemStack = Config.Bind<int>(
                 new ConfigDefinition(chronobaubleSection, nameof(DebuffStacksPerItemStack)),
                 3,
                 new ConfigDescription(

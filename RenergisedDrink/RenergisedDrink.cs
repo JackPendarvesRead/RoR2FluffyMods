@@ -24,7 +24,7 @@ namespace RenergisedDrink
                 RoR2Application.isModded = true;
             }
 
-            EnergyDrinkBoost = Config.AddSetting<float>(
+            EnergyDrinkBoost = Config.Bind<float>(
                 "Energy Drink",
                 "Boost",
                 0.5f,
@@ -34,7 +34,7 @@ namespace RenergisedDrink
                     )
                 );
 
-            EnergyDrinkCoefficient = Config.AddSetting<float>(
+            EnergyDrinkCoefficient = Config.Bind<float>(
                 "Energy Drink",
                 "Coefficient",
                 0.3f,

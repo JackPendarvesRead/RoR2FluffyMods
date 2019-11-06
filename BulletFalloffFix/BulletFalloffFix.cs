@@ -33,7 +33,7 @@ namespace BulletFalloffFix
             var buttonUtil = new ButtonUtil(this.Config);
             buttonUtil.AddButtonConfig(presetSection, "Buttons", "", GetButtonDic());
 
-            FallOffStartDistance = Config.AddSetting<float>(
+            FallOffStartDistance = Config.Bind<float>(
                 new ConfigDefinition(falloffDistanceSection, nameof(FallOffStartDistance)),
                 40f,
                 new ConfigDescription(
@@ -41,7 +41,7 @@ namespace BulletFalloffFix
                     )
                 );
 
-            FallOffEndDistance = Config.AddSetting<float>(
+            FallOffEndDistance = Config.Bind<float>(
                 new ConfigDefinition(falloffDistanceSection, nameof(FallOffEndDistance)),
                 80f,
                 new ConfigDescription(

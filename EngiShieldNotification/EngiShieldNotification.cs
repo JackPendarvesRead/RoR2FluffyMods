@@ -26,7 +26,7 @@ namespace EngiShieldNotification
 
             const string sectionName = "BubbleShieldNotificationVolume";
 
-            Volume = Config.AddSetting<int>(
+            Volume = Config.Bind<int>(
                 new ConfigDefinition(sectionName, nameof(Volume)),
                 3,
                 new ConfigDescription(
@@ -34,7 +34,7 @@ namespace EngiShieldNotification
                     new AcceptableValueRange<int>(0, 4)
                     ));
 
-            NoticeTime = Config.AddSetting<int>(
+            NoticeTime = Config.Bind<int>(
                 new ConfigDefinition(sectionName, nameof(NoticeTime)),
                 3,
                 new ConfigDescription(
