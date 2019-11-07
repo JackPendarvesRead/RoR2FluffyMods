@@ -131,7 +131,7 @@ namespace InfusionStackFix
                 }
                 else
                 {
-                    return int.MaxValue;
+                    return 999999;
                 }
             });
 
