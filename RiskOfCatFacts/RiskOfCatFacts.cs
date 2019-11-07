@@ -45,7 +45,7 @@ namespace RiskOfCatFacts
                 new ConfigDescription("Disable this to stop the fake unsubscribe chat commands"));
 
             CatFactsEnabled = Config.Bind<bool>(
-                catFactSection,
+                "Enable/Disable Mod",
                 "ReceiveCatFacts",
                 true,
                 new ConfigDescription("Enable/Disable receiving CatFacts"));
