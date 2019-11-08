@@ -60,6 +60,7 @@ namespace MacroCommands
             {
                 if (macro.KeyboardShortcut.IsUp())
                 {
+                    Logger.LogInfo($"Macro triggered! - KBS = {macro.KeyboardShortcut.ToString()}");
                     new MacroController().ExecuteMacro(macro);
                 }
             }
