@@ -18,38 +18,70 @@ namespace RoR2FluffyMods
         private ConfigEntry<bool> EnableLogging;
         private ConfigEntry<bool> LogKeyUp;
         private ConfigEntry<bool> LogKeyDown;
+        private ConfigEntry<LogLevel> LogLevelSelected;
         private ConfigEntry<KeyboardShortcut> kbs;
 
         public void Awake()
         {
             const string logSection = "Logging";
 
-            EnableLogging = Config.Bind<bool>("Enable/Disable", "Enable logging", true, "Enable/Disable input logging");
-            LogKeyUp = Config.Bind<bool>(logSection, "Log Key Up", true, "Enable/Disable logging on key up");
-            LogKeyDown = Config.Bind<bool>(logSection, "Log Key Down", true, "Enable/Disable logging on key down");
-            kbs = Config.Bind<KeyboardShortcut>("KBS", "KBS To Test", new KeyboardShortcut(KeyCode.None), new ConfigDescription("If you want to test a keyboard shortcut is being triggered input the shortcut here and it will be logged when triggered"));
+            LogLevelSelected = Config.Bind<LogLevel>(
+                logSection, 
+                "Log Level", 
+                LogLevel.Info, 
+                "Select the level at which logs should be logged at"
+                );           
+
+            EnableLogging = Config.Bind<bool>(
+                "Enable/Disable", 
+                "Enable logging", 
+                true, 
+                "Enable/Disable input logging"
+                );
+
+            LogKeyUp = Config.Bind<bool>(
+                logSection, 
+                "Log Key Up", 
+                true, 
+                "Enable/Disable logging on key up"
+                );
+
+            LogKeyDown = Config.Bind<bool>(
+                logSection,
+                "Log Key Down", 
+                true, 
+                "Enable/Disable logging on key down"
+                );
+
+            kbs = Config.Bind<KeyboardShortcut>(
+                "KBS", 
+                "KBS To Test", 
+                new KeyboardShortcut(KeyCode.None), 
+                new ConfigDescription(
+                    "If you want to test a keyboard shortcut is being triggered input the shortcut here and it will be logged when triggered")
+                    );
         }
 
         public void Update()
         {
             if (EnableLogging.Value)
-            {
+            {                
                 foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
                 {
                     if (LogKeyDown.Value && Input.GetKeyDown(key))
                     {
-                        Logger.LogInfo($"InputLogger: {key.ToString()} down");
+                        Logger.Log(LogLevelSelected.Value, $"InputLogger: {key.ToString()} down");
                     }
                     if (LogKeyUp.Value && Input.GetKeyUp(key))
                     {
-                        Logger.LogInfo($"InputLogger: {key.ToString()} up");
+                        Logger.Log(LogLevelSelected.Value, $"InputLogger: {key.ToString()} up");
                     }
                 }
                 if (kbs.Value.MainKey != KeyCode.None)
                 {
                     if (kbs.Value.IsUp())
                     {
-                        Logger.LogInfo("Test shortcut was triggered");
+                        Logger.Log(LogLevelSelected.Value, "Test shortcut was triggered");
                     }
                 }
             }
