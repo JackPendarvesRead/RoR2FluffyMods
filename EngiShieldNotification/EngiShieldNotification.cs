@@ -10,7 +10,7 @@ namespace EngiShieldNotification
 {
     //TODO: Test in multiplayer with multiple engi shields
 
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class EngiShieldNotification : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -32,7 +32,7 @@ namespace EngiShieldNotification
 
             const string sectionName = "BubbleShieldNotificationVolume";
 
-            Volume = Config.Bind<int>(
+            Volume = Config.AddSetting<int>(
                 new ConfigDefinition(sectionName, nameof(Volume)),
                 3,
                 new ConfigDescription(
@@ -40,7 +40,7 @@ namespace EngiShieldNotification
                     new AcceptableValueRange<int>(0, 4)
                     ));
 
-            NoticeTime = Config.Bind<int>(
+            NoticeTime = Config.AddSetting<int>(
                 new ConfigDefinition(sectionName, nameof(NoticeTime)),
                 3,
                 new ConfigDescription(

@@ -12,7 +12,7 @@ using BepInEx.Configuration;
 
 namespace ChronobaubleFix
 {
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class ChronobaubleFix : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -32,7 +32,7 @@ namespace ChronobaubleFix
             #region ConfigSetup
             const string chronobaubleSection = "Chronobauble";
 
-            SlowScalingCoefficient = Config.Bind<float>(
+            SlowScalingCoefficient = Config.AddSetting<float>(
                 new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
                 0.05f,
                 new ConfigDescription(
@@ -40,7 +40,7 @@ namespace ChronobaubleFix
                     new AcceptableValueRange<float>(0.00f, 0.20f)
                     ));
 
-            DebuffStacksPerItemStack = Config.Bind<int>(
+            DebuffStacksPerItemStack = Config.AddSetting<int>(
                 new ConfigDefinition(chronobaubleSection, nameof(DebuffStacksPerItemStack)),
                 3,
                 new ConfigDescription(

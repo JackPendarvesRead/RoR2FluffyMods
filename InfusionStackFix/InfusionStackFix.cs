@@ -11,9 +11,9 @@ using System;
 
 namespace InfusionStackFix
 {
-    [PluginDependency(DeployableOwnerInformation.DeployableOwnerInformation.PluginGuid)]
-    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInDependency(DeployableOwnerInformation.DeployableOwnerInformation.PluginGuid)]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class InfusionStackFix : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -54,7 +54,7 @@ namespace InfusionStackFix
                     )
                 );
 
-            TurretReceivesBonusFromEngineer = Config.Bind<bool>(
+            TurretReceivesBonusFromEngineer = Config.AddSetting<bool>(
                 engineerSectionName,
                 nameof(TurretReceivesBonusFromEngineer),
                 true,
@@ -63,7 +63,7 @@ namespace InfusionStackFix
                     )
                 );
 
-            TurretGivesEngineerLifeOrbs = Config.Bind<bool>(
+            TurretGivesEngineerLifeOrbs = Config.AddSetting<bool>(
                 engineerSectionName,
                 nameof(TurretGivesEngineerLifeOrbs),
                 true,

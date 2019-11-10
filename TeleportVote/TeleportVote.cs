@@ -14,8 +14,8 @@ using FluffyLabsConfigManagerTools.Util;
 
 namespace TeleportVote
 {
-    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class TeleportVote : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -43,7 +43,7 @@ namespace TeleportVote
             #region ConfigSetup
             const string votesSection = "Votes";
 
-            VotesEnabled = Config.Bind<bool>(
+            VotesEnabled = Config.AddSetting<bool>(
                 votesSection,
                 "Enable Votes",
                 true,
@@ -51,7 +51,7 @@ namespace TeleportVote
                     "Disable this to bypass voting (i.e. interact with teleporter etc as normal)"
                     ));
 
-            EnableTimerCountdown = Config.Bind<bool>(
+            EnableTimerCountdown = Config.AddSetting<bool>(
                 votesSection,
                 "Enable Timer Countdown",
                 true,
@@ -59,7 +59,7 @@ namespace TeleportVote
                     "Enable/Disable countdown timer to override vote"
                     ));
 
-            ChatCommandCanStartTimer = Config.Bind<bool>(
+            ChatCommandCanStartTimer = Config.AddSetting<bool>(
                 votesSection,
                 "ChatCommandCanStartTimer",
                 false,

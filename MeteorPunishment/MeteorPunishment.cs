@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace MeteorPunishment
 {
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class MeteorPunishment : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;

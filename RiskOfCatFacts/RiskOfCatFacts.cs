@@ -10,7 +10,7 @@ using BepInEx.Configuration;
 
 namespace RiskOfCatFacts
 {
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class RiskOfCatFacts : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -38,19 +38,19 @@ namespace RiskOfCatFacts
         {
             const string catFactSection = "CatFacts";
 
-            FactUnsubscribeCommands = Config.Bind<bool>(
+            FactUnsubscribeCommands = Config.AddSetting<bool>(
                 catFactSection,
                 "FactUnsubscribeCommands",
                 true,
                 new ConfigDescription("Disable this to stop the fake unsubscribe chat commands"));
 
-            CatFactsEnabled = Config.Bind<bool>(
+            CatFactsEnabled = Config.AddSetting<bool>(
                 "Enable/Disable Mod",
                 "ReceiveCatFacts",
                 true,
                 new ConfigDescription("Enable/Disable receiving CatFacts"));
 
-            CatFactInterval = Config.Bind<int>(
+            CatFactInterval = Config.AddSetting<int>(
                 catFactSection,
                 "CatFactInterval",
                 60,

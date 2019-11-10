@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace MotherfuckingFungus
 {
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class MotherfuckingFungus : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;

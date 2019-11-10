@@ -7,7 +7,7 @@ using DeployableOwnerInformation.Component;
 
 namespace DeployableOwnerInformation
 {
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class DeployableOwnerInformation : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -22,6 +22,8 @@ namespace DeployableOwnerInformation
             }
             
             IL.RoR2.MasterSummon.Perform += MasterSummon_Perform;
+
+            
         }
 
         private void MasterSummon_Perform(ILContext il)

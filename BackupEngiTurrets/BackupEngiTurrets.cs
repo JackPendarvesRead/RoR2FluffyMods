@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace BackupEngiTurrets
 {
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class BackupEngiTurrets : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -18,7 +18,7 @@ namespace BackupEngiTurrets
 
         public void Awake()
         {
-            TurretStockIncreasesWithBackup = Config.Bind<bool>(
+            TurretStockIncreasesWithBackup = Config.AddSetting<bool>(
                                    new ConfigDefinition("Engineer", nameof(TurretStockIncreasesWithBackup)),
                                    true,
                                    new ConfigDescription(
@@ -26,7 +26,7 @@ namespace BackupEngiTurrets
                                        )
                                    );
 
-            PrimaryIncreasesWitBackup = Config.Bind<bool>(
+            PrimaryIncreasesWitBackup = Config.AddSetting<bool>(
                                    new ConfigDefinition("Mage", nameof(PrimaryIncreasesWitBackup)),
                                    false,
                                    new ConfigDescription(

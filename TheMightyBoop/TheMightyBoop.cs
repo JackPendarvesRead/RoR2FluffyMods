@@ -13,8 +13,8 @@ using FluffyLabsConfigManagerTools.Util;
 
 namespace TheMightyBoop
 {
-    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class TheMightyBoop : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -43,21 +43,21 @@ namespace TheMightyBoop
             var buttonUtil = new ButtonUtil(this.Config);
             buttonUtil.AddButtonConfig("Presets", "Preset", "Select preset configurations with buttons", GetButtonDictionary());
 
-            ClayBruiserIsMighty = Config.Bind<bool>(
+            ClayBruiserIsMighty = Config.AddSetting<bool>(
                 new ConfigDefinition(boopModifierSection, nameof(ClayBruiserIsMighty)), 
                 false, 
                 new ConfigDescription(
                     "Set whether the boop of the Clay Templar is mighty like Rex"
                     ));
 
-            RandomDirection = Config.Bind<bool>(
+            RandomDirection = Config.AddSetting<bool>(
                 new ConfigDefinition(boopModifierSection, "RandomHorizontalForce"),
                 false,
                 new ConfigDescription(
                     "When enabled the HorizontalForce becomes a random number between the +/- value (e.g. if force = 500, when random the force becomes any number between -500 to 500)"
                     ));
 
-            AirKnockBackDistance = Config.Bind<float>(
+            AirKnockBackDistance = Config.AddSetting<float>(
                 new ConfigDefinition(fireSonicBoomSection, nameof(AirKnockBackDistance)), 
                 BoopConstants.AirKnockBackDistanceRecommended, 
                 new ConfigDescription(
@@ -67,7 +67,7 @@ namespace TheMightyBoop
                     ConfigTags.Advanced
                     ));
 
-            GroundKnockBackDistance = Config.Bind<float>(
+            GroundKnockBackDistance = Config.AddSetting<float>(
                 new ConfigDefinition(fireSonicBoomSection, nameof(GroundKnockBackDistance)),
                 BoopConstants.GroundKnockBackDistanceRecommended,
                 new ConfigDescription(
@@ -77,7 +77,7 @@ namespace TheMightyBoop
                     ConfigTags.Advanced
                     ));
 
-            IdealDistanceToPlaceTargets = Config.Bind<float>(
+            IdealDistanceToPlaceTargets = Config.AddSetting<float>(
                 new ConfigDefinition(fireSonicBoomSection, "HorizontalForce"), 
                 BoopConstants.IdealDistanceDefault, 
                 new ConfigDescription(
@@ -87,7 +87,7 @@ namespace TheMightyBoop
                     ConfigTags.Advanced
                     ));
 
-            MaxDistance = Config.Bind<float>(
+            MaxDistance = Config.AddSetting<float>(
                new ConfigDefinition(fireSonicBoomSection, "BoopRange"),
                BoopConstants.MaxDistanceRecommended,
                new ConfigDescription(
@@ -97,7 +97,7 @@ namespace TheMightyBoop
                    ConfigTags.Advanced
                    ));
 
-            LiftVelocity = Config.Bind<float>(
+            LiftVelocity = Config.AddSetting<float>(
                 new ConfigDefinition(fireSonicBoomSection, nameof(LiftVelocity)), 
                 BoopConstants.LiftVelocityRecommended, 
                 new ConfigDescription(

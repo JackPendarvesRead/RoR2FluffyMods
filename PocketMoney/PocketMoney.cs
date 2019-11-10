@@ -12,8 +12,8 @@ using FluffyLabsConfigManagerTools.Infrastructure;
 
 namespace PocketMoney
 {
-    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class TestingStuff : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -42,7 +42,7 @@ namespace PocketMoney
                 new ConfigDescription("Enable to set a latest stage you wish to receive a bonus on. E.g. set this to 4 and you will receive bonus for first 4 rounds and then none after.")
                 );
 
-            StageFlatMoney = Config.Bind<uint>(
+            StageFlatMoney = Config.AddSetting<uint>(
                 moneySection,
                 nameof(StageFlatMoney),
                 0,
@@ -51,7 +51,7 @@ namespace PocketMoney
                     )
                 );
 
-            StageWeightedMoney = Config.Bind<float>(
+            StageWeightedMoney = Config.AddSetting<float>(
                 moneySection,
                 nameof(StageWeightedMoney),
                 1.0f,

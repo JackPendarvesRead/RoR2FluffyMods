@@ -10,8 +10,8 @@ using UnityEngine;
 
 namespace MacroCommands
 {
-    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class MacroCommands : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;

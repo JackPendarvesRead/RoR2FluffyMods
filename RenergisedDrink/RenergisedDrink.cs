@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RenergisedDrink
 {
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class BulletFalloffFix : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -38,7 +38,7 @@ namespace RenergisedDrink
                     )
                 );
 
-            EnergyDrinkCoefficient = Config.Bind<float>(
+            EnergyDrinkCoefficient = Config.AddSetting<float>(
                 "Energy Drink",
                 "Coefficient",
                 0.3f,

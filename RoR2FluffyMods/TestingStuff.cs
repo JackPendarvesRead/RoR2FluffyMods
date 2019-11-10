@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace RoR2FluffyMods
 {
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class InputLogger : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -21,12 +21,20 @@ namespace RoR2FluffyMods
 
         public void Awake()
         {
-            EnableLogging = Config.Bind<bool>("Enable/Disable", "Enable logging", true, "Enable/Disable input logging");
-            LoggingLevel = Config.Bind<LogLevel>("Enable/Disable", "Enable logging", LogLevel.Info, "Enable/Disable input logging");
+            EnableLogging = Config.AddSetting<bool>("Enable/Disable", "Enable logging", true, "Enable/Disable input logging");
+            LoggingLevel = Config.AddSetting<LogLevel>("Enable/Disable", "Enable logging", LogLevel.Info, "Enable/Disable input logging");
         }
 
         public void Update()
         {
+            var ray = new Ray(new Vector3(0,0,0), new Vector3(0,0,0));
+            
+            
+            
+
+
+            RoR2.NetworkUser.readOnlyLocalPlayersList[0].GetCurrentBody();
+
             if (EnableLogging.Value)
             {
                 foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))

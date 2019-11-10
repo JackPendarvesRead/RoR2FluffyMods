@@ -10,8 +10,8 @@ using UnityEngine;
 
 namespace BulletFalloffFix
 {
-    [PluginDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class BulletFalloffFix : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -35,7 +35,7 @@ namespace BulletFalloffFix
             var buttonUtil = new ButtonUtil(this.Config);
             buttonUtil.AddButtonConfig(presetSection, "Buttons", "", GetButtonDic());
 
-            FallOffStartDistance = Config.Bind<float>(
+            FallOffStartDistance = Config.AddSetting<float>(
                 new ConfigDefinition(falloffDistanceSection, nameof(FallOffStartDistance)),
                 40f,
                 new ConfigDescription(
@@ -43,7 +43,7 @@ namespace BulletFalloffFix
                     )
                 );
 
-            FallOffEndDistance = Config.Bind<float>(
+            FallOffEndDistance = Config.AddSetting<float>(
                 new ConfigDefinition(falloffDistanceSection, nameof(FallOffEndDistance)),
                 80f,
                 new ConfigDescription(

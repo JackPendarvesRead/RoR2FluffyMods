@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace RoR2FluffyMods
 {
-    [PluginMetadata(PluginGuid, pluginName, pluginVersion)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class TestingStuff : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -16,12 +16,10 @@ namespace RoR2FluffyMods
         private const string pluginVersion = "1.0.0";
 
         private ConfigEntry<bool> EnableLogging;
-        //private ConfigEntry<LogLevel> LoggingLevel;
 
         public void Awake()
         {
             EnableLogging = Config.Bind<bool>("Enable/Disable", "Enable logging", true, "Enable/Disable input logging");
-            //LoggingLevel = Config.Bind<Enum>("Enable/Disable", "Enable logging", LogLevel.Info, "Enable/Disable input logging");
         }
 
         public void Update()
@@ -33,12 +31,10 @@ namespace RoR2FluffyMods
                     if (Input.GetKeyDown(key))
                     {
                         Logger.LogInfo($"InputLogger: {key.ToString()} down");
-                        //Logger.Log(LoggingLevel.Value, $"InputLogger: {key.ToString()} down");
                     }
                     if (Input.GetKeyUp(key))
                     {
                         Logger.LogInfo($"InputLogger: {key.ToString()} up");
-                        //Logger.Log(LoggingLevel.Value, $"InputLogger: {key.ToString()} up");
                     }
                 }
             }
