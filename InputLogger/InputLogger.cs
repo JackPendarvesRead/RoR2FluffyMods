@@ -54,7 +54,7 @@ namespace RoR2FluffyMods
                 );
 
             kbs = Config.Bind<KeyboardShortcut>(
-                "KBS", 
+                "Keyboard Shortcut", 
                 "KBS To Test", 
                 new KeyboardShortcut(KeyCode.None), 
                 new ConfigDescription(
