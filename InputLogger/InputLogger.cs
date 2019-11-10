@@ -9,17 +9,25 @@ using UnityEngine;
 namespace RoR2FluffyMods
 {
     [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
-    public class TestingStuff : BaseUnityPlugin
+    public class InputLogger : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "InputLogger";
         private const string pluginVersion = "1.0.0";
 
         private ConfigEntry<bool> EnableLogging;
+        private ConfigEntry<bool> LogKeyUp;
+        private ConfigEntry<bool> LogKeyDown;
+        private ConfigEntry<KeyboardShortcut> kbs;
 
         public void Awake()
         {
+            const string logSection = "Logging";
+
             EnableLogging = Config.Bind<bool>("Enable/Disable", "Enable logging", true, "Enable/Disable input logging");
+            LogKeyUp = Config.Bind<bool>(logSection, "Log Key Up", true, "Enable/Disable logging on key up");
+            LogKeyDown = Config.Bind<bool>(logSection, "Log Key Down", true, "Enable/Disable logging on key down");
+            kbs = Config.Bind<KeyboardShortcut>("KBS", "KBS To Test", new KeyboardShortcut(KeyCode.None), new ConfigDescription("If you want to test a keyboard shortcut is being triggered input the shortcut here and it will be logged when triggered"));
         }
 
         public void Update()
@@ -28,13 +36,20 @@ namespace RoR2FluffyMods
             {
                 foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
                 {
-                    if (Input.GetKeyDown(key))
+                    if (LogKeyDown.Value && Input.GetKeyDown(key))
                     {
                         Logger.LogInfo($"InputLogger: {key.ToString()} down");
                     }
-                    if (Input.GetKeyUp(key))
+                    if (LogKeyUp.Value && Input.GetKeyUp(key))
                     {
                         Logger.LogInfo($"InputLogger: {key.ToString()} up");
+                    }
+                }
+                if (kbs.Value.MainKey != KeyCode.None)
+                {
+                    if (kbs.Value.IsUp())
+                    {
+                        Logger.LogInfo("Test shortcut was triggered");
                     }
                 }
             }
