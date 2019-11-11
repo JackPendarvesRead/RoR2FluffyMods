@@ -101,6 +101,7 @@
     <ProjectReference Include="..\DeployableToOwnerLink\DeployableOwnerInformation.csproj">
       <Project>{3b9028ad-ef1b-4a85-a8a5-a3888716ec3a}</Project>
       <Name>DeployableOwnerInformation</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
