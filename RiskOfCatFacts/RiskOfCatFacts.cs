@@ -38,19 +38,19 @@ namespace RiskOfCatFacts
         {
             const string catFactSection = "CatFacts";
 
-            FactUnsubscribeCommands = Config.AddSetting<bool>(
+            FactUnsubscribeCommands = Config.Bind<bool>(
                 catFactSection,
                 "FactUnsubscribeCommands",
                 true,
                 new ConfigDescription("Disable this to stop the fake unsubscribe chat commands"));
 
-            CatFactsEnabled = Config.AddSetting<bool>(
+            CatFactsEnabled = Config.Bind<bool>(
                 "Enable/Disable Mod",
                 "ReceiveCatFacts",
                 true,
                 new ConfigDescription("Enable/Disable receiving CatFacts"));
 
-            CatFactInterval = Config.AddSetting<int>(
+            CatFactInterval = Config.Bind<int>(
                 catFactSection,
                 "CatFactInterval",
                 60,

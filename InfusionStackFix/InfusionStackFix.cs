@@ -54,7 +54,7 @@ namespace InfusionStackFix
                     )
                 );
 
-            TurretReceivesBonusFromEngineer = Config.AddSetting<bool>(
+            TurretReceivesBonusFromEngineer = Config.Bind<bool>(
                 engineerSectionName,
                 nameof(TurretReceivesBonusFromEngineer),
                 true,
@@ -63,7 +63,7 @@ namespace InfusionStackFix
                     )
                 );
 
-            TurretGivesEngineerLifeOrbs = Config.AddSetting<bool>(
+            TurretGivesEngineerLifeOrbs = Config.Bind<bool>(
                 engineerSectionName,
                 nameof(TurretGivesEngineerLifeOrbs),
                 true,

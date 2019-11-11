@@ -38,7 +38,7 @@ namespace RenergisedDrink
                     )
                 );
 
-            EnergyDrinkCoefficient = Config.AddSetting<float>(
+            EnergyDrinkCoefficient = Config.Bind<float>(
                 "Energy Drink",
                 "Coefficient",
                 0.3f,

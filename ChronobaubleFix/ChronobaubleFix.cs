@@ -32,7 +32,7 @@ namespace ChronobaubleFix
             #region ConfigSetup
             const string chronobaubleSection = "Chronobauble";
 
-            SlowScalingCoefficient = Config.AddSetting<float>(
+            SlowScalingCoefficient = Config.Bind<float>(
                 new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
                 0.05f,
                 new ConfigDescription(
@@ -40,7 +40,7 @@ namespace ChronobaubleFix
                     new AcceptableValueRange<float>(0.00f, 0.20f)
                     ));
 
-            DebuffStacksPerItemStack = Config.AddSetting<int>(
+            DebuffStacksPerItemStack = Config.Bind<int>(
                 new ConfigDefinition(chronobaubleSection, nameof(DebuffStacksPerItemStack)),
                 3,
                 new ConfigDescription(
@@ -49,27 +49,13 @@ namespace ChronobaubleFix
                     ));
             #endregion
 
-            On.RoR2.Run.BeginStage += Run_BeginStage;
-            RoR2.Run.onRunStartGlobal += (run) =>
-            {
-                if (RoR2.NetworkUser.readOnlyInstancesList.Count == 1)
-                {
-                    On.RoR2.CharacterBody.AddBuff += CharacterBody_AddBuff;
-                    IL.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
-                    IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
-                    hooksEnabled = true;
-                    Debug.Log("Subscribing to hooks");
-                }
-                else
-                {
-                    Debug.Log("Not subscribing to hooks");
-                }
-            };           
+            RoR2.SceneDirector.onPostPopulateSceneServer += SceneDirector_onPostPopulateSceneServer;          
         }
 
-        private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
+        private bool hooksEnabled = false;
+
+        private void SceneDirector_onPostPopulateSceneServer(SceneDirector obj)
         {
-            orig(self);
             if (hooksEnabled && RoR2.NetworkUser.readOnlyInstancesList.Count > 1)
             {
                 On.RoR2.CharacterBody.AddBuff -= CharacterBody_AddBuff;
@@ -78,9 +64,16 @@ namespace ChronobaubleFix
                 hooksEnabled = false;
                 Debug.Log("Unsubscibing hooks");
             }
+            else
+            {
+                On.RoR2.CharacterBody.AddBuff += CharacterBody_AddBuff;
+                IL.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
+                IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
+                hooksEnabled = true;
+                Debug.Log("Subscribing to hooks");
+            }
         }
 
-        private bool hooksEnabled = false;
         
         private void CharacterBody_AddBuff(On.RoR2.CharacterBody.orig_AddBuff orig, CharacterBody self, BuffIndex buffType)
         {

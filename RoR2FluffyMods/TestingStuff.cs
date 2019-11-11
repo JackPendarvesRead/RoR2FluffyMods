@@ -21,8 +21,8 @@ namespace RoR2FluffyMods
 
         public void Awake()
         {
-            EnableLogging = Config.AddSetting<bool>("Enable/Disable", "Enable logging", true, "Enable/Disable input logging");
-            LoggingLevel = Config.AddSetting<LogLevel>("Enable/Disable", "Enable logging", LogLevel.Info, "Enable/Disable input logging");
+            EnableLogging = Config.Bind<bool>("Enable/Disable", "Enable logging", true, "Enable/Disable input logging");
+            LoggingLevel = Config.Bind<LogLevel>("Enable/Disable", "Enable logging", LogLevel.Info, "Enable/Disable input logging");
         }
 
         public void Update()

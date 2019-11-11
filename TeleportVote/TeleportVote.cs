@@ -43,7 +43,7 @@ namespace TeleportVote
             #region ConfigSetup
             const string votesSection = "Votes";
 
-            VotesEnabled = Config.AddSetting<bool>(
+            VotesEnabled = Config.Bind<bool>(
                 votesSection,
                 "Enable Votes",
                 true,
@@ -51,7 +51,7 @@ namespace TeleportVote
                     "Disable this to bypass voting (i.e. interact with teleporter etc as normal)"
                     ));
 
-            EnableTimerCountdown = Config.AddSetting<bool>(
+            EnableTimerCountdown = Config.Bind<bool>(
                 votesSection,
                 "Enable Timer Countdown",
                 true,
@@ -59,7 +59,7 @@ namespace TeleportVote
                     "Enable/Disable countdown timer to override vote"
                     ));
 
-            ChatCommandCanStartTimer = Config.AddSetting<bool>(
+            ChatCommandCanStartTimer = Config.Bind<bool>(
                 votesSection,
                 "ChatCommandCanStartTimer",
                 false,
