@@ -202,14 +202,9 @@ namespace RiskOfVampirism
 
         private IEnumerable<ConfigEntry<float>> GetSurvivorConfigEntries()
         {
-            var survivors = RoR2.SurvivorCatalog.allSurvivorDefs;
+            var survivors = RoR2.SurvivorCatalog.allSurvivorDefs.Where(x => !string.IsNullOrWhiteSpace(x.name));
             foreach (var survivor in survivors)
             {
-                if (string.IsNullOrWhiteSpace(survivor.name))
-                {
-                    continue;
-                }
-
                 yield return Config.Bind<float>(
                     "SurvivorSpecificConfig",
                     survivor.name,
