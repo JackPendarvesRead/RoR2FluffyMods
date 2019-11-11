@@ -17,6 +17,12 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v2.0.0
+- Bepinex 5 update
+- Removed R2API dependency
+- Updated to use PickupCatalog
+- Reorganised hooks
+
 v1.0.2
 - Updated R2API dependency string
 

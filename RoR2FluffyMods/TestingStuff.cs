@@ -1,57 +1,54 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Logging;
 using RoR2;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace RoR2FluffyMods
 {
-    [BepInPlugin("com.TEST.TEST", "TEST", "0.0.0")]
-    public class TestingStuff : BaseUnityPlugin
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
+    public class InputLogger : BaseUnityPlugin
     {
-        System.Random rng;
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "InputLogger";
+        private const string pluginVersion = "1.0.0";
+
+        private ConfigEntry<bool> EnableLogging;
+        private ConfigEntry<LogLevel> LoggingLevel;
 
         public void Awake()
         {
-            On.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
-            rng = new System.Random();
+            EnableLogging = Config.Bind<bool>("Enable/Disable", "Enable logging", true, "Enable/Disable input logging");
+            LoggingLevel = Config.Bind<LogLevel>("Enable/Disable", "Enable logging", LogLevel.Info, "Enable/Disable input logging");
         }
 
-        private void GlobalEventManager_OnHitEnemy(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, 
-            GlobalEventManager self, 
-            DamageInfo damageInfo, 
-            GameObject victim)
+        public void Update()
         {
-            var body = victim.GetComponent<CharacterBody>();
-            if (body.isPlayerControlled)
+            var ray = new Ray(new Vector3(0,0,0), new Vector3(0,0,0));
+            
+            
+            
+
+
+            RoR2.NetworkUser.readOnlyLocalPlayersList[0].GetCurrentBody();
+
+            if (EnableLogging.Value)
             {
-                var itemsInInventory = GetAllItems(body.inventory).ToList();
-                if(itemsInInventory.Count > 0)
+                foreach (KeyCode key in Enum.GetValues(typeof(KeyCode)))
                 {
-                    var selectedIndex = rng.Next(itemsInInventory.Count);
-                    var itemToRemove = itemsInInventory[selectedIndex];
-                    body.inventory.RemoveItem(itemToRemove);
-                }
-            }
-            orig(self, damageInfo, victim);
-        }
-
-        private IEnumerable<ItemIndex> GetAllItems(Inventory inventory)
-        {
-            var items = RoR2.ItemCatalog.allItems
-                .Where(i => RoR2.ItemCatalog.GetItemDef(i).tier != ItemTier.NoTier);
-
-            foreach (var item in items)
-            {                
-                var n = inventory.GetItemCount(item);
-                if(n > 0)
-                {
-                    for(var i = 0; i < n; i++)
+                    if (Input.GetKeyDown(key))
                     {
-                        yield return item;
+                        Logger.Log(LoggingLevel.Value, $"InputLogger: {key.ToString()} down");
+                    }
+                    if (Input.GetKeyUp(key))
+                    {
+                        Logger.Log(LoggingLevel.Value, $"InputLogger: {key.ToString()} up");
                     }
                 }
-            }
-        }
+            }            
+        }        
     }
 }

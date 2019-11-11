@@ -10,9 +10,13 @@ using BepInEx.Configuration;
 
 namespace RiskOfCatFacts
 {
-    [BepInPlugin("com.FluffyMods.RiskOfCatFacts", "RiskOfCatFacts", "2.0.0")]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class RiskOfCatFacts : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "RiskOfCatFacts";
+        private const string pluginVersion = "3.0.0";
+
         private ConfigEntry<bool> CatFactsEnabled;
         private ConfigEntry<bool> FactUnsubscribeCommands;
         private ConfigEntry<int> CatFactInterval;
@@ -34,19 +38,19 @@ namespace RiskOfCatFacts
         {
             const string catFactSection = "CatFacts";
 
-            FactUnsubscribeCommands = Config.AddSetting<bool>(
+            FactUnsubscribeCommands = Config.Bind<bool>(
                 catFactSection,
                 "FactUnsubscribeCommands",
                 true,
                 new ConfigDescription("Disable this to stop the fake unsubscribe chat commands"));
 
-            CatFactsEnabled = Config.AddSetting<bool>(
-                catFactSection,
+            CatFactsEnabled = Config.Bind<bool>(
+                "Enable/Disable Mod",
                 "ReceiveCatFacts",
                 true,
                 new ConfigDescription("Enable/Disable receiving CatFacts"));
 
-            CatFactInterval = Config.AddSetting<int>(
+            CatFactInterval = Config.Bind<int>(
                 catFactSection,
                 "CatFactInterval",
                 60,
@@ -57,7 +61,7 @@ namespace RiskOfCatFacts
 
             Chat.onChatChanged += Chat_onChatChanged;
             RoR2.Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
-            RoR2.GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
+            RoR2.GlobalEventManager.onCharacterDeathGlobal += SendCatFactOnChampionKill;
             RoR2.SceneDirector.onPostPopulateSceneServer += SceneDirector_onPostPopulateSceneServer;
         }        
 
@@ -105,7 +109,7 @@ namespace RiskOfCatFacts
             StopCatFacts();
         }
 
-        private void GlobalEventManager_onCharacterDeathGlobal(DamageReport obj)
+        private void SendCatFactOnChampionKill(DamageReport obj)
         {
             if (CatFactsEnabled.Value
                 && obj.victim.body.isChampion)
@@ -139,8 +143,10 @@ namespace RiskOfCatFacts
         private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
         private void Chat_onChatChanged()
         {
+
             if (!CatFactsEnabled.Value
-                || !FactUnsubscribeCommands.Value)
+                || !FactUnsubscribeCommands.Value
+                || !Chat.readOnlyLog.Any())
             {
                 return;
             }

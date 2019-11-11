@@ -34,5 +34,8 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v2.0.0
+- Bepinex5 official release
+
 v1.0.0 
 - Release

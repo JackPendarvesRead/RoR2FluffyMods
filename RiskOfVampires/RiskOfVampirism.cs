@@ -14,10 +14,14 @@ using DeployableOwnerInformation.Extension;
 
 namespace RiskOfVampirism
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.RiskOfVampirism", "RiskOfVampirism", "2.0.0")]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class RiskOfVampirism : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "RiskOfVampirism";
+        private const string pluginVersion = "2.1.0";
+
         private ConfigEntry<float> Leech;
         private ConfigEntry<int> DecayTime;
         private ConfigEntry<int> DegenerationThreshold;
@@ -37,7 +41,7 @@ namespace RiskOfVampirism
             const string statsSection = "Stats";
             const string vampireSection = "RiskOfVampirsm";
 
-            Leech = Config.AddSetting<float>(
+            Leech = Config.Bind<float>(
                 statsSection,
                 "%LifeLeech",
                 0.08f,
@@ -45,31 +49,31 @@ namespace RiskOfVampirism
                     "The amount leech given to vampires (% damage)",
                     new AcceptableValueRange<float>(0, 1)));
 
-            DecayTime = Config.AddSetting<int>(
+            DecayTime = Config.Bind<int>(
                 statsSection,
                 "HealthDecayTime",
                 45,
                 "The time(s) for player to degenerate health to zero");
 
-            DegenerationThreshold = Config.AddSetting<int>(
+            DegenerationThreshold = Config.Bind<int>(
                 statsSection,
                 "DegenerationThreshold",
                 1,
                 "You will not degenerate below this threshold number");
 
-            GainsMaximumHealth = Config.AddSetting<bool>(
+            GainsMaximumHealth = Config.Bind<bool>(
                vampireSection,
                "GainMaximumHealth",
                true,
                "Enable to gain +1 base max health for each kill you make");
 
-            IsVampire = Config.AddSetting<bool>(
-               vampireSection,
+            IsVampire = Config.Bind<bool>(
+               "Enable/Disable Mod",
                "IsAVampire",
                true,
                "Set to true to be a vampire (Enable/Disable the mod)");
 
-            TurretsTransferLifeToOwner = Config.AddSetting<bool>(
+            TurretsTransferLifeToOwner = Config.Bind<bool>(
              vampireSection,
              "TurretsTransferLifeToOwner",
              true,
@@ -206,7 +210,7 @@ namespace RiskOfVampirism
                     continue;
                 }
 
-                yield return Config.AddSetting<float>(
+                yield return Config.Bind<float>(
                     "SurvivorSpecificConfig",
                     survivor.name,
                     1.0f,

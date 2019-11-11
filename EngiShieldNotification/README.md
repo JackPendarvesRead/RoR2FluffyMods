@@ -27,10 +27,12 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v3.0.0
+- Complete logic rework. Now runs much more efficiently.
+
 v2.0.0
 - Update for Bepinex5
 - Removed now obsolete console commands
-- Complete rework of timer. Now uses DeltaTime.
 
 v1.1.1
 - Changed maximum volume to be 4

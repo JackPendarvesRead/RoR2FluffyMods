@@ -14,10 +14,14 @@ using FluffyLabsConfigManagerTools.Util;
 
 namespace TeleportVote
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.TeleportVote", "TeleportVote", "2.0.0")]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class TeleportVote : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "TeleportVote";
+        private const string pluginVersion = "3.0.0";
+
         private VoteRegistrationController VoteController { get; set; }
         private TimerController TimerController { get; set; }
 
@@ -39,7 +43,7 @@ namespace TeleportVote
             #region ConfigSetup
             const string votesSection = "Votes";
 
-            VotesEnabled = Config.AddSetting<bool>(
+            VotesEnabled = Config.Bind<bool>(
                 votesSection,
                 "Enable Votes",
                 true,
@@ -47,7 +51,7 @@ namespace TeleportVote
                     "Disable this to bypass voting (i.e. interact with teleporter etc as normal)"
                     ));
 
-            EnableTimerCountdown = Config.AddSetting<bool>(
+            EnableTimerCountdown = Config.Bind<bool>(
                 votesSection,
                 "Enable Timer Countdown",
                 true,
@@ -55,7 +59,7 @@ namespace TeleportVote
                     "Enable/Disable countdown timer to override vote"
                     ));
 
-            ChatCommandCanStartTimer = Config.AddSetting<bool>(
+            ChatCommandCanStartTimer = Config.Bind<bool>(
                 votesSection,
                 "ChatCommandCanStartTimer",
                 false,
@@ -218,58 +222,54 @@ namespace TeleportVote
         private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
         private void Chat_onChatChanged()
         {
-            try
+            if (!RoR2.Chat.readOnlyLog.Any())
             {
-                if(VotesEnabled.Value
-                    && VoteController.PlayersCanVote)
+                return;
+            }
+            if(VotesEnabled.Value
+                && VoteController.PlayersCanVote)
+            {
+                var chatLog = Chat.readOnlyLog;
+                var match = ParseChatLog.Match(chatLog.Last());
+                var playerName = match.Groups["name"].Value.Trim();
+                var message = match.Groups["message"].Value.Trim();
+                //Debug.Log($"Chatlog={chatLog.Last()}, RMName={playerName}, RMMessage={message}");
+                if (!string.IsNullOrWhiteSpace(playerName))
                 {
-                    var chatLog = Chat.readOnlyLog;
-                    var match = ParseChatLog.Match(chatLog.Last());
-                    var playerName = match.Groups["name"].Value.Trim();
-                    var message = match.Groups["message"].Value.Trim();
-                    //Debug.Log($"Chatlog={chatLog.Last()}, RMName={playerName}, RMMessage={message}");
-                    if (!string.IsNullOrWhiteSpace(playerName))
+                    switch (message.ToLower())
                     {
-                        switch (message.ToLower())
-                        {
-                            case "ready":
-                            case "rdy":
-                            case "r":
-                            case "y":
-                            case "go":
-                                var netUser = RoR2.NetworkUser.readOnlyInstancesList
-                                    .Where(x => x.userName.Trim() == playerName)
-                                    .FirstOrDefault();
-                                if (netUser.GetCurrentBody().healthComponent.alive)
+                        case "ready":
+                        case "rdy":
+                        case "r":
+                        case "y":
+                        case "go":
+                            var netUser = RoR2.NetworkUser.readOnlyInstancesList
+                                .Where(x => x.userName.Trim() == playerName)
+                                .FirstOrDefault();
+                            if (netUser.GetCurrentBody().healthComponent.alive)
+                            {
+                                VoteController.RegisterPlayer(netUser);
+                                if (EnableTimerCountdown.Value
+                                    && ChatCommandCanStartTimer.Value)
                                 {
-                                    VoteController.RegisterPlayer(netUser);
-                                    if (EnableTimerCountdown.Value
-                                        && ChatCommandCanStartTimer.Value)
-                                    {
-                                        TimerController.Start();
-                                    }
+                                    TimerController.Start();
                                 }
-                                break;
+                            }
+                            break;
 
-                            case "force":
-                                var hostName = RoR2.NetworkUser.readOnlyInstancesList
-                                    .Where(nu => nu.isServer)
-                                    .Select(nu => nu.userName)
-                                    .First().Trim();
-                                if(playerName == hostName)
-                                {
-                                    VoteController.HostOverride();
-                                    TimerController.Stop();
-                                }
-                                break;
-                        }
+                        case "force":
+                            var hostName = RoR2.NetworkUser.readOnlyInstancesList
+                                .Where(nu => nu.isServer)
+                                .Select(nu => nu.userName)
+                                .First().Trim();
+                            if(playerName == hostName)
+                            {
+                                VoteController.HostOverride();
+                                TimerController.Stop();
+                            }
+                            break;
                     }
                 }
-                
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
             }
         }
         #endregion

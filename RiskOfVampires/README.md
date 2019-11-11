@@ -37,6 +37,10 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v2.1.0
+- Official Bepinex5 release
+- Added extra configuration options
+
 v2.0.0
 - Remove R2API dependency
 - Refactor code

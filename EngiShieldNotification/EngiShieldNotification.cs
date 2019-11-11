@@ -8,9 +8,15 @@ using UnityEngine;
 
 namespace EngiShieldNotification
 {
-    [BepInPlugin("com.FluffyMods.EngiShieldNotification", "EngiShieldNotification", "2.0.0")]
+    //TODO: Test in multiplayer with multiple engi shields
+
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class EngiShieldNotification : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "EngiShieldNotification";
+        private const string pluginVersion = "3.0.0";
+
         internal static ConfigEntry<int> NoticeTime { get; set; }
         internal static ConfigEntry<int> Volume { get; set; }
         public static float ShieldTime => EntityStates.Engi.EngiBubbleShield.Deployed.lifetime - NoticeTime.Value - 1;
@@ -26,7 +32,7 @@ namespace EngiShieldNotification
 
             const string sectionName = "BubbleShieldNotificationVolume";
 
-            Volume = Config.AddSetting<int>(
+            Volume = Config.Bind<int>(
                 new ConfigDefinition(sectionName, nameof(Volume)),
                 3,
                 new ConfigDescription(
@@ -34,7 +40,7 @@ namespace EngiShieldNotification
                     new AcceptableValueRange<int>(0, 4)
                     ));
 
-            NoticeTime = Config.AddSetting<int>(
+            NoticeTime = Config.Bind<int>(
                 new ConfigDefinition(sectionName, nameof(NoticeTime)),
                 3,
                 new ConfigDescription(

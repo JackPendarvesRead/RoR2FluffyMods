@@ -35,14 +35,18 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v2.1.0
+- Bepinex5 official release
+- Added force randomiser bool
+- Fixed sneaky hopoo change
+- Tractor beam!
+
 v2.0.0
 - Updated for Bepinex5
 - Removed obsolete commands
 - Removed R2API dependency
 - Added ConfigurationManager presets
 - Renamed variables for more readable code
-- Added force randomiser bool
-- Fixed sneaky hopoo change
 
 v1.1.1
 - Updated R2API dependency string

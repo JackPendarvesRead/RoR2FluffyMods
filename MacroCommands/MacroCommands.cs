@@ -10,10 +10,14 @@ using UnityEngine;
 
 namespace MacroCommands
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.MacroCommands", "MacroCommands", "1.0.0")]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class MacroCommands : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "MacroCommands";
+        private const string pluginVersion = "2.0.0";
+
         private List<MacroConfigEntry> Macros;
         
         public void Start()
@@ -56,6 +60,7 @@ namespace MacroCommands
             {
                 if (macro.KeyboardShortcut.IsUp())
                 {
+                    Logger.LogInfo($"Macro triggered! - KBS = {macro.KeyboardShortcut.ToString()}");
                     new MacroController().ExecuteMacro(macro);
                 }
             }

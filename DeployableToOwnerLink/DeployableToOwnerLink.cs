@@ -1,22 +1,19 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
 using MonoMod.Cil;
 using RoR2;
-using UnityEngine;
-using Mono.Cecil;
 using Mono.Cecil.Cil;
-using System.Linq;
-using System.Reflection;
 using System;
-using System.Collections.Generic;
 using DeployableOwnerInformation.Component;
 
 namespace DeployableOwnerInformation
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.DeployableToOwnerLink", "DeployableToOwnerLink", "1.0.0")]
-    public class RiskOfVampirism : BaseUnityPlugin
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
+    public class DeployableOwnerInformation : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "DeployableOwnerInformation";
+        private const string pluginVersion = "1.0.2";
+
         public void Start()
         {
             if (!RoR2Application.isModded)
@@ -25,6 +22,8 @@ namespace DeployableOwnerInformation
             }
             
             IL.RoR2.MasterSummon.Perform += MasterSummon_Perform;
+
+            
         }
 
         private void MasterSummon_Perform(ILContext il)

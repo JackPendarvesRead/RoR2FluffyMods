@@ -55,5 +55,12 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v1.0.2
+- Updated for Bep5
+- Tidy code
+
+v1.0.1
+- Removed dependency error
+
 v1.0.0 
 - Released

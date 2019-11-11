@@ -8,14 +8,18 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using RoR2;
 using System;
-using UnityEngine;
 
 namespace InfusionStackFix
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "2.0.0")]
+    [BepInDependency(DeployableOwnerInformation.DeployableOwnerInformation.PluginGuid)]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class InfusionStackFix : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "InfusionStackFix";
+        private const string pluginVersion = "3.0.3";
+
         private ConditionalConfigEntry<int> MaximumHealthPerInfusion;
         private ConditionalConfigEntry<int> MaxHealthGainPerKill;
         private ConfigEntry<bool> TurretReceivesBonusFromEngineer;
@@ -50,7 +54,7 @@ namespace InfusionStackFix
                     )
                 );
 
-            TurretReceivesBonusFromEngineer = Config.AddSetting<bool>(
+            TurretReceivesBonusFromEngineer = Config.Bind<bool>(
                 engineerSectionName,
                 nameof(TurretReceivesBonusFromEngineer),
                 true,
@@ -59,7 +63,7 @@ namespace InfusionStackFix
                     )
                 );
 
-            TurretGivesEngineerLifeOrbs = Config.AddSetting<bool>(
+            TurretGivesEngineerLifeOrbs = Config.Bind<bool>(
                 engineerSectionName,
                 nameof(TurretGivesEngineerLifeOrbs),
                 true,
@@ -127,7 +131,7 @@ namespace InfusionStackFix
                 }
                 else
                 {
-                    return int.MaxValue;
+                    return 999999;
                 }
             });
 

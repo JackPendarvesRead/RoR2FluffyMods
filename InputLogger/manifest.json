@@ -1,0 +1,9 @@
+{
+  "name": "InputLogger",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/",
+  "description": "Simple key logging plugin for help in debugging",
+  "dependencies": [
+    "bbepis-BepInExPack-2.0.0"
+  ]
+}
