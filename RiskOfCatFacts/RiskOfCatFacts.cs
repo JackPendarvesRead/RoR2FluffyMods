@@ -61,7 +61,7 @@ namespace RiskOfCatFacts
 
             Chat.onChatChanged += Chat_onChatChanged;
             RoR2.Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
-            RoR2.GlobalEventManager.onCharacterDeathGlobal += GlobalEventManager_onCharacterDeathGlobal;
+            RoR2.GlobalEventManager.onCharacterDeathGlobal += SendCatFactOnChampionKill;
             RoR2.SceneDirector.onPostPopulateSceneServer += SceneDirector_onPostPopulateSceneServer;
         }        
 
@@ -109,7 +109,7 @@ namespace RiskOfCatFacts
             StopCatFacts();
         }
 
-        private void GlobalEventManager_onCharacterDeathGlobal(DamageReport obj)
+        private void SendCatFactOnChampionKill(DamageReport obj)
         {
             if (CatFactsEnabled.Value
                 && obj.victim.body.isChampion)
@@ -143,8 +143,10 @@ namespace RiskOfCatFacts
         private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
         private void Chat_onChatChanged()
         {
+
             if (!CatFactsEnabled.Value
-                || !FactUnsubscribeCommands.Value)
+                || !FactUnsubscribeCommands.Value
+                || !Chat.readOnlyLog.Any())
             {
                 return;
             }
