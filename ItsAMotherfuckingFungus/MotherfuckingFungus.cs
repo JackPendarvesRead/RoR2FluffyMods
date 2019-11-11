@@ -15,44 +15,50 @@ namespace MotherfuckingFungus
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "MotherfuckingFungus";
-        private const string pluginVersion = "1.0.2";
+        private const string pluginVersion = "2.0.0";
 
-        private static bool IsEngineerInGame = false;
+        private static bool EngineerInGame = false;
 
         public void Awake()
-        {            
-            //TODO fix this hook
-            On.RoR2.Stage.Start += Stage_Start;
-            On.RoR2.PickupDropletController.CreatePickupDroplet += PickupDropletController_CreatePickupDroplet;
-            On.RoR2.GenericPickupController.SendPickupMessage += GenericPickupController_SendPickupMessage;
+        {
+            RoR2.SceneDirector.onPostPopulateSceneServer += SceneDirector_onPostPopulateSceneServer;
+
+            On.RoR2.PickupDropletController.CreatePickupDroplet += SendMessageOnFungusDrop;
+            On.RoR2.GenericPickupController.SendPickupMessage += SendMessageOnFungusPickup;
         }
 
-        private void Stage_Start(On.RoR2.Stage.orig_Start orig, Stage self)
-        {            
-            orig(self); 
-            if(NetworkUser.readOnlyInstancesList
-                .Where(u=> u.GetCurrentBody().name.StartsWith(CharBodyStrings.Engineer))
-                .FirstOrDefault()
-                != null)
+        private void SceneDirector_onPostPopulateSceneServer(SceneDirector obj)
+        {
+            if (RoR2.Run.instance
+                && NetworkUser.readOnlyInstancesList
+               .Where(u => u.GetCurrentBody().name.StartsWith(CharBodyStrings.Engineer))
+               .FirstOrDefault()
+               != null)
             {
-                IsEngineerInGame = true;
+                EngineerInGame = true;
                 Message.SendToAll("Give yo' motherfucking fungus to the motherfucking Engineer motherfuckers", Colours.LightBlue);
+            }
+            else
+            {
+                EngineerInGame = false;
+                Logger.LogInfo("No Engineer in party.");
             }
         }
 
-        private void PickupDropletController_CreatePickupDroplet(On.RoR2.PickupDropletController.orig_CreatePickupDroplet orig, PickupIndex pickupIndex, Vector3 position, Vector3 velocity)
+        private void SendMessageOnFungusDrop(On.RoR2.PickupDropletController.orig_CreatePickupDroplet orig, PickupIndex pickupIndex, Vector3 position, Vector3 velocity)
         {
-            // TODO change pickup indexs to catalogs
-            if (IsEngineerInGame && pickupIndex.itemIndex == ItemIndex.Mushroom)
+            if (EngineerInGame 
+                && RoR2.PickupCatalog.GetPickupDef(pickupIndex).itemIndex == ItemIndex.Mushroom)
             {
                 Message.SendToAll($"It's a motherfucking fungus!!", Colours.Green);
             }
             orig(pickupIndex, position, velocity);
         }
 
-        private void GenericPickupController_SendPickupMessage(On.RoR2.GenericPickupController.orig_SendPickupMessage orig, CharacterMaster master, PickupIndex pickupIndex)
+        private void SendMessageOnFungusPickup(On.RoR2.GenericPickupController.orig_SendPickupMessage orig, CharacterMaster master, PickupIndex pickupIndex)
         {
-            if (IsEngineerInGame && pickupIndex.itemIndex == ItemIndex.Mushroom)
+            if (EngineerInGame 
+                && RoR2.PickupCatalog.GetPickupDef(pickupIndex).itemIndex == ItemIndex.Mushroom)
             {
                 if (master.GetBody().name.StartsWith(CharBodyStrings.Engineer))
                 {

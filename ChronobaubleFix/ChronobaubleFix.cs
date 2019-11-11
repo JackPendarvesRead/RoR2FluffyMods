@@ -17,7 +17,7 @@ namespace ChronobaubleFix
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "ChronobaubleFix";
-        private const string pluginVersion = "2.0.0";
+        private const string pluginVersion = "3.0.0";
 
         private static ConfigEntry<float> SlowScalingCoefficient;
         private static ConfigEntry<int> DebuffStacksPerItemStack;
@@ -29,7 +29,6 @@ namespace ChronobaubleFix
                 RoR2Application.isModded = true;
             }
 
-            #region ConfigSetup
             const string chronobaubleSection = "Chronobauble";
 
             SlowScalingCoefficient = Config.Bind<float>(
@@ -47,35 +46,36 @@ namespace ChronobaubleFix
                     "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
                     new AcceptableValueRange<int>(0, 20)
                     ));
-            #endregion
 
             RoR2.SceneDirector.onPostPopulateSceneServer += SceneDirector_onPostPopulateSceneServer;          
         }
 
         private bool hooksEnabled = false;
-
         private void SceneDirector_onPostPopulateSceneServer(SceneDirector obj)
         {
-            if (hooksEnabled && RoR2.NetworkUser.readOnlyInstancesList.Count > 1)
+            if (RoR2.Run.instance)
             {
-                On.RoR2.CharacterBody.AddBuff -= CharacterBody_AddBuff;
-                IL.RoR2.GlobalEventManager.OnHitEnemy -= GlobalEventManager_OnHitEnemy;
-                IL.RoR2.CharacterBody.RecalculateStats -= CharacterBody_RecalculateStats;
-                hooksEnabled = false;
-                Debug.Log("Unsubscibing hooks");
-            }
-            else
-            {
-                On.RoR2.CharacterBody.AddBuff += CharacterBody_AddBuff;
-                IL.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
-                IL.RoR2.CharacterBody.RecalculateStats += CharacterBody_RecalculateStats;
-                hooksEnabled = true;
-                Debug.Log("Subscribing to hooks");
-            }
+                if (hooksEnabled 
+                    && RoR2.NetworkUser.readOnlyInstancesList.Count > 1)
+                {
+                    On.RoR2.CharacterBody.AddBuff -= SetBuffCanStack;
+                    IL.RoR2.GlobalEventManager.OnHitEnemy -= AddSlow60OnHit;
+                    IL.RoR2.CharacterBody.RecalculateStats -= SetMovementAndAttackSpeed;
+                    hooksEnabled = false;
+                    Debug.Log("Unsubscibing hooks. Currently this mod will only work for single player games.");
+                }
+                else
+                {
+                    On.RoR2.CharacterBody.AddBuff += SetBuffCanStack;
+                    IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
+                    IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
+                    hooksEnabled = true;
+                    Debug.Log("Subscribing to hooks");
+                }
+            }           
         }
-
         
-        private void CharacterBody_AddBuff(On.RoR2.CharacterBody.orig_AddBuff orig, CharacterBody self, BuffIndex buffType)
+        private void SetBuffCanStack(On.RoR2.CharacterBody.orig_AddBuff orig, CharacterBody self, BuffIndex buffType)
         {
             if (buffType == BuffIndex.Slow60)
             {
@@ -84,7 +84,7 @@ namespace ChronobaubleFix
             orig(self, buffType);
         }
 
-        private void GlobalEventManager_OnHitEnemy(ILContext il)
+        private void AddSlow60OnHit(ILContext il)
         {
             var c = new ILCursor(il);
             ILLabel label = il.DefineLabel();
@@ -111,16 +111,7 @@ namespace ChronobaubleFix
             c.MarkLabel(label);
         }   
 
-        private void CharacterBody_SetBuffCount(On.RoR2.CharacterBody.orig_SetBuffCount orig, CharacterBody self, BuffIndex buffType, int newCount)
-        {
-            if (buffType == BuffIndex.Slow60)
-            {
-                BuffCatalog.GetBuffDef(buffType).canStack = true;
-            }
-            orig(self, buffType, newCount);
-        }
-
-        private void CharacterBody_RecalculateStats(MonoMod.Cil.ILContext il)
+        private void SetMovementAndAttackSpeed(MonoMod.Cil.ILContext il)
         {
             var c = new ILCursor(il);
 
