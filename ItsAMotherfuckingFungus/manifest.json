@@ -5,6 +5,6 @@
   "description": "Mmm! That is a tasty fungus! Get a message saying that a fungus has dropped every time a fungus drops.",
   "dependencies": [
     "tristanmcpherson-R2API-2.1.15",
-    "bbepis-BepInExPack-2.0.0"
+    "bbepis-BepInExPack-3.0.0"
   ]
 }

@@ -5,6 +5,6 @@
   "description": "Engineer can stock turrets with every Backup Magazine picked up (does NOT allow you to place down extra turrets). Also has configuration to affect other abilities if desired.",
   "dependencies": [
     "tristanmcpherson-R2API-2.1.15",
-    "bbepis-BepInExPack-2.0.0"
+    "bbepis-BepInExPack-3.0.0"
   ]
 }
