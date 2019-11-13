@@ -21,9 +21,7 @@ namespace DeployableOwnerInformation
                 RoR2Application.isModded = true;
             }
             
-            IL.RoR2.MasterSummon.Perform += MasterSummon_Perform;
-
-            
+            IL.RoR2.MasterSummon.Perform += MasterSummon_Perform;            
         }
 
         private void MasterSummon_Perform(ILContext il)

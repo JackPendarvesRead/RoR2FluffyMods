@@ -4,6 +4,7 @@
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/PocketMoney",
   "description": "Gives players extra money at the start of each stage.",
   "dependencies": [
+    "bbepis-BepInExPack-3.0.0",
     "JackPendarvesRead-FluffyLabsConfigManagerTools-1.0.1"
   ]
 }

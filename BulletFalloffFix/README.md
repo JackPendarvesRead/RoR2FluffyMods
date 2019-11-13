@@ -26,6 +26,7 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 v2.0.1
+- Bepinex5 release
 - Refactor
 
 v2.0.0

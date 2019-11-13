@@ -8,8 +8,6 @@ using UnityEngine;
 
 namespace EngiShieldNotification
 {
-    //TODO: Test in multiplayer with multiple engi shields
-
     [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class EngiShieldNotification : BaseUnityPlugin
     {
