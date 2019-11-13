@@ -5,6 +5,7 @@
   "description": "Infusions give you 1hp/kill/stack. E.g. 5 infusions gives you 5hp per kill. Can also configure maximum value.",
   "dependencies": [
     "bbepis-BepInExPack-3.0.0",
-    "JackPendarvesRead-FluffyLabsConfigManagerTools-1.0.1"
+    "JackPendarvesRead-FluffyLabsConfigManagerTools-1.0.1",
+    "JackPendarvesRead-DeployableOwnerInformation-1.0.2"
   ]
 }

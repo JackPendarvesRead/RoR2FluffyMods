@@ -15,6 +15,7 @@ using DeployableOwnerInformation.Extension;
 namespace RiskOfVampirism
 {
     [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInDependency(DeployableOwnerInformation.DeployableOwnerInformation.PluginGuid)]
     [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class RiskOfVampirism : BaseUnityPlugin
     {
