@@ -6,15 +6,19 @@ using UnityEngine;
 
 namespace BackupEngiTurrets
 {
-    [BepInPlugin("com.FluffyMods.BackupEngiTurrets", "BackupEngiTurrets", "3.0.0")]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class BackupEngiTurrets : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "BackupEngiTurrets";
+        private const string pluginVersion = "3.0.0";
+
         private static ConfigEntry<bool> TurretStockIncreasesWithBackup;
         private static ConfigEntry<bool> PrimaryIncreasesWitBackup;
 
         public void Awake()
         {
-            TurretStockIncreasesWithBackup = Config.AddSetting<bool>(
+            TurretStockIncreasesWithBackup = Config.Bind<bool>(
                                    new ConfigDefinition("Engineer", nameof(TurretStockIncreasesWithBackup)),
                                    true,
                                    new ConfigDescription(
@@ -22,11 +26,11 @@ namespace BackupEngiTurrets
                                        )
                                    );
 
-            PrimaryIncreasesWitBackup = Config.AddSetting<bool>(
+            PrimaryIncreasesWitBackup = Config.Bind<bool>(
                                    new ConfigDefinition("Mage", nameof(PrimaryIncreasesWitBackup)),
                                    false,
                                    new ConfigDescription(
-                                       "Enable to set Artificier primary (LMB) ability to gain stock with BackupMagazine."                                       
+                                       "Enable to set Artificier primary (LMB) ability to gain stock with BackupMagazine."
                                        )
                                    );
 
@@ -44,7 +48,7 @@ namespace BackupEngiTurrets
                         self.GetComponent<SkillLocator>().special.SetBonusStockFromBody(self.inventory.GetItemCount(ItemIndex.SecondarySkillMagazine));
                     }
                 }
-                if(self.name.StartsWith(CharBodyStrings.Mage))
+                if (self.name.StartsWith(CharBodyStrings.Mage))
                 {
                     if (PrimaryIncreasesWitBackup.Value)
                     {
@@ -52,11 +56,11 @@ namespace BackupEngiTurrets
                     }
                 }
             }
-            catch(System.Exception ex)
+            catch (System.Exception ex)
             {
                 Logger.LogError(ex);
             }
             orig(self);
-        }      
+        }
     }
 }

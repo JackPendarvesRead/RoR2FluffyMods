@@ -1,7 +1,3 @@
-# NOTE: THIS IS A BETA RELEASE
-
-You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
-
 # TheMightyBoop
 
 Have you ever wanted to launch your enemies into space? Well now you can! Look no further than TheMightyBoop.
@@ -39,12 +35,18 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v2.1.0
+- Bepinex5 official release
+- Added force randomiser bool
+- Fixed sneaky hopoo change
+- Tractor beam!
+
 v2.0.0
 - Updated for Bepinex5
 - Removed obsolete commands
+- Removed R2API dependency
 - Added ConfigurationManager presets
 - Renamed variables for more readable code
-- Early release awaiting BepInPack
 
 v1.1.1
 - Updated R2API dependency string

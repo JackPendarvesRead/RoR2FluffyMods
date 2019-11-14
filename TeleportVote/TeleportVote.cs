@@ -14,30 +14,59 @@ using FluffyLabsConfigManagerTools.Util;
 
 namespace TeleportVote
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.TeleportVote", "TeleportVote", "2.0.0")]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class TeleportVote : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "TeleportVote";
+        private const string pluginVersion = "3.0.0";
+
         private VoteRegistrationController VoteController { get; set; }
         private TimerController TimerController { get; set; }
 
         public static ConfigEntry<bool> VotesEnabled;
+        public static ConfigEntry<bool> EnableTimerCountdown;
+        public static ConfigEntry<bool> ChatCommandCanStartTimer;
         public static ConditionalConfigEntry<int> MaximumVotes;
 
         public void Awake()
         {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
             VoteController = new VoteRegistrationController();
             TimerController = new TimerController();
 
             #region ConfigSetup
             const string votesSection = "Votes";
 
-            VotesEnabled = Config.AddSetting<bool>(
+            VotesEnabled = Config.Bind<bool>(
                 votesSection,
                 "Enable Votes",
                 true,
                 new ConfigDescription(
-                    "Enable/Disable voting"
+                    "Disable this to bypass voting (i.e. interact with teleporter etc as normal)"
+                    ));
+
+            EnableTimerCountdown = Config.Bind<bool>(
+                votesSection,
+                "Enable Timer Countdown",
+                true,
+                new ConfigDescription(
+                    "Enable/Disable countdown timer to override vote"
+                    ));
+
+            ChatCommandCanStartTimer = Config.Bind<bool>(
+                votesSection,
+                "ChatCommandCanStartTimer",
+                false,
+                new ConfigDescription(
+                    "When enabled the timer can be started by chat command. If disabled timer only starts on interaction.",
+                    null,
+                    "Advanced"
                     ));
 
             var cUtil = new ConditionalUtil(this.Config);
@@ -57,10 +86,6 @@ namespace TeleportVote
             On.RoR2.TeleporterInteraction.OnStateChanged += TeleporterInteraction_OnStateChanged;
             On.RoR2.Interactor.PerformInteraction += Interactor_PerformInteraction;
             On.RoR2.PlayerCharacterMasterController.OnBodyDeath += PlayerCharacterMasterController_OnBodyDeath;
-
-            //Internal events
-            //VoteController.PlayerRegistered += VoteController_PlayerRegistered;
-            //TimerController.OnTeleporterChangeState += TimerController_OnTeleporterChangeState;
 
             //Chat Ready Command - type "r" to set yourself as ready
             Chat.onChatChanged += Chat_onChatChanged;
@@ -101,6 +126,12 @@ namespace TeleportVote
         #endregion
 
         #region MainInteractionMethods
+
+        public void Update()
+        {
+            TimerController.Update(Time.deltaTime);
+        }
+
         private void TeleporterInteraction_OnInteractionBegin(On.RoR2.TeleporterInteraction.orig_OnInteractionBegin orig, TeleporterInteraction self, Interactor activator)
         {
             if (VotesEnabled.Value)
@@ -112,7 +143,7 @@ namespace TeleportVote
                     StopAll();
                     orig(self, activator);
                 }
-                else
+                else if (EnableTimerCountdown.Value)
                 {
                     TimerController.Start();
                 } 
@@ -135,7 +166,7 @@ namespace TeleportVote
                     StopAll();
                     orig(self, interactableObject);
                 }
-                else
+                else if (EnableTimerCountdown.Value)
                 {
                     TimerController.Start();
                 }
@@ -191,42 +222,54 @@ namespace TeleportVote
         private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
         private void Chat_onChatChanged()
         {
-            try
+            if (!RoR2.Chat.readOnlyLog.Any())
             {
-
-                if(VotesEnabled.Value
-                    && VoteController.PlayersCanVote)
+                return;
+            }
+            if(VotesEnabled.Value
+                && VoteController.PlayersCanVote)
+            {
+                var chatLog = Chat.readOnlyLog;
+                var match = ParseChatLog.Match(chatLog.Last());
+                var playerName = match.Groups["name"].Value.Trim();
+                var message = match.Groups["message"].Value.Trim();
+                //Debug.Log($"Chatlog={chatLog.Last()}, RMName={playerName}, RMMessage={message}");
+                if (!string.IsNullOrWhiteSpace(playerName))
                 {
-                    var chatLog = Chat.readOnlyLog;
-                    var match = ParseChatLog.Match(chatLog.Last());
-                    var playerName = match.Groups["name"].Value.Trim();
-                    var message = match.Groups["message"].Value.Trim();
-                    Logger.LogDebug($"Chatlog={chatLog.Last()}, RMName={playerName}, RMMessage={message}");
-                    if (!string.IsNullOrWhiteSpace(playerName))
+                    switch (message.ToLower())
                     {
-                        switch (message.ToLower())
-                        {
-                            case "ready":
-                            case "rdy":
-                            case "r":
-                            case "y":
-                            case "go":
-                                var netUser = RoR2.NetworkUser.readOnlyInstancesList
-                                    .Where(x => x.userName.Trim() == playerName)
-                                    .FirstOrDefault();
-                                if (netUser.GetCurrentBody().healthComponent.alive)
+                        case "ready":
+                        case "rdy":
+                        case "r":
+                        case "y":
+                        case "go":
+                            var netUser = RoR2.NetworkUser.readOnlyInstancesList
+                                .Where(x => x.userName.Trim() == playerName)
+                                .FirstOrDefault();
+                            if (netUser.GetCurrentBody().healthComponent.alive)
+                            {
+                                VoteController.RegisterPlayer(netUser);
+                                if (EnableTimerCountdown.Value
+                                    && ChatCommandCanStartTimer.Value)
                                 {
-                                    VoteController.RegisterPlayer(netUser);
+                                    TimerController.Start();
                                 }
-                                break;
-                        }
+                            }
+                            break;
+
+                        case "force":
+                            var hostName = RoR2.NetworkUser.readOnlyInstancesList
+                                .Where(nu => nu.isServer)
+                                .Select(nu => nu.userName)
+                                .First().Trim();
+                            if(playerName == hostName)
+                            {
+                                VoteController.HostOverride();
+                                TimerController.Stop();
+                            }
+                            break;
                     }
                 }
-                
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError(ex);
             }
         }
         #endregion

@@ -41,9 +41,12 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v3.0.0
+- Bepinex5 Update
+- Reorganised hook subscription to force it to only subscribe in single player game
+
 v2.0.0
-- Updated to Bepinex5
-- Removed unnecessary R2API dependency
+- Removed R2API dependency
 - Early release
 - Added logic for single player only (temp fix)
 

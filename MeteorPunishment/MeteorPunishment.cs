@@ -10,21 +10,25 @@ using UnityEngine;
 
 namespace MeteorPunishment
 {
-    [BepInPlugin("com.FluffyMods.MeteorPunishment", "MeteorPunishment", "1.0.1")]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class MeteorPunishment : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "MeteorPunishment";
+        private const string pluginVersion = "1.0.1";
+
         private static CharacterBody PlayerToBePunished;
         private static bool CustomTarget = false;
 
         public void Awake()
-        { 
+        {
             On.RoR2.EquipmentSlot.Execute += EquipmentSlot_Execute;
             IL.RoR2.MeteorStormController.MeteorWave.GetNextMeteor += MeteorWave_GetNextMeteor;
         }
 
         private void EquipmentSlot_Execute(On.RoR2.EquipmentSlot.orig_Execute orig, EquipmentSlot self)
         {
-            if(self.equipmentIndex == EquipmentIndex.Meteor && !CustomTarget)
+            if (self.equipmentIndex == EquipmentIndex.Meteor && !CustomTarget)
             {
                 PlayerToBePunished = self.characterBody;
             }
@@ -44,7 +48,7 @@ namespace MeteorPunishment
             c.GotoNext(x => x.MatchStloc(0));
             c.EmitDelegate<Func<CharacterBody, CharacterBody>>((cb) =>
             {
-                if(PlayerToBePunished != null && PlayerToBePunished.healthComponent.alive)
+                if (PlayerToBePunished != null && PlayerToBePunished.healthComponent.alive)
                 {
                     return PlayerToBePunished;
                 }
@@ -52,7 +56,7 @@ namespace MeteorPunishment
                 {
                     return null;
                 }
-            });        
+            });
         }
 
 
@@ -63,7 +67,7 @@ namespace MeteorPunishment
         private static void MeteorList(ConCommandArgs args)
         {
             var users = NetworkUser.readOnlyInstancesList;
-            for(var i=0; i< users.Count; i++)
+            for (var i = 0; i < users.Count; i++)
             {
                 Debug.Log($"[{i}]: {users[i].userName}, Network_id={users[i].Network_id}");
             }

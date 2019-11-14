@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using DeployableOwnerInformation.Extension;
 using FluffyLabsConfigManagerTools.Infrastructure;
 using FluffyLabsConfigManagerTools.Util;
 using Mono.Cecil;
@@ -7,34 +8,44 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using RoR2;
 using System;
-using UnityEngine;
 
 namespace InfusionStackFix
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.InfusionStackFix", "InfusionStackFix", "2.0.0")]
+    [BepInDependency(DeployableOwnerInformation.DeployableOwnerInformation.PluginGuid)]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class InfusionStackFix : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "InfusionStackFix";
+        private const string pluginVersion = "4.0.0";
+
         private ConditionalConfigEntry<int> MaximumHealthPerInfusion;
         private ConditionalConfigEntry<int> MaxHealthGainPerKill;
         private ConfigEntry<bool> TurretReceivesBonusFromEngineer;
+        private ConfigEntry<bool> TurretGivesEngineerLifeOrbs;
 
         public void Awake()
         {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
             #region ConfigWrappers
             const string infusionSectionName = "Infusion";
             const string engineerSectionName = "Engineer";
 
             var conditionalUtil = new ConditionalUtil(this.Config);
             MaximumHealthPerInfusion = conditionalUtil.AddConditionalConfig<int>(
-                infusionSectionName, 
-                nameof(MaximumHealthPerInfusion), 
-                100, 
-                true, 
+                infusionSectionName,
+                nameof(MaximumHealthPerInfusion),
+                100,
+                true,
                 new ConfigDescription("Maximum health gained per infusion. Disable for no limit."));
-                                 
+
             MaxHealthGainPerKill = conditionalUtil.AddConditionalConfig<int>(
-                infusionSectionName, 
+                infusionSectionName,
                 nameof(MaxHealthGainPerKill),
                 5,
                 false,
@@ -43,16 +54,25 @@ namespace InfusionStackFix
                     )
                 );
 
-            TurretReceivesBonusFromEngineer = Config.AddSetting<bool>(
-                engineerSectionName, 
+            TurretReceivesBonusFromEngineer = Config.Bind<bool>(
+                engineerSectionName,
                 nameof(TurretReceivesBonusFromEngineer),
                 true,
                 new ConfigDescription(
                     "If enabled then turrets will receive the current infusion bonus of the Engineer on creation"
                     )
                 );
-            #endregion
 
+            TurretGivesEngineerLifeOrbs = Config.Bind<bool>(
+                engineerSectionName,
+                nameof(TurretGivesEngineerLifeOrbs),
+                true,
+                new ConfigDescription(
+                    "If enabled the main engineer body will receive an infusion orb whenever a turret he owns makes a kill"
+                    )
+                );
+            #endregion
+                        
             IL.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             On.RoR2.Inventory.AddInfusionBonus += Inventory_AddInfusionBonus;
             On.RoR2.CharacterMaster.AddDeployable += CharacterMaster_AddDeployable;
@@ -71,8 +91,8 @@ namespace InfusionStackFix
                 var turretMaster = deployable.GetComponent<CharacterMaster>();
                 turretMaster.inventory.AddInfusionBonus(ownerMasterBonus);
             }
-        }        
-        
+        }
+
         private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint value)
         {
             if (MaximumHealthPerInfusion.Condition)
@@ -88,7 +108,6 @@ namespace InfusionStackFix
                     value = hpUntilMaximum;
                 }
             }
-            Debug.Log($"Infusion bonus = {self.infusionBonus}");
             orig(self, value);
         }
 
@@ -104,7 +123,17 @@ namespace InfusionStackFix
                 );
             c.Index += 1;
             c.Remove();
-            c.Emit(OpCodes.Ldc_I4, MaximumHealthPerInfusion.Value);
+            c.EmitDelegate<Func<int>>(() =>
+            {
+                if (MaxHealthGainPerKill.Condition)
+                {
+                    return MaximumHealthPerInfusion.Value;
+                }
+                else
+                {
+                    return 999999;
+                }
+            });
 
             //Method to replace 1hp being added per infusion kill
             c.GotoNext(
@@ -118,6 +147,15 @@ namespace InfusionStackFix
             c.Emit(OpCodes.Ldloc, (short)14);  //Inventory
             c.EmitDelegate<Func<int, Inventory, int>>((infusionCount, inventory) =>
             {
+                if (TurretGivesEngineerLifeOrbs.Value)
+                {
+                    var master = inventory.GetComponent<CharacterMaster>();
+                    if (master.name.ToLower().Contains("turret"))
+                    {
+                        master.GetOwnerInformation().OwnerBody.inventory.AddInfusionBonus((uint)infusionCount);
+                    }
+                }
+
                 if (!MaximumHealthPerInfusion.Condition)
                 {
                     return infusionCount;
@@ -140,7 +178,7 @@ namespace InfusionStackFix
 
         private int GetMaximumOrbValue(int infusionCount)
         {
-            if(MaxHealthGainPerKill.Condition
+            if (MaxHealthGainPerKill.Condition
                 && infusionCount > MaxHealthGainPerKill.Value)
             {
                 return MaxHealthGainPerKill.Value;

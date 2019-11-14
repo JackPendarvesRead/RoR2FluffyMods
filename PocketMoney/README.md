@@ -1,7 +1,3 @@
-# NOTE: THIS IS A BETA RELEASE
-
-You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
-
 # PocketMoney
 
 Gives players extra money at the start of each stage. The amount of money given can be configured in the configuration file.
@@ -31,13 +27,15 @@ Place `PocketMoney.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
 
 ## Changelog:
+v 2.0.1
+- Official Bepinex5 release
+
 v 2.0.0
 - Updated for Bepinex5
-- Removed unnecessary dependency on R2API
+- Removed dependency on R2API
 - Removed obsolete console commands
 - Added new configuration to allow you to choose a maximum stage in which you wish to receive bonus
 - Changed StageWeightedMoney configuration to accept a float value
-- Early release awaiting BepInPack
 
 v1.1.2
 - Updated R2API dependency string

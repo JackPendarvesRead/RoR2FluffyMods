@@ -12,20 +12,18 @@ Vampire abilities:
 - Lose all regeneration (including from items e.g. slug)
 - Life degenerates over time
 
-Any survivor class is viable to be a vampire with the exception of engineer which has a very difficult time staying alive seeing as the majority of damage comes from their turrets which do not leech life to you.  
+Any survivor class is viable to be a vampire. Try them all, configure the values to your taste. Happy feeding. 
 
 Good luck. BLEH BLEH BLEHHH!
 
 Enjoy,
 Thanks
 
-## Console Commands:
+# A note on balance
 
-`vampire <bool>`: turns being a vampire on/off. Accepts `true` `t` `1` to turn on or `false` `f` `0` to turn off.
+I am quite aware that this is not a fine tuned and balanced experience. For this reason I have supplied you with configurations to customise your experience. If you turn on Advanced Settings in the configuration manager you will also have access to a slider which will buff/nerf each survivor independently!
 
-`vampire_leech <float>`: sets the value (float) of leech perentage. Default is 15%. (e.g. type `vampire_leech 0.10` to set leech to 10%)
-
-`vampire_decay <int>`: sets the decay time(s) of your health. Deafult is 60s. (e.g. type `vampire_decay 120` to set your decay time to 2 minutes)
+This is work in progress so if you have any feedback or suggestions they are very welcome.
 
 ## Installation:
 
@@ -33,15 +31,22 @@ Requires intallation of Bepinex and R2API.
 
 Place `RiskOfVampirism.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
-## Upcoming?  
-
-I feel like a similar idea to this could make a good lunar item. Perhaps at some point I may adapt this into an item rather than a permanent starting effect.
-
 ## Contact
 
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
 
 ## Changelog:
+
+v2.1.0
+- Official Bepinex5 release
+- Added extra configuration options
+
+v2.0.0
+- Remove R2API dependency
+- Refactor code
+- Added new configuration options
+- Removed obsolete console commands
+- Added link from turret to engibody to allow lifesteal from turrets
 
 v1.0.1
 - Updated R2API dependency string

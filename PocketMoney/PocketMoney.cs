@@ -12,16 +12,25 @@ using FluffyLabsConfigManagerTools.Infrastructure;
 
 namespace PocketMoney
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.PocketMoney", "PocketMoney", "2.0.0")]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class TestingStuff : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "PocketMoney";
+        private const string pluginVersion = "2.0.1";
+
         private ConditionalConfigEntry<uint> LatestStageToReceiveMoney;
         private ConfigEntry<uint> StageFlatMoney;
         private ConfigEntry<float> StageWeightedMoney;
 
         public void Awake()
         {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
             const string moneySection = "Money";
 
             var conUtil = new ConditionalUtil(this.Config);
@@ -33,7 +42,7 @@ namespace PocketMoney
                 new ConfigDescription("Enable to set a latest stage you wish to receive a bonus on. E.g. set this to 4 and you will receive bonus for first 4 rounds and then none after.")
                 );
 
-            StageFlatMoney = Config.AddSetting<uint>(
+            StageFlatMoney = Config.Bind<uint>(
                 moneySection,
                 nameof(StageFlatMoney),
                 0,
@@ -42,7 +51,7 @@ namespace PocketMoney
                     )
                 );
 
-            StageWeightedMoney = Config.AddSetting<float>(
+            StageWeightedMoney = Config.Bind<float>(
                 moneySection,
                 nameof(StageWeightedMoney),
                 1.0f,
@@ -51,24 +60,23 @@ namespace PocketMoney
                     )
                 );
 
-            On.RoR2.Run.BeginStage += Run_BeginStage;
+            RoR2.SceneDirector.onPostPopulateSceneServer += SceneDirector_onPostPopulateSceneServer;
         }
 
-        private void Run_BeginStage(On.RoR2.Run.orig_BeginStage orig, Run self)
+        private void SceneDirector_onPostPopulateSceneServer(SceneDirector obj)
         {
-            orig(self);
-
-            if(LatestStageToReceiveMoney.Condition
-                && LatestStageToReceiveMoney.Value > RoR2.Run.instance.stageClearCount)
+            if (RoR2.Run.instance)
             {
-                return;
-            }
-
-            var difficultyScaledCost = (uint)Mathf.Round(RoR2.Run.instance.GetDifficultyScaledCost(25) * StageWeightedMoney.Value);
-            var pocketMoney = StageFlatMoney.Value + difficultyScaledCost;
-            foreach (var cm in RoR2.PlayerCharacterMasterController.instances)
-            {
-                cm.master.GiveMoney(pocketMoney);
+                var shouldNotReceiveMoney = LatestStageToReceiveMoney.Condition && LatestStageToReceiveMoney.Value > RoR2.Run.instance.stageClearCount;
+                if (!shouldNotReceiveMoney)
+                {
+                    var difficultyScaledCost = (uint)Mathf.Round(RoR2.Run.instance.GetDifficultyScaledCost(25) * StageWeightedMoney.Value);
+                    var pocketMoney = StageFlatMoney.Value + difficultyScaledCost;
+                    foreach (var cm in RoR2.PlayerCharacterMasterController.instances)
+                    {
+                        cm.master.GiveMoney(pocketMoney);
+                    };
+                }
             }
         }
     }

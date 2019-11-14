@@ -10,14 +10,22 @@ using UnityEngine;
 
 namespace MacroCommands
 {
-    [BepInDependency("com.FluffyMods.FluffyLabsConfigManagerTools")]
-    [BepInPlugin("com.FluffyMods.MacroCommands", "MacroCommands", "0.0.1")]
+    [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class MacroCommands : BaseUnityPlugin
     {
-        private List<MacroConfigEntry> Macros;
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "MacroCommands";
+        private const string pluginVersion = "2.0.0";
 
+        private List<MacroConfigEntry> Macros;
+        
         public void Start()
-        {            
+        {
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
             Macros = GetMacros().ToList();
         }      
 
@@ -30,11 +38,17 @@ namespace MacroCommands
                 var number = (i + 1).ToString("00");
                 if(i < 5)
                 {
-                    yield return mUtil.AddMacroConfig(macroSection, $"Macro {number}", "Type Macro into the black box. Commands are seperated by ';'");
+                    yield return mUtil.AddMacroConfig(
+                        macroSection, 
+                        $"Macro {number}", 
+                        "Type Macro into the black box. Commands are seperated by ';'");
                 }
                 else
                 {
-                    yield return mUtil.AddMacroConfig(macroSection, $"Macro {number}", "Type Macro into the black box. Commands are seperated by ';'", 
+                    yield return mUtil.AddMacroConfig(
+                        macroSection, 
+                        $"Macro {number}", 
+                        "Type Macro into the black box. Commands are seperated by ';'", 
                         new ConfigurationManagerAttributes { IsAdvanced = true, HideDefaultButton = true });
                 }
             }
@@ -46,6 +60,7 @@ namespace MacroCommands
             {
                 if (macro.KeyboardShortcut.IsUp())
                 {
+                    Logger.LogInfo($"Macro triggered! - KBS = {macro.KeyboardShortcut.ToString()}");
                     new MacroController().ExecuteMacro(macro);
                 }
             }

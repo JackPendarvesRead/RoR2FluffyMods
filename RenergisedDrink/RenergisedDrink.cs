@@ -2,6 +2,7 @@
 using BepInEx.Configuration;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using RoR2;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +11,24 @@ using System.Threading.Tasks;
 
 namespace RenergisedDrink
 {
-    [BepInPlugin("com.FluffyMods.ReEnergisedDrink", "ReEnergisedDrink", "1.0.0")]
+    [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class BulletFalloffFix : BaseUnityPlugin
     {
+        public const string PluginGuid = "com.FluffyMods." + pluginName;
+        private const string pluginName = "ReEnergisedDrink";
+        private const string pluginVersion = "1.0.1";
+
         private static ConfigEntry<float> EnergyDrinkBoost;
         private static ConfigEntry<float> EnergyDrinkCoefficient;
 
         public void Awake()
         {
-            EnergyDrinkBoost = Config.AddSetting<float>(
+            if (!RoR2Application.isModded)
+            {
+                RoR2Application.isModded = true;
+            }
+
+            EnergyDrinkBoost = Config.Bind<float>(
                 "Energy Drink",
                 "Boost",
                 0.5f,
@@ -28,7 +38,7 @@ namespace RenergisedDrink
                     )
                 );
 
-            EnergyDrinkCoefficient = Config.AddSetting<float>(
+            EnergyDrinkCoefficient = Config.Bind<float>(
                 "Energy Drink",
                 "Coefficient",
                 0.3f,

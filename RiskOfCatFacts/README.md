@@ -29,6 +29,10 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
+v3.0.0
+- Official Bepinex5 release
+- Rework of logic. CatFacts should be much smoother now.
+
 v2.0.0
 - Updated for bepinex5
 - Added configuration to enable/disable receiving CatFacts

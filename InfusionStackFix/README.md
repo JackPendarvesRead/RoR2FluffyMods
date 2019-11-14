@@ -1,7 +1,3 @@
-# NOTE: THIS IS A BETA RELEASE
-
-You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
-
 # InfusionStackFix
 
 Changes the way infusion stacks are given. This mod will give you +1 max hp per infusion per kill.
@@ -34,6 +30,22 @@ Place `InfusionStackFix.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time for fun so may not always be able to immediately fix issues that you come up with but I will endeavour to do my best. 
 
 ## Changelog:
+
+-4.0.0
+- Official Bepinex5 release
+- Includes all previous changes that were excluded in v3 (config etc)
+
+v3.0.3
+- Updated to Bepinex5 for official release
+
+v3.0.2
+- Fixed configuration section naming issue
+
+v3.0.1
+- Added dependency attribute for DeployableOwnerInformation
+
+v3.0.0
+- Rollback Bepinex5 early release for thunderstore
 
 v2.0.0
 - Updated to Bepinex5

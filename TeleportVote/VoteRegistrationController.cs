@@ -11,6 +11,7 @@ namespace TeleportVote
     {
         public bool PlayersCanVote { get; set; } = true;
 
+        private bool hostOverride = false;
         public bool VotesReady
         {
             get
@@ -27,9 +28,22 @@ namespace TeleportVote
         {
             get
             {
-                return RoR2.Run.instance.livingPlayerCount < TeleportVote.MaximumVotes.Value 
-                    ? RoR2.Run.instance.livingPlayerCount 
-                    : TeleportVote.MaximumVotes.Value;
+                if (hostOverride)
+                {
+                    return 0;
+                }
+
+                var livingPlayerCount = RoR2.Run.instance.livingPlayerCount;
+                if (!TeleportVote.MaximumVotes.Condition)
+                {
+                    return livingPlayerCount;
+                }
+                else
+                {
+                    return livingPlayerCount < TeleportVote.MaximumVotes.Value                            
+                        ? livingPlayerCount                            
+                        : TeleportVote.MaximumVotes.Value;
+                }                
             }
         }
 
@@ -45,10 +59,21 @@ namespace TeleportVote
             }
         }
 
+        public void HostOverride()
+        {
+            if (!hostOverride)
+            {
+                hostOverride = true;
+                PlayersCanVote = false;
+                Message.SendColoured("Host has overriden restrictions.", Colours.Green);
+            }
+        }
+
         public void Reset()
         {
             RegisteredPlayers.Clear();
             PlayersCanVote = true;
+            hostOverride = false;
         }
     }
 }
