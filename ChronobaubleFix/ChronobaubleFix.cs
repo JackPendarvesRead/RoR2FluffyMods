@@ -17,7 +17,7 @@ namespace ChronobaubleFix
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "ChronobaubleFix";
-        private const string pluginVersion = "3.0.0";
+        private const string pluginVersion = "2.0.1";
 
         private static ConfigEntry<float> SlowScalingCoefficient;
         private static ConfigEntry<int> DebuffStacksPerItemStack;

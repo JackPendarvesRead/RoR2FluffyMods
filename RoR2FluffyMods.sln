@@ -49,6 +49,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputLogger", "InputLogger\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SupportSurv", "SupportSurv\SupportSurv.csproj", "{5B0E1EC9-EAE0-48C1-95DA-0AEDDB61B3EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FixBleedError", "FixBleedError\FixBleedError.csproj", "{218735B1-B128-4163-BAFB-F215CA7C8D4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -127,6 +129,10 @@ Global
 		{5B0E1EC9-EAE0-48C1-95DA-0AEDDB61B3EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B0E1EC9-EAE0-48C1-95DA-0AEDDB61B3EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B0E1EC9-EAE0-48C1-95DA-0AEDDB61B3EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{218735B1-B128-4163-BAFB-F215CA7C8D4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{218735B1-B128-4163-BAFB-F215CA7C8D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{218735B1-B128-4163-BAFB-F215CA7C8D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{218735B1-B128-4163-BAFB-F215CA7C8D4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,6 +156,7 @@ Global
 		{AD83A989-CB7E-4332-A12A-1B4B12703A5B} = {803AC18A-973A-4016-9FA0-1754531A7284}
 		{9790BCC9-0299-4850-8F8B-1E2A156AC698} = {803AC18A-973A-4016-9FA0-1754531A7284}
 		{5B0E1EC9-EAE0-48C1-95DA-0AEDDB61B3EF} = {1FC39F4E-0F1D-4AEF-9BA4-16FF855A5949}
+		{218735B1-B128-4163-BAFB-F215CA7C8D4F} = {1FC39F4E-0F1D-4AEF-9BA4-16FF855A5949}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EDF5086C-311C-441D-8063-82C062301BD1}
