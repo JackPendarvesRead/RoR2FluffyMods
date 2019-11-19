@@ -31,6 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Extension.cs" />
+    <Compile Include="SecondarySkill.cs" />
     <Compile Include="SupportSurv.cs" />
     <Compile Include="PrimarySkill.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -111,6 +113,9 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>..\..\..\libs\RoR2Modding\UnityEngine.Networking.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>..\..\..\libs\RoR2Modding\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextCoreModule">
       <HintPath>..\..\..\libs\RoR2Modding\UnityEngine.TextCoreModule.dll</HintPath>
