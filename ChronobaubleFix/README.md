@@ -1,3 +1,5 @@
+NOTE: Currently this will only work in single player! For more information see Known Issues section.
+
 # ChronobaubleFix
 
 One of the most complained about items in the game is Chronobauble. 
@@ -36,6 +38,10 @@ This does not work in multiplayer. It causes some unintended de-sync between non
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
 
 ## Changelog:
+
+v2.0.2
+- Tidy up of hook logic
+- Edit readme to make more clear the known issues
 
 v2.0.1
 - ReadMe update

@@ -17,7 +17,7 @@ namespace ChronobaubleFix
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "ChronobaubleFix";
-        private const string pluginVersion = "2.0.1";
+        private const string pluginVersion = "2.0.2";
 
         private static ConfigEntry<float> SlowScalingCoefficient;
         private static ConfigEntry<int> DebuffStacksPerItemStack;
@@ -66,11 +66,14 @@ namespace ChronobaubleFix
                 }
                 else
                 {
-                    On.RoR2.CharacterBody.AddBuff += SetBuffCanStack;
-                    IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
-                    IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
-                    hooksEnabled = true;
-                    Debug.Log("Subscribing to hooks");
+                    if (!hooksEnabled)
+                    {
+                        On.RoR2.CharacterBody.AddBuff += SetBuffCanStack;
+                        IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
+                        IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
+                        hooksEnabled = true;
+                        Debug.Log("Subscribing to hooks");
+                    }                    
                 }
             }           
         }
