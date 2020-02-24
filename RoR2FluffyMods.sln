@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.329
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoR2FluffyMods", "RoR2FluffyMods\RoR2FluffyMods.csproj", "{C6D03D18-1C47-4506-A72E-F5DC80A7DFAC}"
 EndProject
@@ -50,6 +50,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SupportSurv", "SupportSurv\SupportSurv.csproj", "{5B0E1EC9-EAE0-48C1-95DA-0AEDDB61B3EF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FixBleedError", "FixBleedError\FixBleedError.csproj", "{218735B1-B128-4163-BAFB-F215CA7C8D4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Portal", "Portal\Portal.csproj", "{D3F30798-7874-4EF2-A9EC-2EFD28DFD98A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -133,6 +135,10 @@ Global
 		{218735B1-B128-4163-BAFB-F215CA7C8D4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{218735B1-B128-4163-BAFB-F215CA7C8D4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{218735B1-B128-4163-BAFB-F215CA7C8D4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3F30798-7874-4EF2-A9EC-2EFD28DFD98A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3F30798-7874-4EF2-A9EC-2EFD28DFD98A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3F30798-7874-4EF2-A9EC-2EFD28DFD98A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3F30798-7874-4EF2-A9EC-2EFD28DFD98A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,6 +163,7 @@ Global
 		{9790BCC9-0299-4850-8F8B-1E2A156AC698} = {803AC18A-973A-4016-9FA0-1754531A7284}
 		{5B0E1EC9-EAE0-48C1-95DA-0AEDDB61B3EF} = {1FC39F4E-0F1D-4AEF-9BA4-16FF855A5949}
 		{218735B1-B128-4163-BAFB-F215CA7C8D4F} = {1FC39F4E-0F1D-4AEF-9BA4-16FF855A5949}
+		{D3F30798-7874-4EF2-A9EC-2EFD28DFD98A} = {1FC39F4E-0F1D-4AEF-9BA4-16FF855A5949}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EDF5086C-311C-441D-8063-82C062301BD1}
