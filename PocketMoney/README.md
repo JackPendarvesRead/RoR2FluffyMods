@@ -27,6 +27,10 @@ Place `PocketMoney.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
 
 ## Changelog:
+v2.1.0
+- Updated References
+- Added compatability support for FunkFrog's [ShareSuite](https://thunderstore.io/package/FunkFrog-and-Sipondo/ShareSuite/)
+
 v 2.0.1
 - Official Bepinex5 release
 
