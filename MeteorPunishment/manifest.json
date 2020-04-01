@@ -5,6 +5,6 @@
   "description": "There is always one. You know, \"that guy\". With this mod now you can be that guy, but better! Or if you prefer you can be do what the mod was initially intended to do and punish the guy.",
   "dependencies": [
     "tristanmcpherson-R2API-2.1.15",
-    "bbepis-BepInExPack-3.0.0"
+    "bbepis-BepInExPack-3.1.0"
   ]
 }

@@ -4,6 +4,6 @@
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/ItsAMotherfuckingFungus",
   "description": "Mmm! That is a tasty fungus! Get a message saying that a fungus has dropped every time a fungus drops.",
   "dependencies": [
-    "bbepis-BepInExPack-3.0.0"
+    "bbepis-BepInExPack-3.1.0"
   ]
 }

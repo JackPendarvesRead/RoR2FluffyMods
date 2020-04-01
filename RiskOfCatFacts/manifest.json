@@ -4,6 +4,6 @@
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/RiskOfCatFacts",
   "description": "Thank you for subscribing to Cat Facts!",
   "dependencies": [
-    "bbepis-BepInExPack-3.0.0"
+    "bbepis-BepInExPack-3.1.0"
   ]
 }
