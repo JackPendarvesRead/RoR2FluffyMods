@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
-using DeployableOwnerInformation.Extension;
 using FluffyLabsConfigManagerTools.Infrastructure;
 using FluffyLabsConfigManagerTools.Util;
 using Mono.Cecil;
@@ -11,7 +10,7 @@ using System;
 
 namespace InfusionStackFix
 {
-    [BepInDependency(DeployableOwnerInformation.DeployableOwnerInformation.PluginGuid)]
+    
     [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
     [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class InfusionStackFix : BaseUnityPlugin
@@ -20,8 +19,8 @@ namespace InfusionStackFix
         private const string pluginName = "InfusionStackFix";
         private const string pluginVersion = "4.0.0";
 
-        private ConditionalConfigEntry<int> MaximumHealthPerInfusion;
-        private ConditionalConfigEntry<int> MaxHealthGainPerKill;
+        private ConditionalConfigEntry<uint> MaximumHealthPerInfusion;
+        private ConditionalConfigEntry<uint> MaxHealthGainPerKill;
         private ConfigEntry<bool> TurretReceivesBonusFromEngineer;
         private ConfigEntry<bool> TurretGivesEngineerLifeOrbs;
 
@@ -37,14 +36,14 @@ namespace InfusionStackFix
             const string engineerSectionName = "Engineer";
 
             var conditionalUtil = new ConditionalUtil(this.Config);
-            MaximumHealthPerInfusion = conditionalUtil.AddConditionalConfig<int>(
+            MaximumHealthPerInfusion = conditionalUtil.AddConditionalConfig<uint>(
                 infusionSectionName,
                 nameof(MaximumHealthPerInfusion),
                 100,
                 true,
                 new ConfigDescription("Maximum health gained per infusion. Disable for no limit."));
 
-            MaxHealthGainPerKill = conditionalUtil.AddConditionalConfig<int>(
+            MaxHealthGainPerKill = conditionalUtil.AddConditionalConfig<uint>(
                 infusionSectionName,
                 nameof(MaxHealthGainPerKill),
                 5,
@@ -73,9 +72,20 @@ namespace InfusionStackFix
                 );
             #endregion
                         
-            IL.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             On.RoR2.Inventory.AddInfusionBonus += Inventory_AddInfusionBonus;
+            On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             On.RoR2.CharacterMaster.AddDeployable += CharacterMaster_AddDeployable;
+        }
+
+        private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
+        {
+            var attacker = damageReport.attackerMaster;
+            if (TurretGivesEngineerLifeOrbs.Value &&
+                attacker.name.ToLower().Contains("turret"))
+            {
+                attacker.minionOwnership.ownerMaster.inventory.AddInfusionBonus(1);                
+            }
+            orig(self, damageReport);
         }
 
         private void CharacterMaster_AddDeployable(On.RoR2.CharacterMaster.orig_AddDeployable orig,
@@ -84,106 +94,62 @@ namespace InfusionStackFix
             DeployableSlot slot)
         {
             orig(self, deployable, slot);
-            if (this.TurretReceivesBonusFromEngineer.Value
-                && slot == DeployableSlot.EngiTurret)
+            if (TurretReceivesBonusFromEngineer.Value &&
+                slot == DeployableSlot.EngiTurret)
             {
                 var ownerMasterBonus = deployable.ownerMaster.inventory.infusionBonus;
                 var turretMaster = deployable.GetComponent<CharacterMaster>();
+                Logger.LogInfo($"Turret master bonus = {turretMaster.inventory.infusionBonus}");
                 turretMaster.inventory.AddInfusionBonus(ownerMasterBonus);
             }
         }
 
-        private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint value)
+        private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint bonusGained)
         {
-            if (MaximumHealthPerInfusion.Condition)
+            orig(self, RecalculateBonusGain(self));
+        }
+
+        private uint RecalculateBonusGain(Inventory self)
+        {
+            uint infusionCount = (uint)self.GetItemCount(ItemIndex.Infusion);
+            uint maximumBonus = infusionCount * MaximumHealthPerInfusion.Value;
+            uint currentBonus = self.infusionBonus;
+            uint lifeUntilMaximum = GetBonusUntilMaximum(maximumBonus, currentBonus);
+            uint maximumBonusGain = GetMaximumBonusGain(infusionCount);
+
+            if (lifeUntilMaximum > maximumBonusGain)
             {
-                var maxInfusionBonus = self.GetItemCount(ItemIndex.Infusion) * MaximumHealthPerInfusion.Value;
-                if (self.infusionBonus >= maxInfusionBonus)
-                {
-                    return;
-                }
-                var hpUntilMaximum = (uint)maxInfusionBonus - self.infusionBonus;
-                if (hpUntilMaximum < value)
-                {
-                    value = hpUntilMaximum;
-                }
+                return maximumBonusGain;
             }
-            orig(self, value);
+            else
+            {
+                return lifeUntilMaximum;
+            }
         }
 
-        private void GlobalEventManager_OnCharacterDeath(MonoMod.Cil.ILContext il)
-        {
-            var c = new ILCursor(il);
-
-            //Method to replace maximum bonus per infusion
-            c.GotoNext(
-                x => x.MatchLdloc(33), //Infusion Count
-                x => x.MatchLdcI4(100),
-                x => x.MatchMul()
-                );
-            c.Index += 1;
-            c.Remove();
-            c.EmitDelegate<Func<int>>(() =>
-            {
-                if (MaxHealthGainPerKill.Condition)
-                {
-                    return MaximumHealthPerInfusion.Value;
-                }
-                else
-                {
-                    return 999999;
-                }
-            });
-
-            //Method to replace 1hp being added per infusion kill
-            c.GotoNext(
-                x => x.MatchLdloc(54),
-                x => x.MatchLdcI4(1),
-                x => x.MatchStfld(out FieldReference fr1)
-                );
-            c.Index += 1;
-            c.Remove(); //Remove the 1
-            c.Emit(OpCodes.Ldloc, (short)33);  //Infusion Count
-            c.Emit(OpCodes.Ldloc, (short)14);  //Inventory
-            c.EmitDelegate<Func<int, Inventory, int>>((infusionCount, inventory) =>
-            {
-                if (TurretGivesEngineerLifeOrbs.Value)
-                {
-                    var master = inventory.GetComponent<CharacterMaster>();
-                    if (master.name.ToLower().Contains("turret"))
-                    {
-                        master.GetOwnerInformation().OwnerBody.inventory.AddInfusionBonus((uint)infusionCount);
-                    }
-                }
-
-                if (!MaximumHealthPerInfusion.Condition)
-                {
-                    return infusionCount;
-                }
-                var maximumBonus = infusionCount * MaximumHealthPerInfusion.Value;
-                var currentBonus = (int)inventory.infusionBonus;
-                var hpUntilMaximum = maximumBonus - currentBonus;
-                var maximumOrbGain = GetMaximumOrbValue(infusionCount);
-
-                if (hpUntilMaximum > maximumOrbGain)
-                {
-                    return maximumOrbGain;
-                }
-                else
-                {
-                    return hpUntilMaximum > 0 ? hpUntilMaximum : 0;
-                }
-            });
-        }
-
-        private int GetMaximumOrbValue(int infusionCount)
+        private uint GetMaximumBonusGain(uint infusionCount)
         {
             if (MaxHealthGainPerKill.Condition
                 && infusionCount > MaxHealthGainPerKill.Value)
             {
-                return MaxHealthGainPerKill.Value;
+                return (uint)MaxHealthGainPerKill.Value;
             }
-            return infusionCount;
+            else
+            {
+                return infusionCount;
+            }
+        }
+
+        private uint GetBonusUntilMaximum(uint maxBonus, uint currentBonus)
+        {
+            if(currentBonus >= maxBonus)
+            {
+                return 0;
+            }
+            else
+            {
+                return maxBonus - currentBonus;
+            }
         }
     }
 }
