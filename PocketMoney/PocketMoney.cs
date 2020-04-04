@@ -1,16 +1,11 @@
 ﻿using BepInEx;
-using BepInEx.Configuration;
-using MonoMod.Cil;
-using RoR2;
-using UnityEngine;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using System;
-using System.Linq;
-using FluffyLabsConfigManagerTools.Util;
-using FluffyLabsConfigManagerTools.Infrastructure;
-using System.Reflection;
 using BepInEx.Bootstrap;
+using BepInEx.Configuration;
+using FluffyLabsConfigManagerTools.Infrastructure;
+using FluffyLabsConfigManagerTools.Util;
+using RoR2;
+using System.Reflection;
+using UnityEngine;
 
 namespace PocketMoney
 {
@@ -83,30 +78,39 @@ namespace PocketMoney
                 Logger.LogInfo("Run instance true");
                 Logger.LogInfo($"LatestStageToReceiveMoney.Condition={LatestStageToReceiveMoney.Condition}");
                 Logger.LogInfo($"LatestStage={LatestStageToReceiveMoney.Value}, ClearCount={RoR2.Run.instance.stageClearCount}");
-                if (!LatestStageToReceiveMoney.Condition
-                    && LatestStageToReceiveMoney.Value <= RoR2.Run.instance.stageClearCount)
+                Logger.LogInfo(!LatestStageToReceiveMoney.Condition && LatestStageToReceiveMoney.Value <= RoR2.Run.instance.stageClearCount);
+                if (LatestStageToReceiveMoney.Condition)
                 {
-
-
-                    var difficultyScaledCost = (uint)Mathf.Round(RoR2.Run.instance.GetDifficultyScaledCost(25) * StageWeightedMoney.Value);
-                    var pocketMoney = StageFlatMoney.Value + difficultyScaledCost;
-
-                    if (ShareSuite)
+                    if(RoR2.Run.instance.stageClearCount <= LatestStageToReceiveMoney.Value)
                     {
-                        Logger.LogInfo("Sharesuite invoke");
-
-                        AddMoney.Invoke(ShareSuite, new object[] { pocketMoney });
+                        GiveMoney();
                     }
-                    else
-                    {
-                        Logger.LogInfo("Normal invoke");
-
-                        foreach (var cm in RoR2.PlayerCharacterMasterController.instances)
-                        {
-                            cm.master.GiveMoney(pocketMoney);
-                        };
-                    }                    
                 }
+                else
+                {
+                    GiveMoney();
+                }
+            }
+        }
+
+        private void GiveMoney()
+        {
+            var difficultyScaledCost = (uint)Mathf.Round(RoR2.Run.instance.GetDifficultyScaledCost(25) * StageWeightedMoney.Value);
+            var pocketMoney = StageFlatMoney.Value + difficultyScaledCost;
+            if (ShareSuite)
+            {
+                Logger.LogInfo("Sharesuite invoke");
+
+                AddMoney.Invoke(ShareSuite, new object[] { pocketMoney });
+            }
+            else
+            {
+                Logger.LogInfo("Normal invoke");
+
+                foreach (var cm in RoR2.PlayerCharacterMasterController.instances)
+                {
+                    cm.master.GiveMoney(pocketMoney);
+                };
             }
         }
     }
