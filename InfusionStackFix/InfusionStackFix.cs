@@ -80,7 +80,7 @@ namespace InfusionStackFix
         private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
         {
             var attacker = damageReport.attackerMaster;
-            if (TurretGivesEngineerLifeOrbs.Value &&
+            if (attacker && TurretGivesEngineerLifeOrbs.Value &&
                 attacker.name.ToLower().Contains("turret"))
             {
                 attacker.minionOwnership.ownerMaster.inventory.AddInfusionBonus(1);                
