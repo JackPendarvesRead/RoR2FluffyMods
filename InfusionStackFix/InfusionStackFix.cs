@@ -17,7 +17,7 @@ namespace InfusionStackFix
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "InfusionStackFix";
-        private const string pluginVersion = "5.0.1";
+        private const string pluginVersion = "5.0.2";
 
         private ConditionalConfigEntry<uint> MaximumHealthPerInfusion;
         private ConditionalConfigEntry<uint> MaxHealthGainPerKill;
@@ -79,11 +79,13 @@ namespace InfusionStackFix
 
         private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
         {
-            var attacker = damageReport.attackerMaster;
-            if (TurretGivesEngineerLifeOrbs.Value &&
+            var attacker = damageReport?.attackerMaster;
+            if (attacker &&
+                TurretGivesEngineerLifeOrbs.Value &&
                 attacker.name.ToLower().Contains("turret"))
             {
-                attacker.minionOwnership.ownerMaster.inventory.AddInfusionBonus(1);                
+                var ownerInventory = attacker.minionOwnership.ownerMaster.inventory;
+                ownerInventory.AddInfusionBonus((uint)ownerInventory.GetItemCount(ItemIndex.Infusion));                
             }
             orig(self, damageReport);
         }
