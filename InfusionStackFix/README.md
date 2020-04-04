@@ -1,14 +1,14 @@
 # InfusionStackFix
 
-Changes the way infusion stacks are given. This mod will give you +1 max hp per infusion per kill.
+This mod used to change the way infusion works by making infusions give you the amount of health per kill as you have stacks of infusion. This is now vanilla behaviour in the base game as of the Artifact update.
 
-Infusion will by default give you a maximum of +100 hp per stack. If you want to you can configure this value in the configuration file associated with this mod.
+However, this mod does still offer some additional functionality even though the main purpose of the mod is now redundant...
 
-E.g. if you are holding 5 infusions in your inventory you will receive +5hp per kill until a maximum of +500 health (by default).
+This now has two main offerings:
+1) links engineer to their turret so turret starts with your current bonus and turret can give infusion stacks to its owner
+2) Adds extra configuration to the infusion item so it can be used how you like it (e.g. you can simulate legacy infusion by disabling MaxHealthGainPerKill)
 
-This mod also fixed a minor "exploit" where you can get more health stacks from an infusion than you are permitted by killing a group of enemies when you are near maximum stacks.
-
-One popular request is to make "Legacy Infusion". To enable this functionality simply set the MaximumHealthPerInfusion configuration to false and there will be no max limit to how much life each infusion gives you.
+It is likely that some stuff has been overlooked as a lot has changed in base game in this recent update. If there are any issues please don't hestitate to get in contact and I'll do my best to fix it.
 
 Enjoy,
 Thanks
@@ -34,6 +34,10 @@ Place `InfusionStackFix.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time for fun so may not always be able to immediately fix issues that you come up with but I will endeavour to do my best. 
 
 ## Changelog:
+
+-5.0.2
+- Fixed a null reference error which would occur if someone dies without an attacker (e.g. with a console kill command)
+- Fixed some broken orb logic
 
 -5.0.1
 - Made small change bearing in mind I did not know vanilla behaviour of game had changed
