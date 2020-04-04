@@ -33,9 +33,8 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 -5.0.0
 - Removed dependency to DeployableOwnerInformation
-- Reworked code, should be more reliable
+- Reworked code, should be more reliable and more performant
 - Works on Artifacts release of RoR2 game
-- Removed TurretReceivesBonusFromEngineer functionality (until can find a new way to link deployables)
 
 -4.0.0
 - Official Bepinex5 release

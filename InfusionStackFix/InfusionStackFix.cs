@@ -17,7 +17,7 @@ namespace InfusionStackFix
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "InfusionStackFix";
-        private const string pluginVersion = "4.0.0";
+        private const string pluginVersion = "5.0.0";
 
         private ConditionalConfigEntry<uint> MaximumHealthPerInfusion;
         private ConditionalConfigEntry<uint> MaxHealthGainPerKill;
@@ -136,10 +136,10 @@ namespace InfusionStackFix
 
         private uint GetMaximumBonusGain(uint infusionCount)
         {
-            if (MaxHealthGainPerKill.Condition
-                && infusionCount > MaxHealthGainPerKill.Value)
+            if (MaxHealthGainPerKill.Condition &&
+                infusionCount > MaxHealthGainPerKill.Value)
             {
-                return (uint)MaxHealthGainPerKill.Value;
+                return MaxHealthGainPerKill.Value;
             }
             else
             {
