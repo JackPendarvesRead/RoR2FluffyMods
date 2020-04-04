@@ -23,7 +23,7 @@ namespace InfusionStackFix
         private ConditionalConfigEntry<uint> MaxHealthGainPerKill;
         private ConfigEntry<bool> TurretReceivesBonusFromEngineer;
         private ConfigEntry<bool> TurretGivesEngineerLifeOrbs;
-        private readonly int MaximumHealth = 999999;
+        private ConfigEntry<int> MaximumHealth;
 
         public void Awake()
         {
@@ -71,8 +71,19 @@ namespace InfusionStackFix
                     "If enabled the main engineer body will receive an infusion orb whenever a turret he owns makes a kill"
                     )
                 );
+
+            MaximumHealth = Config.Bind(
+                infusionSectionName,
+                nameof(MaximumHealth),
+                999999,
+                new ConfigDescription(
+                    "Maximum Health you can reach with infusion bonuses - this value probably never needs to change",
+                    null,
+                    "Advanced"
+                    )
+                );
             #endregion
-                        
+
             On.RoR2.Inventory.AddInfusionBonus += Inventory_AddInfusionBonus;
             On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
             IL.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath1;
@@ -99,7 +110,7 @@ namespace InfusionStackFix
                 }
                 else
                 {
-                    return MaximumHealth + 1;
+                    return MaximumHealth.Value + 1;
                 }
             });
         }
@@ -170,7 +181,7 @@ namespace InfusionStackFix
             }
             else
             {
-                return (uint)MaximumHealth;
+                return (uint)MaximumHealth.Value;
             }
         }
 

@@ -37,6 +37,7 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 -5.0.2
 - Fixed a null reference error which would occur if someone dies without an attacker (e.g. with a console kill command)
+- Fixed some broken orb logic
 
 -5.0.1
 - Made small change bearing in mind I did not know vanilla behaviour of game had changed
