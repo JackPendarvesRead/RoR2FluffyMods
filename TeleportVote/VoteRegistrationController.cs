@@ -16,7 +16,7 @@ namespace TeleportVote
         {
             get
             {
-                if (RegisteredPlayers.Count >= VotesNeeded)
+                if (RegisteredPlayers.Count >= GetVotesNeeded())
                 {
                     return true;
                 }
@@ -24,27 +24,25 @@ namespace TeleportVote
             }
         }
 
-        private int VotesNeeded
+        private int GetVotesNeeded()
         {
-            get
+            if (hostOverride)
             {
-                if (hostOverride)
-                {
-                    return 0;
-                }
-
-                var livingPlayerCount = Run.instance.livingPlayerCount;
-                if (!TeleportVote.MaximumVotes.Condition)
-                {
-                    return livingPlayerCount;
-                }
-                else
-                {
-                    return livingPlayerCount < TeleportVote.MaximumVotes.Value ?
-                        livingPlayerCount :
-                        TeleportVote.MaximumVotes.Value;
-                }
+                return 0;
             }
+
+            var livingPlayerCount = Run.instance.livingPlayerCount;
+            if (!TeleportVote.MaximumVotes.Condition)
+            {
+                return livingPlayerCount;
+            }
+            else
+            {
+                return 
+                    livingPlayerCount < TeleportVote.MaximumVotes.Value ?                   
+                    livingPlayerCount :
+                    TeleportVote.MaximumVotes.Value;
+            }            
         }
 
         private List<NetworkUserId> RegisteredPlayers { get; set; } = new List<NetworkUserId>();
@@ -55,7 +53,7 @@ namespace TeleportVote
             if (PlayersCanVote && !RegisteredPlayers.Contains(netId))
             {
                 RegisteredPlayers.Add(netId);
-                Message.SendColoured($"{RegisteredPlayers.Count}/{VotesNeeded} players are ready", Colours.Green);
+                Message.SendColoured($"{RegisteredPlayers.Count}/{GetVotesNeeded()} players are ready", Colours.Green);
             }
         }
 

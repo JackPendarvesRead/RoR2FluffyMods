@@ -48,6 +48,9 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog
 
+v4.0.0
+- Updated to work with Artifacts update
+
 v3.0.0
 - Official Bepinex5 release
 - Big rewrite to all Timer logics
