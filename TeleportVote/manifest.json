@@ -5,6 +5,6 @@
   "description": "Adds logic so that all players can vote when ready to start teleport and/or go to next stage. Logic activates on interaction or with chat commands.",
   "dependencies": [
     "JackPendarvesRead-FluffyLabsConfigManagerTools-1.0.1",
-    "bbepis-BepInExPack-3.1.0"
+    "bbepis-BepInExPack-3.2.0"
   ]
 }

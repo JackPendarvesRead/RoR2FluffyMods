@@ -98,15 +98,22 @@ namespace InfusionStackFix
                 slot == DeployableSlot.EngiTurret)
             {
                 var ownerMasterBonus = deployable.ownerMaster.inventory.infusionBonus;
-                var turretMaster = deployable.GetComponent<CharacterMaster>();
-                Logger.LogInfo($"Turret master bonus = {turretMaster.inventory.infusionBonus}");
-                turretMaster.inventory.AddInfusionBonus(ownerMasterBonus);
+                if(ownerMasterBonus > 0)
+                {
+                    var turretMaster = deployable.GetComponent<CharacterMaster>();
+                    turretMaster.inventory.AddInfusionBonus(ownerMasterBonus);
+                }
+                
             }
         }
 
         private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint bonusGained)
         {
-            orig(self, RecalculateBonusGain(self));
+            if(bonusGained == 1)
+            {
+                bonusGained = RecalculateBonusGain(self);
+            }
+            orig(self, bonusGained);
         }
 
         private uint RecalculateBonusGain(Inventory self)

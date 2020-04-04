@@ -5,6 +5,6 @@
   "description": "Send everything flying with Rex's Mighty Boop. Fully configurable with console commands. Or turn rex's push into a pull...",
   "dependencies": [
     "JackPendarvesRead-FluffyLabsConfigManagerTools-1.0.1",
-    "bbepis-BepInExPack-3.1.0"
+    "bbepis-BepInExPack-3.2.0"
   ]
 }
