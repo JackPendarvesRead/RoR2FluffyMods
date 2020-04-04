@@ -17,7 +17,7 @@ namespace InfusionStackFix
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "InfusionStackFix";
-        private const string pluginVersion = "5.0.0";
+        private const string pluginVersion = "5.0.1";
 
         private ConditionalConfigEntry<uint> MaximumHealthPerInfusion;
         private ConditionalConfigEntry<uint> MaxHealthGainPerKill;
@@ -109,7 +109,7 @@ namespace InfusionStackFix
 
         private void Inventory_AddInfusionBonus(On.RoR2.Inventory.orig_AddInfusionBonus orig, Inventory self, uint bonusGained)
         {
-            if(bonusGained == 1)
+            if(bonusGained == self.GetItemCount(ItemIndex.Infusion))
             {
                 bonusGained = RecalculateBonusGain(self);
             }

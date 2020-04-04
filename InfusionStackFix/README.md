@@ -25,7 +25,7 @@ TurretGivesEngineerLifeOrbs - Set this to enabled for turrets to give you an inf
 
 ## Installation:
 
-Requires intallation of Bepinex and R2API. 
+Requires intallation of Bepinex and FluffyConfigLabs. 
 
 Place `InfusionStackFix.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
@@ -34,6 +34,10 @@ Place `InfusionStackFix.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time for fun so may not always be able to immediately fix issues that you come up with but I will endeavour to do my best. 
 
 ## Changelog:
+
+-5.0.1
+- Made small change bearing in mind I did not know vanilla behaviour of game had changed
+- Update readme
 
 -5.0.0
 - Removed dependency to DeployableOwnerInformation
