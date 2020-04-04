@@ -1,10 +1,10 @@
 {
   "name": "ChronobaubleFix",
-  "version_number": "2.0.0",
+  "version_number": "2.0.2",
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/blob/BepinexUpdate/ChronobaubleFix/ChronobaubleFix.cs",
   "description": "Make chronobauble a usable item. Increase number of slow stacks given. Stacks also decrease attack speed of enemy.",
   "dependencies": [
-    "bbepis-BepInExPack-3.0.0",
+    "bbepis-BepInExPack-3.2.0",
     "JackPendarvesRead-FluffyLabsConfigManagerTools-1.0.1"
   ]
 }

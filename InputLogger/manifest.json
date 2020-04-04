@@ -4,6 +4,6 @@
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/",
   "description": "Simple key logging plugin for help in debugging",
   "dependencies": [
-    "bbepis-BepInExPack-3.0.0"
+    "bbepis-BepInExPack-3.2.0"
   ]
 }

@@ -8,11 +8,11 @@ This mod adds a restriction when interacting with the teleporter and with portal
 
 The intention of this brief window of time is that if you have someone who is frustratingly slow or afk or trolling you still have the chance to proceed without their permission. After this brief window of time has passed restrictions are reinstated and players have to vote again. Also, if a player dies then restrictions are reinstated and remaining living players must vote again.
 
-One side effect of this mod is that Fireworks will no longer trigger when interacting with teleporters. This is something I picked up in testing where after a player has registered as ready they may still interact with the teleporter but without proceeding so you can infinitely spam fireworks. This is why it is disabled.
-
 Please let me know what you think, there is still plenty more which can be change or improved. I hope you enjoy it and find it as useful I do.
 
 I have had a lot of very mixed feedback ranging from "this is awesome!" to "this is annoying piece of shit". This is mostly designed for the more introverted people like myself who hate having to talk to everyone every round in order to check if everyone is ready. It is much easier to just vote for it. It would be nice to get some constructive feedback instead of just "I don't like it" so if you are one of those people who don't like it would you consider messaging me with what you might do to improve it. Thanks.
+
+Remember that if you use chat commands to vote this is only registering yourself as ready, it does NOT activate the teleporter. You must still activate the teleporter after everyone is ready.
 
 Enjoy,
 Thanks
@@ -33,20 +33,20 @@ As host you can also force the restriction to lift by typing `force` into chat. 
 
 ## Installation
 
-Requires intallation of Bepinex and R2API. 
+Requires intallation of latest versions Bepinex, FluffyLabsConfigManagerTools, and BepinexConfigurationManager. 
 
 Place `TeleportVote.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
-
-## Issues
-
-- Exploitative use of fireworks on teleporter. This has been prevented by disabled fireworks trigger on this type of interactable.
-- In one test game whilst using no_enemies from RoR2 cheats we found that the teleporter got stuck at 99%. I have no idea why and have not been able to reproduce this since. I do not beleive this has anything to do with this mod but noting this issue here incase it is observed again. If you see it please let me know, including steps to reproduce.
 
 ## Contact
 
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
 
 ## Changelog
+
+v4.0.0
+- Updated to work with Artifacts update
+- Reworked the way VoteEnabled property is evaluated as OnStateChange method has been removed from game
+- Removed the (now unnecessary) IL method which prevents fireworks from being spammed on teleporter
 
 v3.0.0
 - Official Bepinex5 release

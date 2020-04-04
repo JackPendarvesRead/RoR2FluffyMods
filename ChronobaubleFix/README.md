@@ -1,6 +1,4 @@
-# NOTE: THIS IS A BETA RELEASE
-
-You will need the "experimental" BepInEx pack in order to use this mod. Ask in #development channel of the modding discord channel for the latest pack.
+NOTE: Currently this will only work in single player! For more information see Known Issues section.
 
 # ChronobaubleFix
 
@@ -41,13 +39,17 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog:
 
-v3.0.0
-- Bepinex5 Update
-- Reorganised hook subscription to force it to only subscribe in single player game
+v2.0.2
+- Tidy up of hook logic
+- Edit readme to make more clear the known issues
+
+v2.0.1
+- ReadMe update
 
 v2.0.0
+- Bepinex5 Update
+- Reorganised hook subscription to force it to only subscribe in single player game
 - Removed R2API dependency
-- Early release
 - Added logic for single player only (temp fix)
 
 v1.0.0

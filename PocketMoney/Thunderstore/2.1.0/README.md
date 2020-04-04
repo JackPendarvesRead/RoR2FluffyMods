@@ -4,7 +4,7 @@ Gives players extra money at the start of each stage. The amount of money given 
 
 The formula for extra money given at the start of stage is: `FlatBonus + WeightedBonus * CostOfChest`
 
-You can customise how much pocketmoney you think you deserve in configuration manager.
+You can customise how much pocketmoney you think you deserve with console commands or you can set it in config file. 
 
 Default Values:
 FlatBonus = 0, WeightedBonus = 1
@@ -27,9 +27,6 @@ Place `PocketMoney.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time so may not always be able to immediately fix any issues that you come up with. 
 
 ## Changelog:
-v2.1.1
-- Fixed bugs where sometimes money would not be given
-
 v2.1.0
 - Updated References
 - Added compatability support for FunkFrog's [ShareSuite](https://thunderstore.io/package/FunkFrog-and-Sipondo/ShareSuite/)

@@ -8,20 +8,24 @@ E.g. if you are holding 5 infusions in your inventory you will receive +5hp per 
 
 This mod also fixed a minor "exploit" where you can get more health stacks from an infusion than you are permitted by killing a group of enemies when you are near maximum stacks.
 
+One popular request is to make "Legacy Infusion". To enable this functionality simply set the MaximumHealthPerInfusion configuration to false and there will be no max limit to how much life each infusion gives you.
+
 Enjoy,
 Thanks
 
-## New features
+## Configuration
 
-Update 1.1.0: Added new improved functionality for Engineers who use infusion. Engineer turrets now have a configuration which when enabled will allow turrets to start with the current bonus that the Engineer who deployed it currently has. E.g. if an Engineer currently has +100 life from an infusion whenver the engineer deploys a turret that turret will also start with +100 life.
+MaximumHealthPerInfusion - Sets the maximum health you can gain per infusion stack (default = 100). Set to false for no maximum value.
 
-Update 1.2.0: You can now set the maximum hp gain per orb. By default this value is 0 which acts as default as above (i.e. there is no limit). Setting this value to anything except 0 limits the hp gained per kill to this number if you have more infusion stacks than the maximum. E.g. if your maximum number is 10 and you have 15 infusion stacks you will gain 10hp per kill rather than 15hp as outlined above.
+MaxHealthGainPerKill - Sets a maximum health you can gain for each kill. By default this is disabled. You may enable this for balance purposes if you think you are gaining too much life.
 
-Update 1.3.0: There is a new configuration bool called LegacyInfusion. If you set this value to true it overrides MaxHpPerInfusionStack and instead you have no limit to the amount of hp you can gain.
+TurretReceivesBonusFromEngineer - Set this to enabled for turrets to start with your current infusion bonus immediately when you deploy it.
+
+TurretGivesEngineerLifeOrbs - Set this to enabled for turrets to give you an infusion stack on kill
 
 ## Installation:
 
-Requires intallation of Bepinex and R2API. 
+Requires intallation of Bepinex and FluffyConfigLabs. 
 
 Place `InfusionStackFix.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 
@@ -30,6 +34,15 @@ Place `InfusionStackFix.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 If you have any issues you can usually find me on the ROR2 modding discord (@Fluffatron). Please bear in mind that as with all mods here this is something I do in my spare time for fun so may not always be able to immediately fix issues that you come up with but I will endeavour to do my best. 
 
 ## Changelog:
+
+-5.0.1
+- Made small change bearing in mind I did not know vanilla behaviour of game had changed
+- Update readme
+
+-5.0.0
+- Removed dependency to DeployableOwnerInformation
+- Reworked code, should be more reliable and more performant
+- Works on Artifacts release of RoR2 game
 
 -4.0.0
 - Official Bepinex5 release

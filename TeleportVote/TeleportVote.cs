@@ -20,15 +20,15 @@ namespace TeleportVote
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "TeleportVote";
-        private const string pluginVersion = "3.0.0";
+        private const string pluginVersion = "4.0.0";
 
-        private VoteRegistrationController VoteController { get; set; }
-        private TimerController TimerController { get; set; }
+        private readonly VoteRegistrationController VoteController = new VoteRegistrationController();
+        private readonly TimerController TimerController = new TimerController();
 
-        public static ConfigEntry<bool> VotesEnabled;
-        public static ConfigEntry<bool> EnableTimerCountdown;
-        public static ConfigEntry<bool> ChatCommandCanStartTimer;
-        public static ConditionalConfigEntry<int> MaximumVotes;
+        public static ConfigEntry<bool> VotesEnabled { get; set; }
+        public static ConfigEntry<bool> EnableTimerCountdown { get; set; }
+        public static ConfigEntry<bool> ChatCommandCanStartTimer { get; set; }
+        public static ConditionalConfigEntry<int> MaximumVotes { get; set; }
 
         public void Awake()
         {
@@ -36,9 +36,6 @@ namespace TeleportVote
             {
                 RoR2Application.isModded = true;
             }
-
-            VoteController = new VoteRegistrationController();
-            TimerController = new TimerController();
 
             #region ConfigSetup
             const string votesSection = "Votes";
@@ -83,7 +80,9 @@ namespace TeleportVote
             #region HookRegistration
             //Main hooks - triggers restriction logics
             On.RoR2.TeleporterInteraction.OnInteractionBegin += TeleporterInteraction_OnInteractionBegin;
-            On.RoR2.TeleporterInteraction.OnStateChanged += TeleporterInteraction_OnStateChanged;
+            TeleporterInteraction.onTeleporterBeginChargingGlobal += TeleporterInteraction_onTeleporterBeginChargingGlobal;
+            TeleporterInteraction.onTeleporterChargedGlobal += TeleporterInteraction_onTeleporterChargedGlobal;
+            TeleporterInteraction.onTeleporterFinishGlobal += TeleporterInteraction_onTeleporterFinishGlobal;
             On.RoR2.Interactor.PerformInteraction += Interactor_PerformInteraction;
             On.RoR2.PlayerCharacterMasterController.OnBodyDeath += PlayerCharacterMasterController_OnBodyDeath;
 
@@ -91,10 +90,10 @@ namespace TeleportVote
             Chat.onChatChanged += Chat_onChatChanged;
 
             //Prevent an exploitative interaction with teleporter and fireworks
-            IL.RoR2.GlobalEventManager.OnInteractionBegin += GlobalEventManager_OnInteractionBegin;
+            //IL.RoR2.GlobalEventManager.OnInteractionBegin += GlobalEventManager_OnInteractionBegin;
 
             //Cleanup Hooks - Needed to avoid bugs where list persists from one run to another
-            RoR2.Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
+            Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
             On.RoR2.Run.BeginStage += Run_BeginStage;
             On.RoR2.Run.EndStage += Run_EndStage;
             #endregion
@@ -132,21 +131,26 @@ namespace TeleportVote
             TimerController.Update(Time.deltaTime);
         }
 
+        private void TeleporterInteraction_onTeleporterFinishGlobal(TeleporterInteraction obj)
+        {
+            VoteController.PlayersCanVote = true;
+        }
+
+        private void TeleporterInteraction_onTeleporterChargedGlobal(TeleporterInteraction obj)
+        {
+            VoteController.PlayersCanVote = true;
+        }
+
+        private void TeleporterInteraction_onTeleporterBeginChargingGlobal(TeleporterInteraction obj)
+        {
+            VoteController.PlayersCanVote = false;
+        }
+
         private void TeleporterInteraction_OnInteractionBegin(On.RoR2.TeleporterInteraction.orig_OnInteractionBegin orig, TeleporterInteraction self, Interactor activator)
         {
             if (VotesEnabled.Value)
             {
-                VoteController.RegisterPlayer(GetNetworkUserFromInteractor(activator));
-                if (VoteController.VotesReady
-                    || TimerController.TimerRestrictionsLifted)
-                {
-                    StopAll();
-                    orig(self, activator);
-                }
-                else if (EnableTimerCountdown.Value)
-                {
-                    TimerController.Start();
-                } 
+                AttemptInteraction(activator, new Action(() => orig(self, activator)));                
             }
             else
             {
@@ -156,24 +160,27 @@ namespace TeleportVote
 
         private void Interactor_PerformInteraction(On.RoR2.Interactor.orig_PerformInteraction orig, Interactor self, GameObject interactableObject)
         {
-            if (VotesEnabled.Value
-                && InteractableObjectNames.IsRestictedInteractableObject(interactableObject.name))
+            if (VotesEnabled.Value && InteractableObjectNames.IsRestictedInteractableObject(interactableObject.name))
             {
-                VoteController.RegisterPlayer(GetNetworkUserFromInteractor(self));
-                if (VoteController.VotesReady
-                    || TimerController.TimerRestrictionsLifted)
-                {
-                    StopAll();
-                    orig(self, interactableObject);
-                }
-                else if (EnableTimerCountdown.Value)
-                {
-                    TimerController.Start();
-                }
+                AttemptInteraction(self, new Action(() => orig(self, interactableObject)));
             }
             else
             {
                 orig(self, interactableObject);
+            }
+        }
+
+        private void AttemptInteraction(Interactor activator, Action action)
+        {
+            VoteController.RegisterPlayer(GetNetworkUserFromInteractor(activator));
+            if (VoteController.VotesReady || TimerController.TimerRestrictionsLifted)
+            {
+                StopAll();
+                action();
+            }
+            else if (EnableTimerCountdown.Value)
+            {
+                TimerController.Start();
             }
         }
 
@@ -183,33 +190,8 @@ namespace TeleportVote
             {
                 Message.SendColoured("Player died. Reinstating restriction.", Colours.Red);
                 StopAll();
-            }           
-            orig(self);
-        }
-
-        private void TeleporterInteraction_OnStateChanged(On.RoR2.TeleporterInteraction.orig_OnStateChanged orig, TeleporterInteraction self, int oldActivationState, int newActivationState)
-        {
-            //enum ActivationState           
-            //Idle, 0            
-            //IdleToCharging, 1                
-            //Charging, 2        
-            //Charged, 3            
-            //Finished, 4
-
-            switch (newActivationState)
-            {
-                case 1: // IdleToCharging
-                case 2: // Charging
-                case 4: // Finished
-                    VoteController.PlayersCanVote = false;
-                    break;
-
-                case 0: // Idle
-                case 3: // Charged
-                    VoteController.PlayersCanVote = true;
-                    break;
             }
-            orig(self, oldActivationState, newActivationState);
+            orig(self);
         }
 
         private NetworkUser GetNetworkUserFromInteractor(Interactor interactor)
@@ -222,12 +204,12 @@ namespace TeleportVote
         private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
         private void Chat_onChatChanged()
         {
-            if (!RoR2.Chat.readOnlyLog.Any())
+            if (!Chat.readOnlyLog.Any())
             {
                 return;
             }
-            if(VotesEnabled.Value
-                && VoteController.PlayersCanVote)
+            if (VotesEnabled.Value &&
+                VoteController.PlayersCanVote)
             {
                 var chatLog = Chat.readOnlyLog;
                 var match = ParseChatLog.Match(chatLog.Last());
@@ -262,7 +244,7 @@ namespace TeleportVote
                                 .Where(nu => nu.isServer)
                                 .Select(nu => nu.userName)
                                 .First().Trim();
-                            if(playerName == hostName)
+                            if (playerName == hostName)
                             {
                                 VoteController.HostOverride();
                                 TimerController.Stop();
@@ -272,35 +254,6 @@ namespace TeleportVote
                 }
             }
         }
-        #endregion
-
-        #region FireWorksILDisable
-        /// <summary>
-        /// Prevent fireworks from triggering when interacting with teleporter or portals
-        /// </summary>
-        /// <param name="il">il context</param>
-        private void GlobalEventManager_OnInteractionBegin(ILContext il)
-        {
-            ILLabel returnLabel = il.DefineLabel();
-            var c = new ILCursor(il);
-            c.GotoNext(
-                x => x.MatchLdloc(2),               // Item Count
-                x => x.MatchLdcI4(0),               // 0
-                x => x.MatchBle(out ILLabel a));    // Transfers control to a target instruction if value is false, a null reference, or zero.
-
-            c.Emit(OpCodes.Ldarg_2);
-            c.EmitDelegate<Func<MonoBehaviour, bool>>((interactableThing) =>
-            {
-                if (interactableThing.name == InteractableObjectNames.Teleporter)
-                {
-                    return true;
-                }
-                return false;
-            });
-            c.Emit(OpCodes.Brtrue, returnLabel);
-            c.GotoNext(x => x.MatchRet());
-            c.MarkLabel(returnLabel);
-        }
-        #endregion       
+        #endregion 
     }
 }
