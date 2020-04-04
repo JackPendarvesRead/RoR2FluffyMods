@@ -77,20 +77,30 @@ namespace PocketMoney
 
         private void SceneDirector_onPostPopulateSceneServer(SceneDirector obj)
         {
+            Logger.LogInfo("Start post populate scene");
             if (RoR2.Run.instance)
             {
+                Logger.LogInfo("Run instance true");
+                Logger.LogInfo($"LatestStageToReceiveMoney.Condition={LatestStageToReceiveMoney.Condition}");
+                Logger.LogInfo($"LatestStage={LatestStageToReceiveMoney.Value}, ClearCount={RoR2.Run.instance.stageClearCount}");
                 if (!LatestStageToReceiveMoney.Condition
                     && LatestStageToReceiveMoney.Value <= RoR2.Run.instance.stageClearCount)
                 {
+
+
                     var difficultyScaledCost = (uint)Mathf.Round(RoR2.Run.instance.GetDifficultyScaledCost(25) * StageWeightedMoney.Value);
                     var pocketMoney = StageFlatMoney.Value + difficultyScaledCost;
 
                     if (ShareSuite)
                     {
+                        Logger.LogInfo("Sharesuite invoke");
+
                         AddMoney.Invoke(ShareSuite, new object[] { pocketMoney });
                     }
                     else
                     {
+                        Logger.LogInfo("Normal invoke");
+
                         foreach (var cm in RoR2.PlayerCharacterMasterController.instances)
                         {
                             cm.master.GiveMoney(pocketMoney);
