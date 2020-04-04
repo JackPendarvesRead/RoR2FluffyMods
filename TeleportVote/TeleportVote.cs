@@ -90,7 +90,7 @@ namespace TeleportVote
             Chat.onChatChanged += Chat_onChatChanged;
 
             //Prevent an exploitative interaction with teleporter and fireworks
-            IL.RoR2.GlobalEventManager.OnInteractionBegin += GlobalEventManager_OnInteractionBegin;
+            //IL.RoR2.GlobalEventManager.OnInteractionBegin += GlobalEventManager_OnInteractionBegin;
 
             //Cleanup Hooks - Needed to avoid bugs where list persists from one run to another
             Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
@@ -254,35 +254,6 @@ namespace TeleportVote
                 }
             }
         }
-        #endregion
-
-        #region FireWorksILDisable
-        /// <summary>
-        /// Prevent fireworks from triggering when interacting with teleporter or portals
-        /// </summary>
-        /// <param name="il">il context</param>
-        private void GlobalEventManager_OnInteractionBegin(ILContext il)
-        {
-            ILLabel returnLabel = il.DefineLabel();
-            var c = new ILCursor(il);
-            c.GotoNext(
-                x => x.MatchLdloc(2),               // Item Count
-                x => x.MatchLdcI4(0),               // 0
-                x => x.MatchBle(out ILLabel a));    // Transfers control to a target instruction if value is false, a null reference, or zero.
-
-            c.Emit(OpCodes.Ldarg_2);
-            c.EmitDelegate<Func<MonoBehaviour, bool>>((interactableThing) =>
-            {
-                if (interactableThing.name == InteractableObjectNames.Teleporter)
-                {
-                    return true;
-                }
-                return false;
-            });
-            c.Emit(OpCodes.Brtrue, returnLabel);
-            c.GotoNext(x => x.MatchRet());
-            c.MarkLabel(returnLabel);
-        }
-        #endregion       
+        #endregion 
     }
 }
