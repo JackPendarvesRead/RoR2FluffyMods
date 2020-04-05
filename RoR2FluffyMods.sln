@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InputLogger", "InputLogger\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ArtifactUpdate", "ArtifactUpdate", "{86666DDB-D6AE-45AE-83B5-6E3A2E104913}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WOP", "WOP", "{1CF5BB02-3587-4DD7-847F-943F67308FC7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
