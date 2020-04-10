@@ -45,7 +45,7 @@ namespace ChronobaubleFix
 
         private void RegisterConfiguration()
         {
-            const string chronobaubleSection = "Chronobauble";
+            const string chronobaubleSection = "ChronobaubleFix";
             const string durationSection = "Debuff Duration";
             const string scalingSection = "Scaling";
 
@@ -77,7 +77,7 @@ namespace ChronobaubleFix
                 nameof(IncreasedDebuffDurationPerStack),
                 0f,
                 new ConfigDescription(
-                   "If enabled, increases duration of buff by this amount for each chronobauble stack on attacker over 1",
+                   "Increases duration of buff by this amount for each chronobauble stack on attacker over 1",
                    new AcceptableValueRange<float>(0.00f, 0.50f)
                    ));
 
@@ -152,8 +152,6 @@ namespace ChronobaubleFix
                     var victimCurrentBuffCount = victimBody.GetBuffCount(buffIndex);
                     var maximumBuffCount = DebuffStacksPerItemStack.Value * attackerChronobaubleCount;
 
-                    Logger.LogInfo($"Attacker = {attackerBody.name}, Victim = {victimBody.name}, BuffCount = {victimCurrentBuffCount}, Max = {maximumBuffCount}");
-                    Logger.LogInfo($"BUFFINDEX = {buffIndex}");
                     if (victimCurrentBuffCount < maximumBuffCount)
                     {                   
                         float debuffDuration = DebuffDuration.Value + IncreasedDebuffDurationPerStack.Value * (attackerChronobaubleCount - 1);

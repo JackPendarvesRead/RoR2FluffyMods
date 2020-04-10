@@ -22,7 +22,7 @@ It is strongly recommended that you use BepinexConfigurationManager when changin
 ChronobaubleFixEnabled - enables/disables this mod
 DebuffStacksPerItemStack - The number of debuffs that can stack per chronobauble in your inventory
 DebuffDuration - Change the length of time the debuff lasts on an enemy
-IncreasedDebuffDurationPerStack - If enabled it increases the duration of debuff for each chronobauble stack over 1
+IncreasedDebuffDurationPerStack - Increases the duration of debuff for each chronobauble stack over 1
 SlowScalingCoefficient - The amount that enemies movement and attack is scaled to. The higher this number the slower enemies will be with debuffs.
 
 ## Installation:
@@ -34,6 +34,8 @@ Place `Chronobauble.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 ## Known Issues
 
 This does not work in multiplayer. It causes some unintended de-sync between non-host players. As a temporary solution I have added logic which will automatically disable this mod logic and restore chronobauble to default.
+
+In future update I intend to get this to work in multiplayer but that'll require me working out the networking issues so it may take a while. Thanks.
 
 ## Contact
 

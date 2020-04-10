@@ -1,7 +1,7 @@
 {
   "name": "ChronobaubleFix",
   "version_number": "3.0.0",
-  "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/blob/BepinexUpdate/ChronobaubleFix/ChronobaubleFix.cs",
+  "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/blob/master/ChronobaubleFix/ChronobaubleFix.cs",
   "description": "Reworks chronobauble into a powerful item. It now gives multiple debuff stacks which decrease both the movement and attack speed of the debuffed enemy.",
   "dependencies": [
     "bbepis-BepInExPack-3.2.0",
