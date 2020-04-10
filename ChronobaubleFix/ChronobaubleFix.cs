@@ -217,9 +217,10 @@ namespace ChronobaubleFix
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Func<CharacterBody, float>>((cb) =>
             {
-                if (cb.HasBuff(BuffIndex.Slow60))
+                var buffindex = chronoFixBuff.BuffDef.buffIndex;
+                if (cb.HasBuff(buffindex))
                 {
-                    return GetDiminishingReturns(cb.GetBuffCount(BuffIndex.Slow60));
+                    return GetDiminishingReturns(cb.GetBuffCount(buffindex));
                 }
                 return 1.0f;
             });
