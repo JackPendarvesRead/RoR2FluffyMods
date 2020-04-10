@@ -64,10 +64,8 @@ namespace ChronobaubleFix
             #endregion
 
             RegisterCustomBuff();
-            IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
+            IL.RoR2.GlobalEventManager.OnHitEnemy += OnHitEnemyAddCustomBuff;
             IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
-
-            Logger.LogInfo("NEW ITEM BUFF INDEX = " + chronoFixBuff.BuffDef.buffIndex.ToString());
             
             //RoR2.SceneDirector.onPostPopulateSceneServer += SubscribeToHooks;          
         }
@@ -103,6 +101,7 @@ namespace ChronobaubleFix
 
         #region SubscribeFuckery
         private bool hooksCurrentlyEnabled = false;
+
         private void SubscribeToHooks(SceneDirector obj)
         {
             if (RoR2.Run.instance)
@@ -133,7 +132,7 @@ namespace ChronobaubleFix
 
         private void Unsubscribe()
         {
-            IL.RoR2.GlobalEventManager.OnHitEnemy -= AddSlow60OnHit;
+            IL.RoR2.GlobalEventManager.OnHitEnemy -= OnHitEnemyAddCustomBuff;
             IL.RoR2.CharacterBody.RecalculateStats -= SetMovementAndAttackSpeed;
             hooksCurrentlyEnabled = false;
             Debug.Log("Unsubscibing hooks. Currently this mod will only work for single player games.");
@@ -141,21 +140,27 @@ namespace ChronobaubleFix
 
         private void Subscribe()
         {
-            IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
+            IL.RoR2.GlobalEventManager.OnHitEnemy += OnHitEnemyAddCustomBuff;
             IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
             hooksCurrentlyEnabled = true;
             Debug.Log("Subscribing to hooks");
         }
         #endregion
 
-        private void AddSlow60OnHit(ILContext il)
+        private int victimBodyIndex;
+        private void OnHitEnemyAddCustomBuff(ILContext il)
         {
             var c = new ILCursor(il);
             ILLabel label = il.DefineLabel();
 
-            // Add logic only add Slow60 buff if you have stacks to permit doing it
+            Mono.Cecil.FieldReference fr1;
             c.GotoNext(
-                x => x.MatchLdloc(1), //attacker cbody
+                x => x.MatchLdarg(2),
+                x => x.MatchCallvirt<GameObject>("GetComponent"),
+                x => x.MatchStloc(out victimBodyIndex));
+
+            c.GotoNext(
+                x => x.MatchLdloc(victimBodyIndex),
                 x => x.MatchLdcI4(26),
                 x => x.MatchLdcR4(2)
                 );
