@@ -9,10 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using BepInEx.Configuration;
+using R2API;
+using R2API.Utils;
 
 namespace ChronobaubleFix
 {
     [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
+    [R2APISubmoduleDependency(nameof(ItemAPI))]
     public class ChronobaubleFix : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -23,14 +26,14 @@ namespace ChronobaubleFix
         private static ConfigEntry<int> DebuffStacksPerItemStack;
         private static ConfigEntry<bool> HooksEnabled;
 
+        private CustomBuff chronoFixBuff;
+
         public void Awake()
         {
             if (!RoR2Application.isModded)
             {
                 RoR2Application.isModded = true;
             }
-
-            
 
             #region ConfigSetup
             const string chronobaubleSection = "Chronobauble";
@@ -59,7 +62,25 @@ namespace ChronobaubleFix
                    ));
             #endregion
 
+            RegisterCustomBuff();
+
             RoR2.SceneDirector.onPostPopulateSceneServer += SubscribeToHooks;          
+        }
+
+        private void RegisterCustomBuff()
+        {
+            BuffDef originalChronoBuff = BuffCatalog.GetBuffDef(BuffIndex.Slow60);
+            string name = "ChronobaubleFixBuff";
+            chronoFixBuff = new CustomBuff(name, new BuffDef
+            {
+                buffColor = originalChronoBuff.buffColor,
+                canStack = true,
+                eliteIndex = originalChronoBuff.eliteIndex,
+                iconPath = originalChronoBuff.iconPath,
+                isDebuff = true,
+                name = name
+            });
+            ItemAPI.Add(chronoFixBuff);
         }
 
         private bool hooksCurrentlyEnabled = false;

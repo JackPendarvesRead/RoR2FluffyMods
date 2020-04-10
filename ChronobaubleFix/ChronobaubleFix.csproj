@@ -71,6 +71,9 @@
       <HintPath>..\..\..\libs\RoR2Modding\MonoMod.Utils.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="R2API">
+      <HintPath>..\..\..\libs\RoR2Modding\R2API.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
