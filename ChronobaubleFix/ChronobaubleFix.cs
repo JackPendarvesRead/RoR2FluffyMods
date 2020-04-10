@@ -64,20 +64,22 @@ namespace ChronobaubleFix
             #endregion
 
             RegisterCustomBuff();
+            IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
+            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
 
-            RoR2.SceneDirector.onPostPopulateSceneServer += SubscribeToHooks;          
+            Logger.LogInfo("NEW ITEM BUFF INDEX = " + chronoFixBuff.BuffDef.buffIndex.ToString());
+            
+            //RoR2.SceneDirector.onPostPopulateSceneServer += SubscribeToHooks;          
         }
 
         private void RegisterCustomBuff()
         {
-            BuffDef originalChronoBuff = BuffCatalog.GetBuffDef(BuffIndex.Slow60);
             string name = "ChronobaubleFixBuff";
             chronoFixBuff = new CustomBuff(name, new BuffDef
             {
-                buffColor = originalChronoBuff.buffColor,
+                buffColor = new Color(0.6784314f, 0.6117647f, 0.4117647f),
                 canStack = true,
-                eliteIndex = originalChronoBuff.eliteIndex,
-                iconPath = originalChronoBuff.iconPath,
+                iconPath = "Textures/BuffIcons/texBuffSlow50Icon",
                 isDebuff = true,
                 name = name
             });
@@ -99,7 +101,7 @@ namespace ChronobaubleFix
             }
         }
 
-
+        #region SubscribeFuckery
         private bool hooksCurrentlyEnabled = false;
         private void SubscribeToHooks(SceneDirector obj)
         {
@@ -109,9 +111,9 @@ namespace ChronobaubleFix
                 {
                     if (hooksCurrentlyEnabled)
                     {
-                        if(NetworkUser.readOnlyInstancesList.Count > 1)
+                        if (NetworkUser.readOnlyInstancesList.Count > 1)
                         {
-                            Unsubscribe();                            
+                            Unsubscribe();
                         }
                     }
                     else
@@ -126,7 +128,7 @@ namespace ChronobaubleFix
                         Unsubscribe();
                     }
                 }
-            }           
+            }
         }
 
         private void Unsubscribe()
@@ -141,15 +143,10 @@ namespace ChronobaubleFix
         {
             IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
             IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
-            On.RoR2.CharacterBody.RecalculateStats += BlahBlah;
             hooksCurrentlyEnabled = true;
             Debug.Log("Subscribing to hooks");
         }
-
-        private void BlahBlah(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
         private void AddSlow60OnHit(ILContext il)
         {
@@ -164,19 +161,24 @@ namespace ChronobaubleFix
                 );
 
             c.Emit(OpCodes.Ldarg_1); //Arg1 = DamageInfo
-            c.EmitDelegate<Func<DamageInfo, bool>>((damageInfo) =>
+            c.Emit(OpCodes.Ldarg_2); //Arg2 = VictimGameObj
+            c.EmitDelegate<Func<DamageInfo, GameObject, bool>>((damageInfo, victimGameObject) =>
             {  
                 if (ModIsActive)
                 {
                     var attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
-                    var chronobaubleCount = attackerBody.inventory.GetItemCount(ItemIndex.SlowOnHit);
-                    var buffIndex = chronoFixBuff.BuffDef.buffIndex;
-                    var buffCount = attackerBody.GetBuffCount(buffIndex);
-                    var maximumBuffCount = DebuffStacksPerItemStack.Value * chronobaubleCount;
+                    var victimBody = victimGameObject.GetComponent<CharacterBody>();
 
-                    if (buffCount < maximumBuffCount)
+                    var attackerChronobaubleCount = attackerBody.inventory.GetItemCount(ItemIndex.SlowOnHit);
+                    var buffIndex = chronoFixBuff.BuffDef.buffIndex;
+                    var victimCurrentBuffCount = victimBody.GetBuffCount(buffIndex);
+                    var maximumBuffCount = DebuffStacksPerItemStack.Value * attackerChronobaubleCount;
+
+                    Logger.LogInfo($"Attacker = {attackerBody.name}, Victim = {victimBody.name}, BuffCount = {victimCurrentBuffCount}, Max = {maximumBuffCount}");
+                    Logger.LogInfo($"BUFFINDEX = {buffIndex}");
+                    if (victimCurrentBuffCount < maximumBuffCount)
                     {
-                        attackerBody.AddTimedBuff(buffIndex, buffDuration);
+                        victimBody.AddTimedBuff(buffIndex, buffDuration);
                     }
                     return false;
                 }
