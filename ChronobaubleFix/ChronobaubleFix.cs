@@ -109,7 +109,8 @@ namespace ChronobaubleFix
         {
             get
             {
-                if (ChronobaubleFixEnabled.Value)
+                if (ChronobaubleFixEnabled.Value &&
+                    NetworkUser.readOnlyInstancesList.Count < 2)
                 {
                     return true;
                 }
