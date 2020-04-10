@@ -51,10 +51,6 @@
       <HintPath>..\..\..\libs\RoR2Modding\BepInEx.Preloader.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FluffyLabsConfigManagerTools">
-      <HintPath>..\..\FluffyLabsConfigManagerTools\FluffyLabsConfigManagerTools\bin\Release\FluffyLabsConfigManagerTools.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>..\..\..\libs\RoR2Modding\MMHOOK_Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -70,6 +66,9 @@
     <Reference Include="MonoMod.Utils">
       <HintPath>..\..\..\libs\RoR2Modding\MonoMod.Utils.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="R2API">
+      <HintPath>..\..\..\libs\RoR2Modding\R2API.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

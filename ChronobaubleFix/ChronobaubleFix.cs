@@ -9,18 +9,26 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using BepInEx.Configuration;
+using R2API;
+using R2API.Utils;
 
 namespace ChronobaubleFix
 {
     [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
+    [R2APISubmoduleDependency(nameof(ItemAPI))]
     public class ChronobaubleFix : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "ChronobaubleFix";
-        private const string pluginVersion = "2.0.2";
+        private const string pluginVersion = "3.0.0";
 
-        private static ConfigEntry<float> SlowScalingCoefficient;
-        private static ConfigEntry<int> DebuffStacksPerItemStack;
+        private ConfigEntry<float> DebuffDuration;
+        private ConfigEntry<int> DebuffStacksPerItemStack;
+        private ConfigEntry<bool> ChronobaubleFixEnabled;
+        private ConfigEntry<float> IncreasedDebuffDurationPerStack;
+        private ConfigEntry<float> SlowScalingCoefficient;
+
+        private CustomBuff chronoFixBuff;
 
         public void Awake()
         {
@@ -29,92 +37,139 @@ namespace ChronobaubleFix
                 RoR2Application.isModded = true;
             }
 
-            const string chronobaubleSection = "Chronobauble";
+            RegisterConfiguration();
+            RegisterCustomBuff();
+            IL.RoR2.GlobalEventManager.OnHitEnemy += OnHitEnemyAddCustomBuff;
+            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;       
+        }
 
-            SlowScalingCoefficient = Config.Bind<float>(
-                new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
-                0.05f,
+        private void RegisterConfiguration()
+        {
+            const string chronobaubleSection = "ChronobaubleFix";
+            const string durationSection = "Debuff Duration";
+            const string scalingSection = "Scaling";
+
+            ChronobaubleFixEnabled = Config.Bind<bool>(
+               new ConfigDefinition(chronobaubleSection, nameof(ChronobaubleFixEnabled)),
+               true,
+               new ConfigDescription(
+                   "Turn the mod on or off"
+                   ));
+
+            DebuffDuration = Config.Bind<float>(
+                new ConfigDefinition(durationSection, nameof(DebuffDuration)),
+                2f,
                 new ConfigDescription(
-                    "The scaling coefficient for how much each stack of slow will slow enemies (higher is slower)",
-                    new AcceptableValueRange<float>(0.00f, 0.20f)
+                    "The time (in seconds) a debuff will last on an enemy. Default = 2 seconds",
+                    new AcceptableValueRange<float>(0.0f, 10f)
                     ));
 
             DebuffStacksPerItemStack = Config.Bind<int>(
-                new ConfigDefinition(chronobaubleSection, nameof(DebuffStacksPerItemStack)),
-                3,
-                new ConfigDescription(
-                    "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
-                    new AcceptableValueRange<int>(0, 20)
-                    ));
+               new ConfigDefinition(scalingSection, nameof(DebuffStacksPerItemStack)),
+               3,
+               new ConfigDescription(
+                   "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
+                   new AcceptableValueRange<int>(1, 20)
+                   ));
 
-            RoR2.SceneDirector.onPostPopulateSceneServer += SceneDirector_onPostPopulateSceneServer;          
+            IncreasedDebuffDurationPerStack = Config.Bind<float>(
+                durationSection,
+                nameof(IncreasedDebuffDurationPerStack),
+                0f,
+                new ConfigDescription(
+                   "Increases duration of buff by this amount for each chronobauble stack on attacker over 1",
+                   new AcceptableValueRange<float>(0.00f, 0.50f)
+                   ));
+
+            SlowScalingCoefficient = Config.Bind<float>(
+                new ConfigDefinition(scalingSection, nameof(SlowScalingCoefficient)),
+                0.035f,
+                new ConfigDescription(
+                    "The scaling coefficient for how much each stack of slow will slow enemies (higher is slower)",
+                    new AcceptableValueRange<float>(0.00f, 0.50f)
+                    ));
         }
 
-        private bool hooksEnabled = false;
-        private void SceneDirector_onPostPopulateSceneServer(SceneDirector obj)
+        private void RegisterCustomBuff()
         {
-            if (RoR2.Run.instance)
+            string name = "ChronobaubleFixBuff";
+            chronoFixBuff = new CustomBuff(name, new BuffDef
             {
-                if (hooksEnabled 
-                    && RoR2.NetworkUser.readOnlyInstancesList.Count > 1)
+                buffColor = new Color(0.6784314f, 0.6117647f, 0.4117647f),
+                canStack = true,
+                iconPath = "Textures/BuffIcons/texBuffSlow50Icon",
+                isDebuff = true,
+                name = name
+            });
+            ItemAPI.Add(chronoFixBuff);
+        }
+
+        private bool ModIsActive
+        {
+            get
+            {
+                if (ChronobaubleFixEnabled.Value &&
+                    NetworkUser.readOnlyInstancesList.Count < 2)
                 {
-                    On.RoR2.CharacterBody.AddBuff -= SetBuffCanStack;
-                    IL.RoR2.GlobalEventManager.OnHitEnemy -= AddSlow60OnHit;
-                    IL.RoR2.CharacterBody.RecalculateStats -= SetMovementAndAttackSpeed;
-                    hooksEnabled = false;
-                    Debug.Log("Unsubscibing hooks. Currently this mod will only work for single player games.");
+                    return true;
                 }
                 else
                 {
-                    if (!hooksEnabled)
-                    {
-                        On.RoR2.CharacterBody.AddBuff += SetBuffCanStack;
-                        IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
-                        IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
-                        hooksEnabled = true;
-                        Debug.Log("Subscribing to hooks");
-                    }                    
+                    return false;
                 }
-            }           
-        }
-        
-        private void SetBuffCanStack(On.RoR2.CharacterBody.orig_AddBuff orig, CharacterBody self, BuffIndex buffType)
-        {
-            if (buffType == BuffIndex.Slow60)
-            {
-                BuffCatalog.GetBuffDef(buffType).canStack = true;
             }
-            orig(self, buffType);
         }
 
-        private void AddSlow60OnHit(ILContext il)
+        private int victimBodyIndex;
+        private void OnHitEnemyAddCustomBuff(ILContext il)
         {
             var c = new ILCursor(il);
             ILLabel label = il.DefineLabel();
 
-            // Add logic only add Slow60 buff if you have stacks to permit doing it
+            Mono.Cecil.FieldReference fr1;
             c.GotoNext(
-                x => x.MatchLdloc(1),
+                x => x.MatchLdarg(2),
+                x => x.MatchCallvirt<GameObject>("GetComponent"),
+                x => x.MatchStloc(out victimBodyIndex));
+
+            c.GotoNext(
+                x => x.MatchLdloc(victimBodyIndex),
                 x => x.MatchLdcI4(26),
                 x => x.MatchLdcR4(2)
                 );
-            c.Emit(OpCodes.Ldloc_S, (byte)10); //Number of Chronobaubles on attacker
-            c.Emit(OpCodes.Ldloc_1); //Victim CharacterBody
-            c.EmitDelegate<Func<int, CharacterBody, bool>>((chronobaubleCount, victim) =>
-            {
-                if (DebuffStacksPerItemStack.Value > 0 &&
-                    victim.GetBuffCount(BuffIndex.Slow60) >= DebuffStacksPerItemStack.Value * chronobaubleCount)
+
+            c.Emit(OpCodes.Ldarg_1); //Arg1 = DamageInfo
+            c.Emit(OpCodes.Ldarg_2); //Arg2 = VictimGameObj
+            c.EmitDelegate<Func<DamageInfo, GameObject, bool>>((damageInfo, victimGameObject) =>
+            {  
+                if (ModIsActive)
                 {
+                    var attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
+                    var victimBody = victimGameObject.GetComponent<CharacterBody>();
+
+                    var attackerChronobaubleCount = attackerBody.inventory.GetItemCount(ItemIndex.SlowOnHit);
+                    var buffIndex = chronoFixBuff.BuffDef.buffIndex;
+                    var victimCurrentBuffCount = victimBody.GetBuffCount(buffIndex);
+                    var maximumBuffCount = DebuffStacksPerItemStack.Value * attackerChronobaubleCount;
+
+                    if (victimCurrentBuffCount < maximumBuffCount)
+                    {                   
+                        float debuffDuration = DebuffDuration.Value + IncreasedDebuffDurationPerStack.Value * (attackerChronobaubleCount - 1);
+                        victimBody.AddTimedBuff(buffIndex, debuffDuration);
+                    }
                     return false;
-                }                
-                return true;               
+                }
+                else
+                {
+                    return true;
+                }                              
             });
             c.Emit(OpCodes.Brfalse, label); //If delegate returns false, break and do not add buff
             c.GotoNext(x => x.MatchLdloc(0));
             c.MarkLabel(label);
         }   
 
-        private void SetMovementAndAttackSpeed(MonoMod.Cil.ILContext il)
+        private void SetMovementAndAttackSpeed(ILContext il)
         {
             var c = new ILCursor(il);
 
@@ -125,9 +180,10 @@ namespace ChronobaubleFix
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Func<CharacterBody, float>>((cb) =>
             {
-                if (cb.HasBuff(BuffIndex.Slow60))
+                var buffindex = chronoFixBuff.BuffDef.buffIndex;
+                if (cb.HasBuff(buffindex))
                 {
-                    return GetDiminishingReturns(cb.GetBuffCount(BuffIndex.Slow60));
+                    return GetDiminishingReturns(cb.GetBuffCount(buffindex));
                 }
                 return 1.0f;
             });
@@ -140,18 +196,19 @@ namespace ChronobaubleFix
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Func<CharacterBody, float>>((cb) =>
             {
-                if (cb.HasBuff(BuffIndex.Slow60))
+                var buffindex = chronoFixBuff.BuffDef.buffIndex;
+                if (cb.HasBuff(buffindex))
                 {
-                    return GetDiminishingReturns(cb.GetBuffCount(BuffIndex.Slow60));
+                    return GetDiminishingReturns(cb.GetBuffCount(buffindex));
                 }
                 return 1.0f;
             });
             c.Emit(OpCodes.Mul);
         }
 
-        private float GetDiminishingReturns(int count)
+        private float GetDiminishingReturns(int itemCount)
         {
-            return 1.0f / (count * SlowScalingCoefficient.Value + 1);
+            return 1.0f / (itemCount * SlowScalingCoefficient.Value + 1);
         }
     }
 }
