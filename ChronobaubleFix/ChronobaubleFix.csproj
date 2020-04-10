@@ -51,10 +51,6 @@
       <HintPath>..\..\..\libs\RoR2Modding\BepInEx.Preloader.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FluffyLabsConfigManagerTools">
-      <HintPath>..\..\FluffyLabsConfigManagerTools\FluffyLabsConfigManagerTools\bin\Release\FluffyLabsConfigManagerTools.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>..\..\..\libs\RoR2Modding\MMHOOK_Assembly-CSharp.dll</HintPath>
       <Private>False</Private>

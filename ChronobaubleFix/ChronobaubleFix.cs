@@ -11,7 +11,6 @@ using UnityEngine;
 using BepInEx.Configuration;
 using R2API;
 using R2API.Utils;
-using FluffyLabsConfigManagerTools.Infrastructure;
 
 namespace ChronobaubleFix
 {
@@ -26,7 +25,7 @@ namespace ChronobaubleFix
         private ConfigEntry<float> DebuffDuration;
         private ConfigEntry<int> DebuffStacksPerItemStack;
         private ConfigEntry<bool> ChronobaubleFixEnabled;
-        private ConditionalConfigEntry<float> IncreasedDebuffDurationPerStack;
+        private ConfigEntry<float> IncreasedDebuffDurationPerStack;
         private ConfigEntry<float> SlowScalingCoefficient;
 
         private CustomBuff chronoFixBuff;
@@ -60,7 +59,7 @@ namespace ChronobaubleFix
                 2f,
                 new ConfigDescription(
                     "The time (in seconds) a debuff will last on an enemy. Default = 2 seconds",
-                    new AcceptableValueRange<float>(0.5f, 10f)
+                    new AcceptableValueRange<float>(0.0f, 10f)
                     ));
 
             DebuffStacksPerItemStack = Config.Bind<int>(
@@ -71,15 +70,13 @@ namespace ChronobaubleFix
                    new AcceptableValueRange<int>(1, 20)
                    ));
 
-            var cu = new FluffyLabsConfigManagerTools.Util.ConditionalUtil(Config);
-            IncreasedDebuffDurationPerStack = cu.AddConditionalConfig<float>(                
+            IncreasedDebuffDurationPerStack = Config.Bind<float>(                
                 chronobaubleSection,
                 nameof(IncreasedDebuffDurationPerStack),
                 0.1f,
-                false,
                 new ConfigDescription(
                    "If enabled, increases duration of buff by this amount for each chronobauble stack on attacker over 1",
-                   new AcceptableValueRange<float>(0f, 10f)
+                   new AcceptableValueRange<float>(0.00f, 0.50f)
                    ));
 
             SlowScalingCoefficient = Config.Bind<float>(
@@ -156,8 +153,9 @@ namespace ChronobaubleFix
                     Logger.LogInfo($"Attacker = {attackerBody.name}, Victim = {victimBody.name}, BuffCount = {victimCurrentBuffCount}, Max = {maximumBuffCount}");
                     Logger.LogInfo($"BUFFINDEX = {buffIndex}");
                     if (victimCurrentBuffCount < maximumBuffCount)
-                    {                        
-                        victimBody.AddTimedBuff(buffIndex, GetDebuffDuration(attackerChronobaubleCount));
+                    {                   
+                        float debuffDuration = DebuffDuration.Value + IncreasedDebuffDurationPerStack.Value * (attackerChronobaubleCount - 1);
+                        victimBody.AddTimedBuff(buffIndex, debuffDuration);
                     }
                     return false;
                 }
@@ -206,18 +204,6 @@ namespace ChronobaubleFix
                 return 1.0f;
             });
             c.Emit(OpCodes.Mul);
-        }
-
-        private float GetDebuffDuration(float itemCount)
-        {
-            if (IncreasedDebuffDurationPerStack.Condition)
-            {
-                return DebuffDuration.Value + IncreasedDebuffDurationPerStack.Value * (itemCount - 1);
-            }
-            else
-            {
-                return DebuffDuration.Value;
-            }
         }
 
         private float GetDiminishingReturns(int itemCount)
