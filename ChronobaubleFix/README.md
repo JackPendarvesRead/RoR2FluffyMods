@@ -27,7 +27,7 @@ SlowScalingCoefficient - The amount that enemies movement and attack is scaled t
 
 ## Installation:
 
-Requires intallation of Bepinex, R2API and FluffyLabsConfigManagerTool (please see dependencies).
+Requires intallation of Bepinex and R2API
 
 Place `Chronobauble.dll` inside of "/Risk of Rain 2/Bepinex/Plugins/"
 

@@ -46,6 +46,8 @@ namespace ChronobaubleFix
         private void RegisterConfiguration()
         {
             const string chronobaubleSection = "Chronobauble";
+            const string durationSection = "Debuff Duration";
+            const string scalingSection = "Scaling";
 
             ChronobaubleFixEnabled = Config.Bind<bool>(
                new ConfigDefinition(chronobaubleSection, nameof(ChronobaubleFixEnabled)),
@@ -55,7 +57,7 @@ namespace ChronobaubleFix
                    ));
 
             DebuffDuration = Config.Bind<float>(
-                new ConfigDefinition(chronobaubleSection, nameof(DebuffDuration)),
+                new ConfigDefinition(durationSection, nameof(DebuffDuration)),
                 2f,
                 new ConfigDescription(
                     "The time (in seconds) a debuff will last on an enemy. Default = 2 seconds",
@@ -63,24 +65,24 @@ namespace ChronobaubleFix
                     ));
 
             DebuffStacksPerItemStack = Config.Bind<int>(
-               new ConfigDefinition(chronobaubleSection, nameof(DebuffStacksPerItemStack)),
+               new ConfigDefinition(scalingSection, nameof(DebuffStacksPerItemStack)),
                3,
                new ConfigDescription(
                    "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
                    new AcceptableValueRange<int>(1, 20)
                    ));
 
-            IncreasedDebuffDurationPerStack = Config.Bind<float>(                
-                chronobaubleSection,
+            IncreasedDebuffDurationPerStack = Config.Bind<float>(
+                durationSection,
                 nameof(IncreasedDebuffDurationPerStack),
-                0.1f,
+                0f,
                 new ConfigDescription(
                    "If enabled, increases duration of buff by this amount for each chronobauble stack on attacker over 1",
                    new AcceptableValueRange<float>(0.00f, 0.50f)
                    ));
 
             SlowScalingCoefficient = Config.Bind<float>(
-                new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
+                new ConfigDefinition(scalingSection, nameof(SlowScalingCoefficient)),
                 0.035f,
                 new ConfigDescription(
                     "The scaling coefficient for how much each stack of slow will slow enemies (higher is slower)",
