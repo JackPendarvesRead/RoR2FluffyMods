@@ -41,10 +41,10 @@ namespace ChronobaubleFix
 
             SlowScalingCoefficient = Config.Bind<float>(
                 new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
-                0.05f,
+                0.035f,
                 new ConfigDescription(
                     "The scaling coefficient for how much each stack of slow will slow enemies (higher is slower)",
-                    new AcceptableValueRange<float>(0.00f, 0.20f)
+                    new AcceptableValueRange<float>(0.00f, 0.50f)
                     ));
 
             DebuffStacksPerItemStack = Config.Bind<int>(
@@ -60,7 +60,7 @@ namespace ChronobaubleFix
                 2f,
                 new ConfigDescription(
                     "The time (in seconds) a debuff will last on an enemy. Default = 2 seconds",
-                    new AcceptableValueRange<float>(0f, 10f)
+                    new AcceptableValueRange<float>(0.5f, 10f)
                     ));
 
             ChronobaubleFixEnabled = Config.Bind<bool>(
@@ -73,9 +73,7 @@ namespace ChronobaubleFix
 
             RegisterCustomBuff();
             IL.RoR2.GlobalEventManager.OnHitEnemy += OnHitEnemyAddCustomBuff;
-            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
-            
-            //RoR2.SceneDirector.onPostPopulateSceneServer += SubscribeToHooks;          
+            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;       
         }
 
         private void RegisterCustomBuff()
@@ -106,54 +104,6 @@ namespace ChronobaubleFix
                 }
             }
         }
-
-        #region SubscribeFuckery
-        private bool hooksCurrentlyEnabled = false;
-
-        private void SubscribeToHooks(SceneDirector obj)
-        {
-            if (RoR2.Run.instance)
-            {
-                if (ChronobaubleFixEnabled.Value)
-                {
-                    if (hooksCurrentlyEnabled)
-                    {
-                        if (NetworkUser.readOnlyInstancesList.Count > 1)
-                        {
-                            Unsubscribe();
-                        }
-                    }
-                    else
-                    {
-                        Subscribe();
-                    }
-                }
-                else
-                {
-                    if (hooksCurrentlyEnabled)
-                    {
-                        Unsubscribe();
-                    }
-                }
-            }
-        }
-
-        private void Unsubscribe()
-        {
-            IL.RoR2.GlobalEventManager.OnHitEnemy -= OnHitEnemyAddCustomBuff;
-            IL.RoR2.CharacterBody.RecalculateStats -= SetMovementAndAttackSpeed;
-            hooksCurrentlyEnabled = false;
-            Debug.Log("Unsubscibing hooks. Currently this mod will only work for single player games.");
-        }
-
-        private void Subscribe()
-        {
-            IL.RoR2.GlobalEventManager.OnHitEnemy += OnHitEnemyAddCustomBuff;
-            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
-            hooksCurrentlyEnabled = true;
-            Debug.Log("Subscribing to hooks");
-        }
-        #endregion
 
         private int victimBodyIndex;
         private void OnHitEnemyAddCustomBuff(ILContext il)
