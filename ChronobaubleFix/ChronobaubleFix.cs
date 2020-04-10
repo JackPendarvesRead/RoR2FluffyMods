@@ -155,9 +155,8 @@ namespace ChronobaubleFix
                     Logger.LogInfo($"Attacker = {attackerBody.name}, Victim = {victimBody.name}, BuffCount = {victimCurrentBuffCount}, Max = {maximumBuffCount}");
                     Logger.LogInfo($"BUFFINDEX = {buffIndex}");
                     if (victimCurrentBuffCount < maximumBuffCount)
-                    {
-                        float debuffDuration = DebuffDuration.Value + IncreasedDebuffDurationPerStack.Value * (attackerChronobaubleCount -1);
-                        victimBody.AddTimedBuff(buffIndex, debuffDuration);
+                    {                        
+                        victimBody.AddTimedBuff(buffIndex, GetDebuffDuration(attackerChronobaubleCount));
                     }
                     return false;
                 }
@@ -208,9 +207,21 @@ namespace ChronobaubleFix
             c.Emit(OpCodes.Mul);
         }
 
-        private float GetDiminishingReturns(int count)
+        private float GetDebuffDuration(float itemCount)
         {
-            return 1.0f / (count * SlowScalingCoefficient.Value + 1);
+            if (IncreasedDebuffDurationPerStack.Condition)
+            {
+                return DebuffDuration.Value + IncreasedDebuffDurationPerStack.Value * (itemCount - 1);
+            }
+            else
+            {
+                return DebuffDuration.Value;
+            }
+        }
+
+        private float GetDiminishingReturns(int itemCount)
+        {
+            return 1.0f / (itemCount * SlowScalingCoefficient.Value + 1);
         }
     }
 }
