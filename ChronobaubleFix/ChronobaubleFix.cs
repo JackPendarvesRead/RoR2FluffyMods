@@ -37,24 +37,22 @@ namespace ChronobaubleFix
                 RoR2Application.isModded = true;
             }
 
-            #region ConfigSetup
+            RegisterConfiguration();
+            RegisterCustomBuff();
+            IL.RoR2.GlobalEventManager.OnHitEnemy += OnHitEnemyAddCustomBuff;
+            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;       
+        }
+
+        private void RegisterConfiguration()
+        {
             const string chronobaubleSection = "Chronobauble";
 
-            SlowScalingCoefficient = Config.Bind<float>(
-                new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
-                0.035f,
-                new ConfigDescription(
-                    "The scaling coefficient for how much each stack of slow will slow enemies (higher is slower)",
-                    new AcceptableValueRange<float>(0.00f, 0.50f)
-                    ));
-
-            DebuffStacksPerItemStack = Config.Bind<int>(
-                new ConfigDefinition(chronobaubleSection, nameof(DebuffStacksPerItemStack)),
-                3,
-                new ConfigDescription(
-                    "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
-                    new AcceptableValueRange<int>(1, 20)
-                    ));
+            ChronobaubleFixEnabled = Config.Bind<bool>(
+               new ConfigDefinition(chronobaubleSection, nameof(ChronobaubleFixEnabled)),
+               true,
+               new ConfigDescription(
+                   "Turn the mod on or off"
+                   ));
 
             DebuffDuration = Config.Bind<float>(
                 new ConfigDefinition(chronobaubleSection, nameof(DebuffDuration)),
@@ -64,25 +62,30 @@ namespace ChronobaubleFix
                     new AcceptableValueRange<float>(0.5f, 10f)
                     ));
 
+            DebuffStacksPerItemStack = Config.Bind<int>(
+               new ConfigDefinition(chronobaubleSection, nameof(DebuffStacksPerItemStack)),
+               3,
+               new ConfigDescription(
+                   "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
+                   new AcceptableValueRange<int>(1, 20)
+                   ));
+
             IncreasedDebuffDurationPerStack = Config.Bind<float>(
                new ConfigDefinition(chronobaubleSection, nameof(IncreasedDebuffDurationPerStack)),
                0f,
                new ConfigDescription(
-                   "Increases duration of buff by this amount for each chronobauble stack on attacker",
+                   "Increases duration of buff by this amount for each chronobauble stack on attacker over 1",
                    new AcceptableValueRange<float>(0f, 10f)
                    ));
 
-            ChronobaubleFixEnabled = Config.Bind<bool>(
-               new ConfigDefinition(chronobaubleSection, nameof(ChronobaubleFixEnabled)),
-               true,
-               new ConfigDescription(
-                   "Turn the mod on or off"
-                   ));
-            #endregion
+            SlowScalingCoefficient = Config.Bind<float>(
+                new ConfigDefinition(chronobaubleSection, nameof(SlowScalingCoefficient)),
+                0.035f,
+                new ConfigDescription(
+                    "The scaling coefficient for how much each stack of slow will slow enemies (higher is slower)",
+                    new AcceptableValueRange<float>(0.00f, 0.50f)
+                    ));
 
-            RegisterCustomBuff();
-            IL.RoR2.GlobalEventManager.OnHitEnemy += OnHitEnemyAddCustomBuff;
-            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;       
         }
 
         private void RegisterCustomBuff()
@@ -150,7 +153,7 @@ namespace ChronobaubleFix
                     Logger.LogInfo($"BUFFINDEX = {buffIndex}");
                     if (victimCurrentBuffCount < maximumBuffCount)
                     {
-                        float debuffDuration = DebuffDuration.Value + IncreasedDebuffDurationPerStack.Value * attackerChronobaubleCount;
+                        float debuffDuration = DebuffDuration.Value + IncreasedDebuffDurationPerStack.Value * (attackerChronobaubleCount -1);
                         victimBody.AddTimedBuff(buffIndex, debuffDuration);
                     }
                     return false;
