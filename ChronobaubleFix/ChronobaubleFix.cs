@@ -21,6 +21,7 @@ namespace ChronobaubleFix
 
         private static ConfigEntry<float> SlowScalingCoefficient;
         private static ConfigEntry<int> DebuffStacksPerItemStack;
+        private static ConfigEntry<bool> HooksEnabled;
 
         public void Awake()
         {
@@ -29,6 +30,9 @@ namespace ChronobaubleFix
                 RoR2Application.isModded = true;
             }
 
+            
+
+            #region ConfigSetup
             const string chronobaubleSection = "Chronobauble";
 
             SlowScalingCoefficient = Config.Bind<float>(
@@ -47,35 +51,62 @@ namespace ChronobaubleFix
                     new AcceptableValueRange<int>(0, 20)
                     ));
 
-            RoR2.SceneDirector.onPostPopulateSceneServer += SceneDirector_onPostPopulateSceneServer;          
+            HooksEnabled = Config.Bind<bool>(
+               new ConfigDefinition(chronobaubleSection, nameof(HooksEnabled)),
+               true,
+               new ConfigDescription(
+                   "Turn the mod on or off"
+                   ));
+            #endregion
+
+            RoR2.SceneDirector.onPostPopulateSceneServer += SubscribeToHooks;          
         }
 
-        private bool hooksEnabled = false;
-        private void SceneDirector_onPostPopulateSceneServer(SceneDirector obj)
+        private bool hooksCurrentlyEnabled = false;
+        private void SubscribeToHooks(SceneDirector obj)
         {
             if (RoR2.Run.instance)
             {
-                if (hooksEnabled 
-                    && RoR2.NetworkUser.readOnlyInstancesList.Count > 1)
+                if (HooksEnabled.Value)
                 {
-                    On.RoR2.CharacterBody.AddBuff -= SetBuffCanStack;
-                    IL.RoR2.GlobalEventManager.OnHitEnemy -= AddSlow60OnHit;
-                    IL.RoR2.CharacterBody.RecalculateStats -= SetMovementAndAttackSpeed;
-                    hooksEnabled = false;
-                    Debug.Log("Unsubscibing hooks. Currently this mod will only work for single player games.");
+                    if (hooksCurrentlyEnabled)
+                    {
+                        if(NetworkUser.readOnlyInstancesList.Count > 1)
+                        {
+                            Unsubscribe();                            
+                        }
+                    }
+                    else
+                    {
+                        Subscribe();
+                    }
                 }
                 else
                 {
-                    if (!hooksEnabled)
+                    if (hooksCurrentlyEnabled)
                     {
-                        On.RoR2.CharacterBody.AddBuff += SetBuffCanStack;
-                        IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
-                        IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
-                        hooksEnabled = true;
-                        Debug.Log("Subscribing to hooks");
-                    }                    
+                        Unsubscribe();
+                    }
                 }
             }           
+        }
+
+        private void Unsubscribe()
+        {
+            On.RoR2.CharacterBody.AddBuff -= SetBuffCanStack;
+            IL.RoR2.GlobalEventManager.OnHitEnemy -= AddSlow60OnHit;
+            IL.RoR2.CharacterBody.RecalculateStats -= SetMovementAndAttackSpeed;
+            hooksCurrentlyEnabled = false;
+            Debug.Log("Unsubscibing hooks. Currently this mod will only work for single player games.");
+        }
+
+        private void Subscribe()
+        {
+            On.RoR2.CharacterBody.AddBuff += SetBuffCanStack;
+            IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
+            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
+            hooksCurrentlyEnabled = true;
+            Debug.Log("Subscribing to hooks");
         }
         
         private void SetBuffCanStack(On.RoR2.CharacterBody.orig_AddBuff orig, CharacterBody self, BuffIndex buffType)
