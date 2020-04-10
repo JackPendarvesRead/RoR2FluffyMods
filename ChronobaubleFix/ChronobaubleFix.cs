@@ -25,6 +25,7 @@ namespace ChronobaubleFix
         private static ConfigEntry<float> SlowScalingCoefficient;
         private static ConfigEntry<int> DebuffStacksPerItemStack;
         private static ConfigEntry<bool> ChronobaubleFixEnabled;
+        private readonly float buffDuration = 5f;
 
         private CustomBuff chronoFixBuff;
 
@@ -140,8 +141,14 @@ namespace ChronobaubleFix
         {
             IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
             IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
+            On.RoR2.CharacterBody.RecalculateStats += BlahBlah;
             hooksCurrentlyEnabled = true;
             Debug.Log("Subscribing to hooks");
+        }
+
+        private void BlahBlah(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
+        {
+            throw new NotImplementedException();
         }
 
         private void AddSlow60OnHit(ILContext il)
@@ -151,14 +158,12 @@ namespace ChronobaubleFix
 
             // Add logic only add Slow60 buff if you have stacks to permit doing it
             c.GotoNext(
-                x => x.MatchLdloc(1), //cbody
+                x => x.MatchLdloc(1), //attacker cbody
                 x => x.MatchLdcI4(26),
                 x => x.MatchLdcR4(2)
                 );
 
-            c.Emit(OpCodes.Ldarg_0); //Arg0 = DamageInfo
-            //c.Emit(OpCodes.Ldloc_S, (byte)9); //Number of Chronobaubles on attacker
-            //c.Emit(OpCodes.Ldloc_1); //Victim CharacterBody
+            c.Emit(OpCodes.Ldarg_1); //Arg1 = DamageInfo
             c.EmitDelegate<Func<DamageInfo, bool>>((damageInfo) =>
             {  
                 if (ModIsActive)
@@ -171,7 +176,7 @@ namespace ChronobaubleFix
 
                     if (buffCount < maximumBuffCount)
                     {
-                        attackerBody.AddBuff(buffIndex);
+                        attackerBody.AddTimedBuff(buffIndex, buffDuration);
                     }
                     return false;
                 }
@@ -196,9 +201,10 @@ namespace ChronobaubleFix
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Func<CharacterBody, float>>((cb) =>
             {
-                if (cb.HasBuff(BuffIndex.Slow60))
+                var buffindex = chronoFixBuff.BuffDef.buffIndex;
+                if (cb.HasBuff(buffindex))
                 {
-                    return GetDiminishingReturns(cb.GetBuffCount(BuffIndex.Slow60));
+                    return GetDiminishingReturns(cb.GetBuffCount(buffindex));
                 }
                 return 1.0f;
             });
