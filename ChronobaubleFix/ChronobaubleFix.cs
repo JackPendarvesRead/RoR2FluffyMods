@@ -25,7 +25,7 @@ namespace ChronobaubleFix
         private static ConfigEntry<float> SlowScalingCoefficient;
         private static ConfigEntry<int> DebuffStacksPerItemStack;
         private static ConfigEntry<bool> ChronobaubleFixEnabled;
-        private readonly float buffDuration = 5f;
+        private static ConfigEntry<float> DebuffDuration;
 
         private CustomBuff chronoFixBuff;
 
@@ -53,6 +53,14 @@ namespace ChronobaubleFix
                 new ConfigDescription(
                     "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
                     new AcceptableValueRange<int>(1, 20)
+                    ));
+
+            DebuffDuration = Config.Bind<float>(
+                new ConfigDefinition(chronobaubleSection, nameof(DebuffDuration)),
+                2f,
+                new ConfigDescription(
+                    "The time (in seconds) a debuff will last on an enemy. Default = 2 seconds",
+                    new AcceptableValueRange<float>(0f, 10f)
                     ));
 
             ChronobaubleFixEnabled = Config.Bind<bool>(
@@ -183,7 +191,7 @@ namespace ChronobaubleFix
                     Logger.LogInfo($"BUFFINDEX = {buffIndex}");
                     if (victimCurrentBuffCount < maximumBuffCount)
                     {
-                        victimBody.AddTimedBuff(buffIndex, buffDuration);
+                        victimBody.AddTimedBuff(buffIndex, DebuffDuration.Value);
                     }
                     return false;
                 }
