@@ -11,6 +11,7 @@ using UnityEngine;
 using BepInEx.Configuration;
 using R2API;
 using R2API.Utils;
+using FluffyLabsConfigManagerTools.Infrastructure;
 
 namespace ChronobaubleFix
 {
@@ -20,13 +21,13 @@ namespace ChronobaubleFix
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "ChronobaubleFix";
-        private const string pluginVersion = "2.0.2";
+        private const string pluginVersion = "3.0.0";
 
-        private static ConfigEntry<float> SlowScalingCoefficient;
-        private static ConfigEntry<int> DebuffStacksPerItemStack;
-        private static ConfigEntry<bool> ChronobaubleFixEnabled;
-        private static ConfigEntry<float> DebuffDuration;
-        private static ConfigEntry<float> IncreasedDebuffDurationPerStack;
+        private ConfigEntry<float> DebuffDuration;
+        private ConfigEntry<int> DebuffStacksPerItemStack;
+        private ConfigEntry<bool> ChronobaubleFixEnabled;
+        private ConditionalConfigEntry<float> IncreasedDebuffDurationPerStack;
+        private ConfigEntry<float> SlowScalingCoefficient;
 
         private CustomBuff chronoFixBuff;
 
@@ -70,11 +71,14 @@ namespace ChronobaubleFix
                    new AcceptableValueRange<int>(1, 20)
                    ));
 
-            IncreasedDebuffDurationPerStack = Config.Bind<float>(
-               new ConfigDefinition(chronobaubleSection, nameof(IncreasedDebuffDurationPerStack)),
-               0f,
-               new ConfigDescription(
-                   "Increases duration of buff by this amount for each chronobauble stack on attacker over 1",
+            var cu = new FluffyLabsConfigManagerTools.Util.ConditionalUtil(Config);
+            IncreasedDebuffDurationPerStack = cu.AddConditionalConfig<float>(                
+                chronobaubleSection,
+                nameof(IncreasedDebuffDurationPerStack),
+                0.1f,
+                false,
+                new ConfigDescription(
+                   "If enabled, increases duration of buff by this amount for each chronobauble stack on attacker over 1",
                    new AcceptableValueRange<float>(0f, 10f)
                    ));
 
@@ -85,7 +89,6 @@ namespace ChronobaubleFix
                     "The scaling coefficient for how much each stack of slow will slow enemies (higher is slower)",
                     new AcceptableValueRange<float>(0.00f, 0.50f)
                     ));
-
         }
 
         private void RegisterCustomBuff()
