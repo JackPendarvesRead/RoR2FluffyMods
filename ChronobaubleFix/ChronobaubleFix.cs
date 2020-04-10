@@ -24,7 +24,7 @@ namespace ChronobaubleFix
 
         private static ConfigEntry<float> SlowScalingCoefficient;
         private static ConfigEntry<int> DebuffStacksPerItemStack;
-        private static ConfigEntry<bool> HooksEnabled;
+        private static ConfigEntry<bool> ChronobaubleFixEnabled;
 
         private CustomBuff chronoFixBuff;
 
@@ -51,11 +51,11 @@ namespace ChronobaubleFix
                 3,
                 new ConfigDescription(
                     "The maximum number of slow debuff stacks you can give for every chronobauble stack you have",
-                    new AcceptableValueRange<int>(0, 20)
+                    new AcceptableValueRange<int>(1, 20)
                     ));
 
-            HooksEnabled = Config.Bind<bool>(
-               new ConfigDefinition(chronobaubleSection, nameof(HooksEnabled)),
+            ChronobaubleFixEnabled = Config.Bind<bool>(
+               new ConfigDefinition(chronobaubleSection, nameof(ChronobaubleFixEnabled)),
                true,
                new ConfigDescription(
                    "Turn the mod on or off"
@@ -83,12 +83,28 @@ namespace ChronobaubleFix
             ItemAPI.Add(chronoFixBuff);
         }
 
+        private bool ModIsActive
+        {
+            get
+            {
+                if (ChronobaubleFixEnabled.Value)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+
         private bool hooksCurrentlyEnabled = false;
         private void SubscribeToHooks(SceneDirector obj)
         {
             if (RoR2.Run.instance)
             {
-                if (HooksEnabled.Value)
+                if (ChronobaubleFixEnabled.Value)
                 {
                     if (hooksCurrentlyEnabled)
                     {
@@ -114,7 +130,6 @@ namespace ChronobaubleFix
 
         private void Unsubscribe()
         {
-            On.RoR2.CharacterBody.AddBuff -= SetBuffCanStack;
             IL.RoR2.GlobalEventManager.OnHitEnemy -= AddSlow60OnHit;
             IL.RoR2.CharacterBody.RecalculateStats -= SetMovementAndAttackSpeed;
             hooksCurrentlyEnabled = false;
@@ -123,20 +138,10 @@ namespace ChronobaubleFix
 
         private void Subscribe()
         {
-            On.RoR2.CharacterBody.AddBuff += SetBuffCanStack;
             IL.RoR2.GlobalEventManager.OnHitEnemy += AddSlow60OnHit;
             IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
             hooksCurrentlyEnabled = true;
             Debug.Log("Subscribing to hooks");
-        }
-        
-        private void SetBuffCanStack(On.RoR2.CharacterBody.orig_AddBuff orig, CharacterBody self, BuffIndex buffType)
-        {
-            if (buffType == BuffIndex.Slow60)
-            {
-                BuffCatalog.GetBuffDef(buffType).canStack = true;
-            }
-            orig(self, buffType);
         }
 
         private void AddSlow60OnHit(ILContext il)
@@ -146,27 +151,41 @@ namespace ChronobaubleFix
 
             // Add logic only add Slow60 buff if you have stacks to permit doing it
             c.GotoNext(
-                x => x.MatchLdloc(1),
+                x => x.MatchLdloc(1), //cbody
                 x => x.MatchLdcI4(26),
                 x => x.MatchLdcR4(2)
                 );
-            c.Emit(OpCodes.Ldloc_S, (byte)10); //Number of Chronobaubles on attacker
-            c.Emit(OpCodes.Ldloc_1); //Victim CharacterBody
-            c.EmitDelegate<Func<int, CharacterBody, bool>>((chronobaubleCount, victim) =>
-            {
-                if (DebuffStacksPerItemStack.Value > 0 &&
-                    victim.GetBuffCount(BuffIndex.Slow60) >= DebuffStacksPerItemStack.Value * chronobaubleCount)
+
+            c.Emit(OpCodes.Ldarg_0); //Arg0 = DamageInfo
+            //c.Emit(OpCodes.Ldloc_S, (byte)9); //Number of Chronobaubles on attacker
+            //c.Emit(OpCodes.Ldloc_1); //Victim CharacterBody
+            c.EmitDelegate<Func<DamageInfo, bool>>((damageInfo) =>
+            {  
+                if (ModIsActive)
                 {
+                    var attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
+                    var chronobaubleCount = attackerBody.inventory.GetItemCount(ItemIndex.SlowOnHit);
+                    var buffIndex = chronoFixBuff.BuffDef.buffIndex;
+                    var buffCount = attackerBody.GetBuffCount(buffIndex);
+                    var maximumBuffCount = DebuffStacksPerItemStack.Value * chronobaubleCount;
+
+                    if (buffCount < maximumBuffCount)
+                    {
+                        attackerBody.AddBuff(buffIndex);
+                    }
                     return false;
-                }                
-                return true;               
+                }
+                else
+                {
+                    return true;
+                }                              
             });
             c.Emit(OpCodes.Brfalse, label); //If delegate returns false, break and do not add buff
             c.GotoNext(x => x.MatchLdloc(0));
             c.MarkLabel(label);
         }   
 
-        private void SetMovementAndAttackSpeed(MonoMod.Cil.ILContext il)
+        private void SetMovementAndAttackSpeed(ILContext il)
         {
             var c = new ILCursor(il);
 
