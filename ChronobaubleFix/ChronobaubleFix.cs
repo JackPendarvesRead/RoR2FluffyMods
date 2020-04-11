@@ -93,16 +93,8 @@ namespace ChronobaubleFix
 
         private void RegisterCustomBuff()
         {
-            string name = "ChronobaubleFixBuff";
-            var chronoFixBuff = new CustomBuff(name, new BuffDef
-            {
-                buffColor = new Color(0.6784314f, 0.6117647f, 0.4117647f),
-                canStack = true,
-                iconPath = "Textures/BuffIcons/texBuffSlow50Icon",
-                isDebuff = true,
-                name = name
-            });
-            CustomChronobaubleBuffIndex = ItemAPI.Add(chronoFixBuff);
+            var buffDef = new CustomBuff("ChronobaubleFixBuff", "Textures/BuffIcons/texBuffSlow50Icon", new Color(0.6784314f, 0.6117647f, 0.4117647f), true, true);
+            CustomChronobaubleBuffIndex = BuffAPI.Add(buffDef);
         }
 
         private bool ModIsActive
