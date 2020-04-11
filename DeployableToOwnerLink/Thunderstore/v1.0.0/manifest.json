@@ -1,9 +1,0 @@
-{
-  "name": "DeployableOwnerInformation",
-  "version_number": "1.0.0",
-  "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/",
-  "description": "Adds information about the owner to deployable objects (e.g. links EngiTurrets to EngiBody)",
-  "dependencies": [
-    "bbepis-BepInExPack-2.0.0"
-  ]
-}
