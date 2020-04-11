@@ -15,7 +15,7 @@ using R2API.Utils;
 namespace ChronobaubleFix
 {
     [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
-    [R2APISubmoduleDependency(nameof(ItemAPI))]
+    [R2APISubmoduleDependency(nameof(BuffAPI))]
     public class ChronobaubleFix : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
