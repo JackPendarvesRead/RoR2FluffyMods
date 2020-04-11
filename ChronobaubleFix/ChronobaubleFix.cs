@@ -28,8 +28,7 @@ namespace ChronobaubleFix
         private ConfigEntry<float> IncreasedDebuffDurationPerStack;
         private ConfigEntry<float> SlowScalingCoefficient;
 
-        //private CustomBuff chronoFixBuff;
-        private BuffIndex CustomChronobaubleBuffIndex;
+        private CustomBuff chronoFixBuff;
 
         public void Awake()
         {
@@ -94,7 +93,7 @@ namespace ChronobaubleFix
         private void RegisterCustomBuff()
         {
             string name = "ChronobaubleFixBuff";
-            var chronoFixBuff = new CustomBuff(name, new BuffDef
+            chronoFixBuff = new CustomBuff(name, new BuffDef
             {
                 buffColor = new Color(0.6784314f, 0.6117647f, 0.4117647f),
                 canStack = true,
@@ -102,7 +101,7 @@ namespace ChronobaubleFix
                 isDebuff = true,
                 name = name
             });
-            CustomChronobaubleBuffIndex = ItemAPI.Add(chronoFixBuff);
+            ItemAPI.Add(chronoFixBuff);
         }
 
         private bool ModIsActive
@@ -149,13 +148,14 @@ namespace ChronobaubleFix
                     var victimBody = victimGameObject.GetComponent<CharacterBody>();
 
                     var attackerChronobaubleCount = attackerBody.inventory.GetItemCount(ItemIndex.SlowOnHit);
-                    var victimCurrentBuffCount = victimBody.GetBuffCount(CustomChronobaubleBuffIndex);
+                    var buffIndex = chronoFixBuff.BuffDef.buffIndex;
+                    var victimCurrentBuffCount = victimBody.GetBuffCount(buffIndex);
                     var maximumBuffCount = DebuffStacksPerItemStack.Value * attackerChronobaubleCount;
 
                     if (victimCurrentBuffCount < maximumBuffCount)
                     {                   
                         float debuffDuration = DebuffDuration.Value + IncreasedDebuffDurationPerStack.Value * (attackerChronobaubleCount - 1);
-                        victimBody.AddTimedBuff(CustomChronobaubleBuffIndex, debuffDuration);
+                        victimBody.AddTimedBuff(buffIndex, debuffDuration);
                     }
                     return false;
                 }
@@ -180,9 +180,10 @@ namespace ChronobaubleFix
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Func<CharacterBody, float>>((cb) =>
             {
-                if (cb.HasBuff(CustomChronobaubleBuffIndex))
+                var buffindex = chronoFixBuff.BuffDef.buffIndex;
+                if (cb.HasBuff(buffindex))
                 {
-                    return GetDiminishingReturns(cb.GetBuffCount(CustomChronobaubleBuffIndex));
+                    return GetDiminishingReturns(cb.GetBuffCount(buffindex));
                 }
                 return 1.0f;
             });
@@ -195,9 +196,10 @@ namespace ChronobaubleFix
             c.Emit(OpCodes.Ldarg_0);
             c.EmitDelegate<Func<CharacterBody, float>>((cb) =>
             {
-                if (cb.HasBuff(CustomChronobaubleBuffIndex))
+                var buffindex = chronoFixBuff.BuffDef.buffIndex;
+                if (cb.HasBuff(buffindex))
                 {
-                    return GetDiminishingReturns(cb.GetBuffCount(CustomChronobaubleBuffIndex));
+                    return GetDiminishingReturns(cb.GetBuffCount(buffindex));
                 }
                 return 1.0f;
             });
