@@ -41,7 +41,7 @@ namespace ChronobaubleFix
             RegisterConfiguration();
             RegisterCustomBuff();
             IL.RoR2.GlobalEventManager.OnHitEnemy += OnHitEnemyAddCustomBuff;
-            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;       
+            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
         }
 
         private void RegisterConfiguration()
