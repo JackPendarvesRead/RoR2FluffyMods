@@ -51,6 +51,9 @@
       <HintPath>..\..\..\libs\RoR2Modding\BepInEx.Preloader.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="MiniRpcLib">
+      <HintPath>..\..\..\libs\RoR2Modding\MiniRpcLib.dll</HintPath>
+    </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
       <HintPath>..\..\..\libs\RoR2Modding\MMHOOK_Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -97,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChronobaubleFix.cs" />
+    <Compile Include="NetworkObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -104,4 +108,8 @@
     <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -11,6 +11,8 @@ using UnityEngine;
 using BepInEx.Configuration;
 using R2API;
 using R2API.Utils;
+using MiniRpcLib;
+using UnityEngine.Networking;
 
 namespace ChronobaubleFix
 {
@@ -27,6 +29,7 @@ namespace ChronobaubleFix
         private ConfigEntry<bool> ChronobaubleFixEnabled;
         private ConfigEntry<float> IncreasedDebuffDurationPerStack;
         private ConfigEntry<float> SlowScalingCoefficient;
+        private MiniRpcInstance rpc;
 
         //private CustomBuff chronoFixBuff;
         private BuffIndex CustomChronobaubleBuffIndex;
@@ -37,6 +40,12 @@ namespace ChronobaubleFix
             {
                 RoR2Application.isModded = true;
             }
+
+            rpc = MiniRpcLib.MiniRpc.CreateInstance(PluginGuid);
+            var action = rpc.RegisterAction(Target.Server, (networkUser, networkReader) =>
+            {
+
+            });
 
             RegisterConfiguration();
             RegisterCustomBuff();
@@ -114,6 +123,7 @@ namespace ChronobaubleFix
         }
 
         private int victimBodyIndex;
+
         private void OnHitEnemyAddCustomBuff(ILContext il)
         {
             var c = new ILCursor(il);
