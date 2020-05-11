@@ -11,11 +11,13 @@ using UnityEngine;
 using BepInEx.Configuration;
 using R2API;
 using R2API.Utils;
+using MiniRpcLib;
+using UnityEngine.Networking;
 
 namespace ChronobaubleFix
 {
     [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
-    [R2APISubmoduleDependency(nameof(ItemAPI))]
+    [R2APISubmoduleDependency(nameof(BuffAPI))]
     public class ChronobaubleFix : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
@@ -27,6 +29,7 @@ namespace ChronobaubleFix
         private ConfigEntry<bool> ChronobaubleFixEnabled;
         private ConfigEntry<float> IncreasedDebuffDurationPerStack;
         private ConfigEntry<float> SlowScalingCoefficient;
+        private MiniRpcInstance rpc;
 
         //private CustomBuff chronoFixBuff;
         private BuffIndex CustomChronobaubleBuffIndex;
@@ -38,10 +41,16 @@ namespace ChronobaubleFix
                 RoR2Application.isModded = true;
             }
 
+            rpc = MiniRpcLib.MiniRpc.CreateInstance(PluginGuid);
+            var action = rpc.RegisterAction(Target.Server, (networkUser, networkReader) =>
+            {
+
+            });
+
             RegisterConfiguration();
             RegisterCustomBuff();
             IL.RoR2.GlobalEventManager.OnHitEnemy += OnHitEnemyAddCustomBuff;
-            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;       
+            IL.RoR2.CharacterBody.RecalculateStats += SetMovementAndAttackSpeed;
         }
 
         private void RegisterConfiguration()
@@ -93,16 +102,8 @@ namespace ChronobaubleFix
 
         private void RegisterCustomBuff()
         {
-            string name = "ChronobaubleFixBuff";
-            var chronoFixBuff = new CustomBuff(name, new BuffDef
-            {
-                buffColor = new Color(0.6784314f, 0.6117647f, 0.4117647f),
-                canStack = true,
-                iconPath = "Textures/BuffIcons/texBuffSlow50Icon",
-                isDebuff = true,
-                name = name
-            });
-            CustomChronobaubleBuffIndex = ItemAPI.Add(chronoFixBuff);
+            var buffDef = new CustomBuff("ChronobaubleFixBuff", "Textures/BuffIcons/texBuffSlow50Icon", new Color(0.6784314f, 0.6117647f, 0.4117647f), true, true);
+            CustomChronobaubleBuffIndex = BuffAPI.Add(buffDef);
         }
 
         private bool ModIsActive
@@ -122,6 +123,7 @@ namespace ChronobaubleFix
         }
 
         private int victimBodyIndex;
+
         private void OnHitEnemyAddCustomBuff(ILContext il)
         {
             var c = new ILCursor(il);
