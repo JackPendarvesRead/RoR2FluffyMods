@@ -1,0 +1,9 @@
+{
+  "name": "RiskOfCoriander",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/RiskOfCoriander",
+  "description": "A simple mod to spice up your game. Adds corriander to all bodies.",
+  "dependencies": [
+    "bbepis-BepInExPack-3.2.0"
+  ]
+}

@@ -7,13 +7,7 @@ namespace RiskOfCoriander
 {
     public class Coriander : MonoBehaviour
     {
-        public Coriander(CorianderType corianderType, float coarseness)
-        {
-            CorianderType = corianderType;
-            Coarseness = coarseness;
-        }
-
-        public float Coarseness { get; private set; }
-        public CorianderType CorianderType { get; private set; }
+        public float Coarseness { get; set; }
+        public CorianderType CorianderType { get; set; }
     }
 }

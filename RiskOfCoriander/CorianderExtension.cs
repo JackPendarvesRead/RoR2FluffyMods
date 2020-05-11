@@ -9,7 +9,9 @@ namespace RiskOfCoriander
     {
         public static void AddCorriander(this GameObject gameObject)
         {
-            gameObject.AddComponent<Coriander>();
+            var coriander = gameObject.AddComponent<Coriander>();
+            coriander.Coarseness = RiskOfCoriander.Coarseness.Value;
+            coriander.CorianderType = RiskOfCoriander.CorianderFreshness.Value;
         }
     }
 }
