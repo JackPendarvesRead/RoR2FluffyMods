@@ -5,28 +5,27 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using UnityEngine;
 
 namespace EntityStates.MyCustomCharacter
 {
     public class Secondary : BaseSkillState, ICustomSkill
     {
         public SkillType SkillType => SkillType.Secondary;
-        public SkillDef GetSkillDefinition()
+        public SkillDef GetSkillDefinition(string activationStateMachineName)
         {
             SkillDef def = SkillDef.CreateInstance<SkillDef>();
-            def.activationState = new EntityStates.SerializableEntityStateType(typeof(Primary));
-            var field2 = typeof(EntityStates.SerializableEntityStateType)?.GetField("_typeName", BindingFlags.NonPublic | BindingFlags.Instance);
-            field2?.SetValue(def.activationState, typeof(EntityStates.MyCustomCharacter.Primary)?.AssemblyQualifiedName);
+            def.activationState = new EntityStates.SerializableEntityStateType(typeof(Secondary));
             def.baseRechargeInterval = 1f;
             def.baseMaxStock = 1;
             def.rechargeStock = 1;
             def.skillName = "MySkillNameSecond";
             def.skillNameToken = "My Name Token Second";
             def.skillDescriptionToken = "This is the description of the Second skill.";
-            def.activationStateMachineName = "MachineName I don't know?!";
+            def.activationStateMachineName = activationStateMachineName;
             def.isBullets = false;
             def.beginSkillCooldownOnSkillEnd = true;
-            def.interruptPriority = EntityStates.InterruptPriority.Any;
+            def.interruptPriority = EntityStates.InterruptPriority.Skill;
             def.isCombatSkill = true;
             def.noSprint = false;
             def.canceledFromSprinting = false;

@@ -15,9 +15,19 @@ namespace CustomCharacterPlay.HelperStuff
     {
         private readonly SkillLocator locator;
 
+        private Dictionary<SkillType, string> dic;
+
+
         public SkillRegister(SkillLocator locator)
         {
             this.locator = locator;
+            dic = new Dictionary<SkillType, string>
+            {
+                { SkillType.Primary, locator.primary.skillDef.activationStateMachineName },
+                { SkillType.Secondary, locator.secondary.skillDef.activationStateMachineName },
+                { SkillType.Special, locator.special.skillDef.activationStateMachineName },
+                { SkillType.Utility, locator.utility.skillDef.activationStateMachineName }
+            };
         }
 
         public void RegisterSkills()
@@ -55,23 +65,18 @@ namespace CustomCharacterPlay.HelperStuff
                 {
                     case SkillType.Primary:
                         locator.primary.SetFieldValue<SkillFamily>("_skillFamily", family);
-                        Debug.Log("Set primary skill family field");
                         break;
                     case SkillType.Secondary:
                         locator.secondary.SetFieldValue<SkillFamily>("_skillFamily", family);
-                        Debug.Log("Set secondary skill family field");
                         break;
                     case SkillType.Special:
                         locator.special.SetFieldValue<SkillFamily>("_skillFamily", family);
-                        Debug.Log("Set special skill family field");
                         break;
                     case SkillType.Utility:
                         locator.utility.SetFieldValue<SkillFamily>("_skillFamily", family);
-                        Debug.Log("Set utility skill family field");
                         break;
                     case SkillType.Passive:
                         locator.passiveSkill.SetFieldValue<SkillFamily>("_skillFamily", family);
-                        Debug.Log("Set passive skill family field");
                         break;
                 }
             }
@@ -91,9 +96,10 @@ namespace CustomCharacterPlay.HelperStuff
             var variants = new SkillFamily.Variant[skills.Count];
             for (var i = 0; i < skills.Count(); i++)
             {
+                var activationStateMachineName = dic[skills[i].SkillType] ?? "Unknown";
                 variants[i] = new SkillFamily.Variant()
                 {
-                    skillDef = skills[i].GetSkillDefinition(),
+                    skillDef = skills[i].GetSkillDefinition(activationStateMachineName),
                     unlockableName = "",
                     viewableNode = new ViewablesCatalog.Node(skills[i].SkillType.ToString(), false)
                 };

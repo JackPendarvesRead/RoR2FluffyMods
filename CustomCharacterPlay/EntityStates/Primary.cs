@@ -10,25 +10,23 @@ using System.Text;
 
 namespace EntityStates.MyCustomCharacter
 {
-    public class Primary : BaseState, ICustomSkill
+    public class Primary : BaseSkillState, ICustomSkill
     {
         public SkillType SkillType => SkillType.Primary;
-        public SkillDef GetSkillDefinition()
+        public SkillDef GetSkillDefinition(string activationStateMachineName)
         {
             SkillDef primaryDef = SkillDef.CreateInstance<SkillDef>();
             primaryDef.activationState = new EntityStates.SerializableEntityStateType(typeof(Primary));
-            var field2 = typeof(EntityStates.SerializableEntityStateType)?.GetField("_typeName", BindingFlags.NonPublic | BindingFlags.Instance);
-            field2?.SetValue(primaryDef.activationState, typeof(Primary)?.AssemblyQualifiedName);
             primaryDef.baseRechargeInterval = 1f;
             primaryDef.baseMaxStock = 5;
             primaryDef.rechargeStock = 1;
             primaryDef.skillName = "MySkillName";
             primaryDef.skillNameToken = "My Name Token";
             primaryDef.skillDescriptionToken = "This is the description of the primary skill.";
-            primaryDef.activationStateMachineName = "MachineName I don't know?!";
+            primaryDef.activationStateMachineName = activationStateMachineName;
             primaryDef.isBullets = false;
             primaryDef.beginSkillCooldownOnSkillEnd = true;
-            primaryDef.interruptPriority = EntityStates.InterruptPriority.Any;
+            primaryDef.interruptPriority = EntityStates.InterruptPriority.Skill;
             primaryDef.isCombatSkill = true;
             primaryDef.noSprint = false;
             primaryDef.canceledFromSprinting = false;

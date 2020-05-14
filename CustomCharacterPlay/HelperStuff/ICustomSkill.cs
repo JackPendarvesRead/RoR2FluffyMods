@@ -9,6 +9,6 @@ namespace CustomCharacterPlay.HelperStuff
     public interface ICustomSkill
     {
         SkillType SkillType { get; }
-        SkillDef GetSkillDefinition();
+        SkillDef GetSkillDefinition(string activationStateMachineName);
     }
 }
