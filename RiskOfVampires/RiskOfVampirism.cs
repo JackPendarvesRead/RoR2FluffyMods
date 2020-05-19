@@ -10,7 +10,6 @@ using System.Reflection;
 using System;
 using System.Collections.Generic;
 using FluffyLabsConfigManagerTools.Infrastructure;
-using R2API.Utils;
 using System.Net.NetworkInformation;
 
 namespace RiskOfVampirism
