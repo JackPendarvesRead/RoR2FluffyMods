@@ -9,19 +9,16 @@ using System.Linq;
 using System.Reflection;
 using System;
 using System.Collections.Generic;
-using DeployableOwnerInformation.Component;
-using DeployableOwnerInformation.Extension;
 
 namespace RiskOfVampirism
 {
     [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
-    [BepInDependency(DeployableOwnerInformation.DeployableOwnerInformation.PluginGuid)]
     [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
     public class RiskOfVampirism : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "RiskOfVampirism";
-        private const string pluginVersion = "2.1.0";
+        private const string pluginVersion = "3.0.0";
 
         private ConfigEntry<float> Leech;
         private ConfigEntry<int> DecayTime;
@@ -115,10 +112,11 @@ namespace RiskOfVampirism
                         && attacker.teamComponent.teamIndex == TeamIndex.Player
                         && attacker.name.ToLower().Contains("turret"))
                     {
-                        var owner = attacker.GetOwnerInformation().OwnerBody;
+                        var ownerBody = attacker.master.minionOwnership.ownerMaster.GetBody();
+                        //var owner = attacker.GetOwnerInformation().OwnerBody;
                         var procChainMask = damageInfo.procChainMask;
                         procChainMask.AddProc(ProcType.HealOnHit);
-                        var num = (double)owner.healthComponent.Heal(damageInfo.damage * Leech.Value, procChainMask, true);
+                        var num = (double)ownerBody.healthComponent.Heal(damageInfo.damage * Leech.Value, procChainMask, true);
                     }
                 }                
             }
@@ -211,7 +209,7 @@ namespace RiskOfVampirism
                     survivor.name,
                     1.0f,
                     new ConfigDescription(
-                        $"Lifesteal coefficient specific for {survivor.ToString()}. i.e. multiply lifesteal by this number if you are playing this survivor",
+                        $"Lifesteal coefficient specific for {survivor}. i.e. multiply lifesteal by this number if you are playing this survivor",
                         new AcceptableValueRange<float>(0, 2),
                         "Advanced"
                         ));
