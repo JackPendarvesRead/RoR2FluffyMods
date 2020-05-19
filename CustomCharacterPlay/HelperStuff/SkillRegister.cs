@@ -15,8 +15,7 @@ namespace CustomCharacterPlay.HelperStuff
     {
         private readonly SkillLocator locator;
 
-        private Dictionary<SkillType, string> dic;
-
+        private readonly Dictionary<SkillType, string> dic;
 
         public SkillRegister(SkillLocator locator)
         {
@@ -51,15 +50,12 @@ namespace CustomCharacterPlay.HelperStuff
                 foreach (var skill in skills)
                 {
                     LoadoutAPI.AddSkill(skill.GetType());
-                    Debug.Log($"Added skill - {skill.GetType()}");
                 }
                 foreach (var variant in family.variants)
                 {
                     LoadoutAPI.AddSkillDef(variant.skillDef);
-                    Debug.Log($"Added skill def - {variant.skillDef.skillName}");
                 }
                 LoadoutAPI.AddSkillFamily(family);
-                Debug.Log($"Added family - {((ScriptableObject)family).name}");
 
                 switch (skills.First().SkillType)
                 {
