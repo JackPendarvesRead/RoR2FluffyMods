@@ -206,8 +206,7 @@ namespace TeleportVote
         {
             if (Chat.readOnlyLog.Any() && VotesEnabled.Value && VoteController.PlayersCanVote)
             {
-                var chatLog = Chat.readOnlyLog;
-                var match = ParseChatLogRegex.Match(chatLog.Last());
+                var match = ParseChatLogRegex.Match(Chat.readOnlyLog.Last());
                 var playerName = match.Groups["name"].Value.Trim();
                 var message = match.Groups["message"].Value.Trim();
                 //Debug.Log($"Chatlog={chatLog.Last()}, RMName={playerName}, RMMessage={message}");
