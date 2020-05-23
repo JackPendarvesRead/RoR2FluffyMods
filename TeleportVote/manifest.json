@@ -1,6 +1,6 @@
 {
   "name": "TeleportVote",
-  "version_number": "4.0.0",
+  "version_number": "4.0.1",
   "website_url": "https://github.com/JackPendarvesRead/RoR2FluffyMods/tree/master/TeleportVote",
   "description": "Vote when ready to start teleport and/or go to next stage. Votes activate when you activate teleporter or can be done with chat commands.",
   "dependencies": [

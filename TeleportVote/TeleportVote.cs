@@ -20,7 +20,7 @@ namespace TeleportVote
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "TeleportVote";
-        private const string pluginVersion = "4.0.0";
+        private const string pluginVersion = "4.0.1";
 
         private readonly VoteRegistrationController VoteController = new VoteRegistrationController();
         private readonly TimerController TimerController = new TimerController();
@@ -201,18 +201,13 @@ namespace TeleportVote
         #endregion
 
         #region ChatCommand
-        private static Regex ParseChatLog => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
+        private static Regex ParseChatLogRegex => new Regex(@"<color=#[0-9a-f]{6}><noparse>(?<name>.*?)</noparse>:\s<noparse>(?<message>.*?)</noparse></color>");
         private void Chat_onChatChanged()
         {
-            if (!Chat.readOnlyLog.Any())
-            {
-                return;
-            }
-            if (VotesEnabled.Value &&
-                VoteController.PlayersCanVote)
+            if (Chat.readOnlyLog.Any() && VotesEnabled.Value && VoteController.PlayersCanVote)
             {
                 var chatLog = Chat.readOnlyLog;
-                var match = ParseChatLog.Match(chatLog.Last());
+                var match = ParseChatLogRegex.Match(chatLog.Last());
                 var playerName = match.Groups["name"].Value.Trim();
                 var message = match.Groups["message"].Value.Trim();
                 //Debug.Log($"Chatlog={chatLog.Last()}, RMName={playerName}, RMMessage={message}");
@@ -226,13 +221,13 @@ namespace TeleportVote
                         case "y":
                         case "go":
                             var netUser = RoR2.NetworkUser.readOnlyInstancesList
-                                .Where(x => x.userName.Trim() == playerName)
+                                .Where(nu => nu.userName.Trim() == playerName)
                                 .FirstOrDefault();
-                            if (netUser.GetCurrentBody().healthComponent.alive)
+
+                            if (netUser != default(NetworkUser) && netUser.GetCurrentBody().healthComponent.alive)
                             {
                                 VoteController.RegisterPlayer(netUser);
-                                if (EnableTimerCountdown.Value
-                                    && ChatCommandCanStartTimer.Value)
+                                if (EnableTimerCountdown.Value && ChatCommandCanStartTimer.Value)
                                 {
                                     TimerController.Start();
                                 }
