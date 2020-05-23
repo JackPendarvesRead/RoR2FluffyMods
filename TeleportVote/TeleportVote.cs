@@ -1,13 +1,9 @@
 ﻿using BepInEx;
-using MonoMod.Cil;
 using RoR2;
 using UnityEngine;
 using System;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Collections.Generic;
 using BepInEx.Configuration;
 using FluffyLabsConfigManagerTools.Infrastructure;
 using FluffyLabsConfigManagerTools.Util;
@@ -88,9 +84,6 @@ namespace TeleportVote
 
             //Chat Ready Command - type "r" to set yourself as ready
             Chat.onChatChanged += Chat_onChatChanged;
-
-            //Prevent an exploitative interaction with teleporter and fireworks
-            //IL.RoR2.GlobalEventManager.OnInteractionBegin += GlobalEventManager_OnInteractionBegin;
 
             //Cleanup Hooks - Needed to avoid bugs where list persists from one run to another
             Run.onRunDestroyGlobal += Run_onRunDestroyGlobal;
