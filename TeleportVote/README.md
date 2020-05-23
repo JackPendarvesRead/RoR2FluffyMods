@@ -43,6 +43,9 @@ If you have any issues you can usually find me on the ROR2 modding discord (@Flu
 
 ## Changelog
 
+v4.0.1
+- Fixed a null reference on NetworkUser
+
 v4.0.0
 - Updated to work with Artifacts update
 - Reworked the way VoteEnabled property is evaluated as OnStateChange method has been removed from game
