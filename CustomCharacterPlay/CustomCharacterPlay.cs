@@ -31,10 +31,10 @@ namespace CustomCharacterPlay
                 RoR2Application.isModded = true;
             }
 
-            var info = new CharacterInformation("Whatever", "This is the description");
-
-            var creator = new CharacterCreator();
-            creator.Create<MyCustomCharacter>(info, PrefabCollection.CommandoBody, PrefabCollection.CommandoDisplay);
+            var characterInfo = new CharacterInformation("Whatever", "This is the description");
+            var bodyInfo = new PrefabInfo("BodyName", PrefabCollection.CommandoBody);
+            var displayInfo = new PrefabInfo("DisplayName", PrefabCollection.CommandoDisplay);
+            new CharacterCreator().Create<MyCustomCharacter>(characterInfo, bodyInfo, displayInfo);
         }       
     }
 }

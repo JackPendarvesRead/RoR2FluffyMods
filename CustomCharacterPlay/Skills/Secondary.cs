@@ -1,4 +1,5 @@
 ﻿using CustomCharacterPlay.HelperStuff;
+using EntityStates;
 using RoR2;
 using RoR2.Skills;
 using System;
@@ -7,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 
-namespace EntityStates.MyCustomCharacter
+namespace CustomCharacterPlay.Skills
 {
     public class Secondary : BaseSkillState, ICustomSkill
     {
