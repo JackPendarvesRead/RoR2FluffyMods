@@ -1,4 +1,5 @@
 ﻿using CustomCharacterBuilder.Infrastructure;
+using EntityStates.Treebot.UnlockInteractable;
 using R2API;
 using R2API.Utils;
 using RoR2;
@@ -22,33 +23,51 @@ namespace CustomCharacterBuilder.Logic
 
         public static void Create<T>(CharacterInformation info, GameObject bodyPrefab, GameObject displayPrefab)
         {
-            //Register Skills
+            RegisterSkills(info, bodyPrefab);
+            CharacterBody body = bodyPrefab.GetComponentInChildren<CharacterBody>();
+            RegisterBody(bodyPrefab);
+            RegisterGenericMainCharacter<T>(body);
+            RegisterOptionalStuff(info, body);
+            RegisterSurvivorDef(info, bodyPrefab, displayPrefab);
+        }
+
+        private static void RegisterSkills(CharacterInformation info, GameObject bodyPrefab)
+        {
             var locator = bodyPrefab.GetComponentInChildren<SkillLocator>();
             SkillRegister.RegisterSkills(info.Skills, locator);
+        }
 
-            // Register Body Catalog
-            var body = bodyPrefab.GetComponentInChildren<CharacterBody>();
+        private static void RegisterBody(GameObject bodyPrefab)
+        {
             BodyCatalog.getAdditionalEntries += (list) => list.Add(bodyPrefab);
+        }
 
-            // Register GenericMainCharacter
+        private static void RegisterGenericMainCharacter<T>(CharacterBody body)
+        {
             var stateMachine = body.GetComponent<EntityStateMachine>();
             stateMachine.mainStateType = new EntityStates.SerializableEntityStateType(typeof(T));
+        }
 
-            // register icon
-            //body.portraitIcon = Assets
-            
-            if(info.CustomStats != null)
+        private static void RegisterOptionalStuff(CharacterInformation info, CharacterBody body)
+        {
+            if (info.PortraitIcon != null)
             {
-                // Register custom stats
+                body.portraitIcon = info.PortraitIcon;
             }
 
-            // Set preferred pod?
+            if (info.CustomStats != null)
+            {
+                CustomStatsRegister.Register(info.CustomStats, body);
+            }
+            
             if (body.preferredPodPrefab == null)
             {
-                body.preferredPodPrefab = Resources.Load<GameObject>("prefabs/characterbodies/commandobody").GetComponentInChildren<CharacterBody>().preferredPodPrefab;
-            }          
+                body.preferredPodPrefab = info.PreferredPod ?? Resources.Load<GameObject>("prefabs/characterbodies/commandobody").GetComponentInChildren<CharacterBody>().preferredPodPrefab;
+            }
+        }
 
-            // register surv def
+        private static void RegisterSurvivorDef(CharacterInformation info, GameObject bodyPrefab, GameObject displayPrefab)
+        {
             var survDef = new SurvivorDef
             {
                 bodyPrefab = bodyPrefab,
@@ -56,7 +75,7 @@ namespace CustomCharacterBuilder.Logic
                 name = info.Name,
                 descriptionToken = info.Description,
                 primaryColor = info.PrimaryColour,
-                unlockableName = ""
+                unlockableName = info.UnlockableName ?? ""
             };
             SurvivorAPI.AddSurvivor(survDef);
         }

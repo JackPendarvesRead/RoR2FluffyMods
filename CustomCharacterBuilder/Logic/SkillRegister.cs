@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace CustomCharacterBuilder.Logic
 {
-    public static class SkillRegister
+    internal static class SkillRegister
     {
         public static void RegisterSkills(IEnumerable<ICustomSkill> skills, SkillLocator locator)
         {
