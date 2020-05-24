@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CustomCharacterPlay.HelperStuff
+namespace CustomCharacterBuilder.Infrastructure
 {
     public class PrefabInfo
     {

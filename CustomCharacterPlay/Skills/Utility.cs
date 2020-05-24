@@ -1,12 +1,7 @@
-﻿using CustomCharacterPlay.HelperStuff;
+﻿using CustomCharacterBuilder.Infrastructure;
 using EntityStates;
-using EntityStates.Treebot.Weapon;
 using RoR2;
 using RoR2.Skills;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace CustomCharacterPlay.Skills

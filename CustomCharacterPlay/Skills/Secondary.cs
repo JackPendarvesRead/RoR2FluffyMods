@@ -1,12 +1,7 @@
-﻿using CustomCharacterPlay.HelperStuff;
+﻿using CustomCharacterBuilder.Infrastructure;
 using EntityStates;
 using RoR2;
 using RoR2.Skills;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
-using UnityEngine;
 
 namespace CustomCharacterPlay.Skills
 {

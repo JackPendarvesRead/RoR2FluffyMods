@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CustomCharacterBuilder\CustomCharacterBuilder.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>..\..\..\libs\RoR2Modding\0Harmony.dll</HintPath>
     </Reference>

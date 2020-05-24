@@ -1,4 +1,4 @@
-﻿using EntityStates.MyCustomCharacter;
+﻿using CustomCharacterBuilder.Infrastructure;
 using R2API;
 using RoR2;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace CustomCharacterPlay.HelperStuff
+namespace CustomCharacterBuilder.Logic
 {
     public class CharacterCreator
     {

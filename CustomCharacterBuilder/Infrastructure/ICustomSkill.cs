@@ -1,10 +1,6 @@
-﻿using EntityStates;
-using RoR2.Skills;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using RoR2.Skills;
 
-namespace CustomCharacterPlay.HelperStuff
+namespace CustomCharacterBuilder.Infrastructure
 {
     public interface ICustomSkill
     {

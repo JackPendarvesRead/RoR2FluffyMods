@@ -1,13 +1,7 @@
-﻿using BepInEx.Logging;
-using CustomCharacterPlay.HelperStuff;
+﻿using CustomCharacterBuilder.Infrastructure;
 using EntityStates;
 using RoR2;
 using RoR2.Skills;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
-using System.Text;
 
 namespace CustomCharacterPlay.Skills.Primary
 {

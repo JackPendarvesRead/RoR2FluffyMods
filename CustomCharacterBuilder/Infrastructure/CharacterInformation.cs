@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 
-namespace CustomCharacterPlay.HelperStuff
+namespace CustomCharacterBuilder.Infrastructure
 {
     public class CharacterInformation
     {

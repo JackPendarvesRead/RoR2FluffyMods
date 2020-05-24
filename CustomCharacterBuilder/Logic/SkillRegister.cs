@@ -1,4 +1,5 @@
-﻿using R2API;
+﻿using CustomCharacterBuilder.Infrastructure;
+using R2API;
 using R2API.Utils;
 using RoR2;
 using RoR2.Skills;
@@ -6,10 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using UnityEngine;
 
-namespace CustomCharacterPlay.HelperStuff
+namespace CustomCharacterBuilder.Logic
 {
     public class SkillRegister
     {
@@ -29,48 +29,21 @@ namespace CustomCharacterPlay.HelperStuff
             foreach (SkillType skillType in Enum.GetValues(typeof(SkillType)))
             {
                 Debug.Log("Skill type = " + skillType.ToString());
-                RegisterSkillType(skills.Where(x => x.SkillType == skillType).ToList());
+                RegisterSkillType(skills.Where(x => x.SkillType == skillType).ToList(), skillType);
             }
         }
 
-        private void RegisterSkillType(List<ICustomSkill> skills)
+        private void RegisterSkillType(List<ICustomSkill> skills, SkillType skillType)
         {
             if(skills.Count > 0)
             {
-                Debug.Log("RST1");
                 SkillFamily family = GetSkillFamily(skills);
-
-                foreach (var skill in skills)
-                {
-                    LoadoutAPI.AddSkill(skill.GetType());
-                }
-                foreach (var variant in family.variants)
-                {
-                    LoadoutAPI.AddSkillDef(variant.skillDef);
-                }
-                LoadoutAPI.AddSkillFamily(family);
-                Debug.Log("RST2");
-
-                switch (skills.First().SkillType)
-                {
-                    case SkillType.Primary:
-                        locator.primary.SetFieldValue<SkillFamily>("_skillFamily", family);
-                        break;
-                    case SkillType.Secondary:
-                        locator.secondary.SetFieldValue<SkillFamily>("_skillFamily", family);
-                        break;
-                    case SkillType.Special:
-                        locator.special.SetFieldValue<SkillFamily>("_skillFamily", family);
-                        break;
-                    case SkillType.Utility:
-                        locator.utility.SetFieldValue<SkillFamily>("_skillFamily", family);
-                        break;
-                    case SkillType.Passive:
-                        locator.passiveSkill.SetFieldValue<SkillFamily>("_skillFamily", family);
-                        break;
-                }
-                Debug.Log("RST3");
-
+                RegisterSkillsAndFamilyWithLoadoutAPI(skills, family);
+                SetSkillFamilyField(skillType, family);
+            }
+            else
+            {
+                Debug.LogWarning($"No skills found of type '{skillType}' for this custom character.");
             }
         }
 
@@ -102,6 +75,41 @@ namespace CustomCharacterPlay.HelperStuff
             }
             Debug.Log("VariantEnd");
             return variants;
+        }
+
+        private void RegisterSkillsAndFamilyWithLoadoutAPI(List<ICustomSkill> skills, SkillFamily family)
+        {
+            foreach (var skill in skills)
+            {
+                LoadoutAPI.AddSkill(skill.GetType());
+            }
+            foreach (var variant in family.variants)
+            {
+                LoadoutAPI.AddSkillDef(variant.skillDef);
+            }
+            LoadoutAPI.AddSkillFamily(family);
+        }
+
+        private void SetSkillFamilyField(SkillType skillType, SkillFamily family)
+        {
+            switch (skillType)
+            {
+                case SkillType.Primary:
+                    locator.primary.SetFieldValue<SkillFamily>("_skillFamily", family);
+                    break;
+                case SkillType.Secondary:
+                    locator.secondary.SetFieldValue<SkillFamily>("_skillFamily", family);
+                    break;
+                case SkillType.Special:
+                    locator.special.SetFieldValue<SkillFamily>("_skillFamily", family);
+                    break;
+                case SkillType.Utility:
+                    locator.utility.SetFieldValue<SkillFamily>("_skillFamily", family);
+                    break;
+                case SkillType.Passive:
+                    locator.passiveSkill.SetFieldValue<SkillFamily>("_skillFamily", family);
+                    break;
+            }
         }
     }
 }
