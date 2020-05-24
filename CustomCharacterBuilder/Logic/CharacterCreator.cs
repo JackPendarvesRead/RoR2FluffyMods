@@ -34,7 +34,7 @@ namespace CustomCharacterBuilder.Logic
         private static void RegisterSkills(CharacterInformation info, GameObject bodyPrefab)
         {
             var locator = bodyPrefab.GetComponentInChildren<SkillLocator>();
-            SkillRegister.RegisterSkills(info.Skills, locator);
+            SkillRegister.Register(info.Skills, locator);
         }
 
         private static void RegisterBody(GameObject bodyPrefab)

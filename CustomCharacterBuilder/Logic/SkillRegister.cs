@@ -12,7 +12,7 @@ namespace CustomCharacterBuilder.Logic
 {
     internal static class SkillRegister
     {
-        public static void RegisterSkills(IEnumerable<ICustomSkill> skills, SkillLocator locator)
+        public static void Register(IEnumerable<ICustomSkill> skills, SkillLocator locator)
         {
             foreach (SkillType skillType in Enum.GetValues(typeof(SkillType)))
             {
