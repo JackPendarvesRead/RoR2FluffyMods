@@ -10,31 +10,24 @@ using UnityEngine;
 
 namespace CustomCharacterBuilder.Logic
 {
-    public class SkillRegister
+    public static class SkillRegister
     {
-        private readonly SkillLocator locator;
-
-        public SkillRegister(SkillLocator locator)
-        {
-            this.locator = locator;
-        }
-
-        public void RegisterSkills(IEnumerable<ICustomSkill> skills)
+        public static void RegisterSkills(IEnumerable<ICustomSkill> skills, SkillLocator locator)
         {
             foreach (SkillType skillType in Enum.GetValues(typeof(SkillType)))
             {
-                Debug.Log("Skill type = " + skillType.ToString());
-                RegisterSkillType(skills.Where(x => x.SkillType == skillType).ToList(), skillType);
+                RegisterSkillType(skills.Where(x => x.SkillType == skillType).ToList(), locator, skillType);
             }
         }
 
-        private void RegisterSkillType(List<ICustomSkill> skills, SkillType skillType)
+        private static void RegisterSkillType(List<ICustomSkill> skills, SkillLocator locator, SkillType skillType)
         {
             if(skills.Count > 0)
             {
                 SkillFamily family = GetSkillFamily(skills);
-                RegisterSkillsAndFamilyWithLoadoutAPI(skills, family);
-                SetSkillFamilyField(skillType, family);
+                RegisterSkillsLoadoutAPI(skills);
+                RegisterSkillFamilyAndVariantsLoadoutAPI(family);
+                SetSkillFamilyField(skillType, locator, family);
             }
             else
             {
@@ -42,21 +35,17 @@ namespace CustomCharacterBuilder.Logic
             }
         }
 
-        private SkillFamily GetSkillFamily(List<ICustomSkill> skills)
+        private static SkillFamily GetSkillFamily(List<ICustomSkill> skills)
         {
-            Debug.Log("FamilyStart");
-
             var family = SkillFamily.CreateInstance<SkillFamily>();
             family.defaultVariantIndex = 0;
             family.variants = GetVarients(skills);
             ((ScriptableObject)family).name = skills.First().SkillType.ToString();
-            Debug.Log("FamilyEnd");
             return family;
         }
 
-        private SkillFamily.Variant[] GetVarients(List<ICustomSkill> skills)
+        private static SkillFamily.Variant[] GetVarients(List<ICustomSkill> skills)
         {
-            Debug.Log("VariantStart");
             var variants = new SkillFamily.Variant[skills.Count];
             for (var i = 0; i < skills.Count(); i++)
             {
@@ -68,16 +57,19 @@ namespace CustomCharacterBuilder.Logic
                     viewableNode = new ViewablesCatalog.Node(skills[i].SkillType.ToString(), false)
                 };
             }
-            Debug.Log("VariantEnd");
             return variants;
         }
 
-        private void RegisterSkillsAndFamilyWithLoadoutAPI(List<ICustomSkill> skills, SkillFamily family)
+        private static void RegisterSkillsLoadoutAPI(List<ICustomSkill> skills)
         {
             foreach (var skill in skills)
             {
                 LoadoutAPI.AddSkill(skill.GetType());
             }
+        }
+
+        private static void RegisterSkillFamilyAndVariantsLoadoutAPI(SkillFamily family)
+        {
             foreach (var variant in family.variants)
             {
                 LoadoutAPI.AddSkillDef(variant.skillDef);
@@ -85,24 +77,24 @@ namespace CustomCharacterBuilder.Logic
             LoadoutAPI.AddSkillFamily(family);
         }
 
-        private void SetSkillFamilyField(SkillType skillType, SkillFamily family)
+        private static void SetSkillFamilyField(SkillType skillType, SkillLocator locator, SkillFamily family)
         {
             switch (skillType)
             {
                 case SkillType.Primary:
-                    locator.primary.SetFieldValue<SkillFamily>("_skillFamily", family);
+                    locator.primary.SetFieldValue("_skillFamily", family);
                     break;
                 case SkillType.Secondary:
-                    locator.secondary.SetFieldValue<SkillFamily>("_skillFamily", family);
+                    locator.secondary.SetFieldValue("_skillFamily", family);
                     break;
                 case SkillType.Special:
-                    locator.special.SetFieldValue<SkillFamily>("_skillFamily", family);
+                    locator.special.SetFieldValue("_skillFamily", family);
                     break;
                 case SkillType.Utility:
-                    locator.utility.SetFieldValue<SkillFamily>("_skillFamily", family);
+                    locator.utility.SetFieldValue("_skillFamily", family);
                     break;
                 case SkillType.Passive:
-                    locator.passiveSkill.SetFieldValue<SkillFamily>("_skillFamily", family);
+                    locator.passiveSkill.SetFieldValue("_skillFamily", family);
                     break;
             }
         }

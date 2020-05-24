@@ -32,7 +32,7 @@ namespace CustomCharacterPlay
             
             var bodyInfo = new PrefabInfo("BodyName", PrefabConstants.CommandoBody);
             var displayInfo = new PrefabInfo("DisplayName", PrefabConstants.CommandoDisplay);
-            new CharacterCreator().Create<MyCustomCharacter>(characterInfo, bodyInfo, displayInfo);
+            CharacterCreator.Create<MyCustomCharacter>(characterInfo, bodyInfo, displayInfo);
         }       
     }
 }

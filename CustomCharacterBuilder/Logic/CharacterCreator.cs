@@ -11,20 +11,20 @@ using UnityEngine;
 
 namespace CustomCharacterBuilder.Logic
 {
-    public class CharacterCreator
+    public static class CharacterCreator
     {
-       public void Create<T>(CharacterInformation characterInfo, PrefabInfo bodyPrefabInfo, PrefabInfo displayPrefabInfo)
+       public static void Create<T>(CharacterInformation characterInfo, PrefabInfo bodyPrefabInfo, PrefabInfo displayPrefabInfo)
         {
             var bodyPrefab = Resources.Load<GameObject>(bodyPrefabInfo.ResourceLocationString).InstantiateClone(bodyPrefabInfo.Name);
             var displayPrefab = Resources.Load<GameObject>(displayPrefabInfo.ResourceLocationString).InstantiateClone(displayPrefabInfo.Name, false);
             Create<T>(characterInfo, bodyPrefab, displayPrefab);
         }
 
-        public void Create<T>(CharacterInformation info, GameObject bodyPrefab, GameObject displayPrefab)
+        public static void Create<T>(CharacterInformation info, GameObject bodyPrefab, GameObject displayPrefab)
         {
             //Register Skills
             var locator = bodyPrefab.GetComponentInChildren<SkillLocator>();
-            new SkillRegister(locator).RegisterSkills(info.Skills);
+            SkillRegister.RegisterSkills(info.Skills, locator);
 
             // Register Body Catalog
             var body = bodyPrefab.GetComponentInChildren<CharacterBody>();
