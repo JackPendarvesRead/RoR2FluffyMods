@@ -28,7 +28,6 @@ namespace CustomCharacterPlay.Skills
             def.mustKeyPress = true;
             def.requiredStock = 1;
             def.stockToConsume = 0;
-            //primaryDef.icon = Assets.SephIcon;
             return def;
         }
 
