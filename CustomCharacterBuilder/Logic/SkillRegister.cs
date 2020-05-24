@@ -6,7 +6,6 @@ using RoR2.Skills;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace CustomCharacterBuilder.Logic
@@ -20,12 +19,8 @@ namespace CustomCharacterBuilder.Logic
             this.locator = locator;
         }
 
-        public void RegisterSkills()
+        public void RegisterSkills(IEnumerable<ICustomSkill> skills)
         {
-            var skills = Assembly.GetCallingAssembly().DefinedTypes
-                .Where(x => typeof(ICustomSkill).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
-                .Select(x => (ICustomSkill)x.Instantiate());
-
             foreach (SkillType skillType in Enum.GetValues(typeof(SkillType)))
             {
                 Debug.Log("Skill type = " + skillType.ToString());

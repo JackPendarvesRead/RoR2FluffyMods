@@ -24,8 +24,8 @@ namespace CustomCharacterPlay
             }
 
             var characterInfo = new CharacterInformation("MyCharacterName", "This is the description of my character");
-            var bodyInfo = new PrefabInfo("BodyName", PrefabCollection.CommandoBody);
-            var displayInfo = new PrefabInfo("DisplayName", PrefabCollection.CommandoDisplay);
+            var bodyInfo = new PrefabInfo("BodyName", PrefabConstants.CommandoBody);
+            var displayInfo = new PrefabInfo("DisplayName", PrefabConstants.CommandoDisplay);
             new CharacterCreator().Create<MyCustomCharacter>(characterInfo, bodyInfo, displayInfo);
         }       
     }
