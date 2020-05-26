@@ -1,6 +1,15 @@
 ﻿using BepInEx;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using R2API.Utils;
 using RoR2;
 using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using UnityEngine;
 
 namespace TestStuff
 {
@@ -13,26 +22,74 @@ namespace TestStuff
 
         public void Awake()
         {
-            if (!RoR2Application.isModded)
+             var b = new CharacterBody();
+            CreateHook<CharacterBody, float>(nameof(b.RecalculateStats), nameof(b.maxHealth), (maxHealth, body) =>
             {
-                RoR2Application.isModded = true;
+                if (IsHumanPlayer(body))
+                {
+                    Debug.Log($"{body.name} is WORTHY! HAVE SOME HEALTH!");
+                    return maxHealth + 500;
+                }
+                else
+                {
+                    Debug.Log($"{body.name} is UNWORTHY!");
+                    return 1;
+                }
+            });
+
+            CreateHook<CharacterBody, float>(nameof(b.RecalculateStats), nameof(b.attackSpeed), (attackSpeed, body) =>
+            {
+                if (IsHumanPlayer(body))
+                {
+                    Debug.Log($"{body.name} is WORTHY! HAVE SOME ATTACK SPEED!");
+                    return attackSpeed + 500;
+                }
+                else
+                {
+                    Debug.Log($"{body.name} is UNWORTHY!");
+                    return 1;
+                }
+            });
+
+            CreateHook<CharacterBody, float>(nameof(b.RecalculateStats), nameof(b.moveSpeed), (moveSpeed, body) =>
+            {
+                if (IsHumanPlayer(body))
+                {
+                    Debug.Log($"{body.name} is WORTHY! HAVE SOME MOVE SPEED!");
+                    return moveSpeed * 2;
+                }
+                else
+                {
+                    Debug.Log($"{body.name} is UNWORTHY!");
+                    return 1;
+                }
+            });
+        } 
+
+        private void CreateHook<TOrig, TProperty>(string methodName, string propertyName, Func<TProperty, TOrig, TProperty> func)
+        {
+            void action(ILContext il)
+            {
+                var c = new ILCursor(il);
+                c.GotoNext(x => x.MatchCallvirt<TOrig>("set_" + propertyName));
+                c.Emit(OpCodes.Ldarg_0);
+                c.EmitDelegate(func);
             }
 
-            On.RoR2.UI.PauseScreenController.OnDisable += PauseScreenController_OnDisable;
-            On.RoR2.UI.PauseScreenController.OnEnable += PauseScreenController_OnEnable;
+            var config = new ILHookConfig { ManualApply = true };
+            var hook = new ILHook(
+                typeof(TOrig).GetMethod(methodName),
+                new ILContext.Manipulator(action),
+                config);
+            hook.Apply();
         }
 
-        private void PauseScreenController_OnEnable(On.RoR2.UI.PauseScreenController.orig_OnEnable orig, RoR2.UI.PauseScreenController self)
+        private bool IsHumanPlayer(CharacterBody body)
         {
-            Logger.LogInfo("ENABLE PAUSE");
-            orig(self);
+            return NetworkUser.readOnlyInstancesList                                    
+                .Select(x => x.GetCurrentBody())                                    
+                .Where(x => x == body)                                    
+                .Any();
         }
-
-        private void PauseScreenController_OnDisable(On.RoR2.UI.PauseScreenController.orig_OnDisable orig, RoR2.UI.PauseScreenController self)
-        {
-            Logger.LogInfo("DISABLE PAUSE");
-            orig(self);
-        }
-
     }
 }
