@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace CustomCharacterBuilder.Logic
+namespace CustomCharacterBuilder.Util
 {
     public static class SkillAssemblyScanner
     {

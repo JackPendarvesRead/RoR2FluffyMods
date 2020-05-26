@@ -49,7 +49,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RiskOfCoriander", "RiskOfCo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomCharacterPlay", "CustomCharacterPlay\CustomCharacterPlay.csproj", "{17E83140-C358-48FD-B6E0-4E985EB8FD30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomCharacterBuilder", "CustomCharacterBuilder\CustomCharacterBuilder.csproj", "{1426CD50-13A6-498C-AA13-C5DE7A867A23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CustomCharacterBuilder", "CustomCharacterBuilder\CustomCharacterBuilder.csproj", "{1426CD50-13A6-498C-AA13-C5DE7A867A23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

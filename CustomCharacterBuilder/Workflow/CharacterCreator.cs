@@ -1,4 +1,5 @@
 ﻿using CustomCharacterBuilder.Infrastructure;
+using CustomCharacterBuilder.Logic;
 using EntityStates.Treebot.UnlockInteractable;
 using R2API;
 using R2API.Utils;
@@ -10,11 +11,11 @@ using System.Reflection;
 using System.Text;
 using UnityEngine;
 
-namespace CustomCharacterBuilder.Logic
+namespace CustomCharacterBuilder.Workflow
 {
     public static class CharacterCreator
-    {
-       public static void Create<T>(CharacterInformation characterInfo, PrefabInfo bodyPrefabInfo, PrefabInfo displayPrefabInfo)
+    {       
+        public static void Create<T>(CharacterInformation characterInfo, PrefabInfo bodyPrefabInfo, PrefabInfo displayPrefabInfo)
         {
             var bodyPrefab = Resources.Load<GameObject>(bodyPrefabInfo.ResourceLocationString).InstantiateClone(bodyPrefabInfo.Name);
             var displayPrefab = Resources.Load<GameObject>(displayPrefabInfo.ResourceLocationString).InstantiateClone(displayPrefabInfo.Name, false);

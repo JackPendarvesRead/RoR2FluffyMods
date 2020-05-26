@@ -1,9 +1,9 @@
 ﻿using BepInEx;
 using CustomCharacterBuilder;
 using CustomCharacterBuilder.Infrastructure;
-using CustomCharacterBuilder.Logic;
+using CustomCharacterBuilder.Util;
+using CustomCharacterBuilder.Workflow;
 using EntityStates.MyCustomCharacter;
-using R2API.Utils;
 using RoR2;
 using System.Reflection;
 
