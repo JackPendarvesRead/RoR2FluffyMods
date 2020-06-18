@@ -4,6 +4,7 @@ using BepInEx.Configuration;
 using FluffyLabsConfigManagerTools.Infrastructure;
 using FluffyLabsConfigManagerTools.Util;
 using RoR2;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -11,12 +12,13 @@ namespace PocketMoney
 {
     [BepInDependency(FluffyLabsConfigManagerTools.FluffyConfigLabsPlugin.PluginGuid)]
     [BepInPlugin(PluginGuid, pluginName, pluginVersion)]
-    [BepInDependency("com.funkfrog_sipondo.sharesuite", BepInDependency.DependencyFlags.SoftDependency)]
-    public class TestingStuff : BaseUnityPlugin
+    [BepInDependency(shareSuiteGuid, BepInDependency.DependencyFlags.SoftDependency)]
+    public class PocketMoneyPlugin : BaseUnityPlugin
     {
         public const string PluginGuid = "com.FluffyMods." + pluginName;
         private const string pluginName = "PocketMoney";
-        private const string pluginVersion = "2.1.1";
+        private const string pluginVersion = "2.1.2";
+        private const string shareSuiteGuid = "com.funkfrog_sipondo.sharesuite";
 
         private ConditionalConfigEntry<uint> LatestStageToReceiveMoney;
         private ConfigEntry<uint> StageFlatMoney;
@@ -32,10 +34,13 @@ namespace PocketMoney
                 RoR2Application.isModded = true;
             }
                         
-            if (Chainloader.PluginInfos.ContainsKey("com.funkfrog_sipondo.sharesuite"))
+            if (Chainloader.PluginInfos.ContainsKey(shareSuiteGuid))
             {
-                ShareSuite = Chainloader.PluginInfos["com.funkfrog_sipondo.sharesuite"].Instance;
-                AddMoney = ShareSuite.GetType().GetMethod("AddMoneyExternal", BindingFlags.Instance | BindingFlags.Public);
+                Debug.Log("Found sharesuite plugin...");
+                ShareSuite = Chainloader.PluginInfos[shareSuiteGuid].Instance;
+                AddMoney = ShareSuite.GetType()
+                    .Assembly.GetType("ShareSuite.MoneySharingHooks")
+                    .GetMethod("AddMoneyExternal", BindingFlags.Static | BindingFlags.Public);
             }
 
             const string moneySection = "Money";
@@ -94,7 +99,7 @@ namespace PocketMoney
             var pocketMoney = StageFlatMoney.Value + difficultyScaledCost;
             if (ShareSuite)
             {
-                AddMoney.Invoke(ShareSuite, new object[] { pocketMoney });
+                AddMoney.Invoke(null, new object[] { (int)pocketMoney });
             }
             else
             {

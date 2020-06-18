@@ -22,6 +22,9 @@ namespace TestStuff
 
         public void Awake()
         {
+            On.RoR2.Inventory.GetItemCount += Inventory_GetItemCount;
+
+
              var b = new CharacterBody();
             CreateHook<CharacterBody, float>(nameof(b.RecalculateStats), nameof(b.maxHealth), (maxHealth, body) =>
             {
@@ -64,7 +67,12 @@ namespace TestStuff
                     return 1;
                 }
             });
-        } 
+        }
+
+        private int Inventory_GetItemCount(On.RoR2.Inventory.orig_GetItemCount orig, Inventory self, ItemIndex itemIndex)
+        {
+            throw new NotImplementedException();
+        }
 
         private void CreateHook<TOrig, TProperty>(string methodName, string propertyName, Func<TProperty, TOrig, TProperty> func)
         {
